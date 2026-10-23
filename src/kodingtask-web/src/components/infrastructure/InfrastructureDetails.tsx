@@ -34,6 +34,8 @@ export default function InfrastructureDetails({ report }: InfrastructureDetailsP
   const { t, locale } = useText();
   const { publicSiteUrl } = useAppInfo();
   const { hosting, service, traffic, build, data, security, guardrails } = report;
+  // A file inside the app has no server version, no operator and no standby to report.
+  const isEmbeddedDatabase = data.engine === "SQLite";
   const onOff = (value: boolean) => (value ? t("On") : t("Off"));
   const yesNo = (value: boolean) => (value ? t("Yes") : t("No"));
   const milliseconds = (value: number) =>
@@ -192,18 +194,26 @@ export default function InfrastructureDetails({ report }: InfrastructureDetailsP
               <FactList
                 facts={[
                   { label: t("Engine"), value: data.engine },
-                  { label: t("Version"), value: data.version },
-                  { label: t("Managed by"), value: data.managedBy },
+                  ...(isEmbeddedDatabase
+                    ? []
+                    : [
+                        { label: t("Version"), value: data.version },
+                        { label: t("Managed by"), value: data.managedBy },
+                      ]),
                   {
                     label: t("Storage"),
                     value: data.persistent
                       ? t("Kept across deploys")
                       : t("Inside the container, emptied at every deploy"),
                   },
-                  {
-                    label: t("Standby in a second zone"),
-                    value: data.multiAz === null ? null : yesNo(data.multiAz),
-                  },
+                  ...(isEmbeddedDatabase
+                    ? []
+                    : [
+                        {
+                          label: t("Standby in a second zone"),
+                          value: data.multiAz === null ? null : yesNo(data.multiAz),
+                        },
+                      ]),
                 ]}
               />
             </FactCard>

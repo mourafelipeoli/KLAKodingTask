@@ -304,13 +304,14 @@
 @media (min-width: 768px) {
   :root {
     --gutter: 1.5rem;
-    --header-height: 4.5rem;
+    --header-height: 5rem;
   }
 }
 
 @media (min-width: 1024px) {
   :root {
     --gutter: 2rem;
+    --header-height: 5.75rem;
   }
 }
 

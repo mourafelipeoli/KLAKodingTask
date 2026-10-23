@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppInfo } from "../app/useAppInfo";
 import { LOCALES } from "../config/locales";
-import logoWhite from "../assets/brand/koding-task-logo-white.svg";
+import logoWhite from "../assets/brand/koding-task-logo-tagline-white.svg";
 import RichText from "../i18n/RichText";
 import { useText } from "../i18n/useText";
 import { ROUTES } from "../routes/routePaths";
@@ -18,9 +18,9 @@ export default function SiteFooter() {
           <img
             className="site-footer__logo"
             src={logoWhite}
-            alt="Koding Task"
+            alt="Koding Task: Keep Coding Ahead"
             width={916}
-            height={150}
+            height={196}
           />
           <p className="site-footer__tagline">
             {t("Dollar amounts in words, in {{count}} languages.", {

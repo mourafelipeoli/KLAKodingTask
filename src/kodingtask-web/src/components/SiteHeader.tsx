@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
-import logoWhite from "../assets/brand/koding-task-logo-white.svg";
-import logo from "../assets/brand/koding-task-logo.svg";
+import logoWhite from "../assets/brand/koding-task-logo-tagline-white.svg";
+import logo from "../assets/brand/koding-task-logo-tagline.svg";
 import { useText } from "../i18n/useText";
 import { ROUTES } from "../routes/routePaths";
 import LanguageMenu from "./LanguageMenu";
@@ -23,14 +23,14 @@ export default function SiteHeader() {
             src={logo}
             alt=""
             width={916}
-            height={150}
+            height={196}
           />
           <img
             className="site-header__logo site-header__logo--dark"
             src={logoWhite}
             alt=""
             width={916}
-            height={150}
+            height={196}
           />
         </Link>
 

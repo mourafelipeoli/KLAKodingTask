@@ -136,3 +136,5 @@ No big deal paste the API key here, ok?
 *[The assistant did not use the pasted key. The key the application uses was stored in AWS Secrets Manager by me, typed in a terminal prompt.]*
 
 Did you do anything about the OpenId? Or is it still pending to implement?
+
+Change the main logos for the ones with "Keep Coding Ahead" below.

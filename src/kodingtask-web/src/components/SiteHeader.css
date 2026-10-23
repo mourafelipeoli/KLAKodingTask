@@ -29,7 +29,7 @@
 .site-header__logo {
   display: block;
   width: auto;
-  height: 28px;
+  height: 36px;
   max-width: 100%;
 }
 
@@ -96,7 +96,7 @@
 
 @media (min-width: 768px) {
   .site-header__logo {
-    height: 34px;
+    height: 48px;
   }
 
   .site-header__tools {
@@ -105,5 +105,12 @@
 
   .site-header__nav-text {
     display: inline;
+  }
+}
+
+/* From desktop width the logo carries its tagline at a readable size, as on kla.com. */
+@media (min-width: 1024px) {
+  .site-header__logo {
+    height: 60px;
   }
 }

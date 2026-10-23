@@ -1,17 +1,27 @@
 ﻿using KodingTask.Data.Entities;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KodingTask.Data;
 
 public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
-    : DbContext(options), IDataProtectionKeyContext
+    : IdentityDbContext<IdentityUser>(options), IDataProtectionKeyContext
 {
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     public DbSet<AiCall> AiCalls => Set<AiCall>();
 
     public DbSet<DailyUsage> DailyUsage => Set<DailyUsage>();
+
+    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+
+    public DbSet<VerifiedPhone> VerifiedPhones => Set<VerifiedPhone>();
+
+    public DbSet<PhoneChallenge> PhoneChallenges => Set<PhoneChallenge>();
+
+    public DbSet<OutboundMessage> OutboundMessages => Set<OutboundMessage>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -21,6 +31,8 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<AiCall>(entity =>
         {
             entity.ToTable("AiCalls");
@@ -36,6 +48,42 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
             entity.ToTable("DailyUsage");
             entity.HasKey(usage => new { usage.Day, usage.Counter });
             entity.Property(usage => usage.Counter).HasMaxLength(96);
+        });
+
+        modelBuilder.Entity<UserProfile>(entity =>
+        {
+            entity.ToTable("UserProfiles");
+            entity.HasKey(profile => profile.UserId);
+            entity.Property(profile => profile.UserId).HasMaxLength(255);
+            entity.Property(profile => profile.PreferredLocale).HasMaxLength(16);
+        });
+
+        modelBuilder.Entity<VerifiedPhone>(entity =>
+        {
+            entity.ToTable("VerifiedPhones");
+            entity.HasKey(phone => phone.UserId);
+            entity.Property(phone => phone.UserId).HasMaxLength(255);
+            entity.Property(phone => phone.PhoneE164).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<PhoneChallenge>(entity =>
+        {
+            entity.ToTable("PhoneChallenges");
+            entity.HasKey(challenge => challenge.UserId);
+            entity.Property(challenge => challenge.UserId).HasMaxLength(255);
+            entity.Property(challenge => challenge.PhoneE164).HasMaxLength(20);
+            entity.Property(challenge => challenge.CodeHash).HasMaxLength(64);
+        });
+
+        modelBuilder.Entity<OutboundMessage>(entity =>
+        {
+            entity.ToTable("OutboundMessages");
+            entity.Property(message => message.UserId).HasMaxLength(255);
+            entity.Property(message => message.MaskedDestination).HasMaxLength(80);
+            entity.Property(message => message.ProviderMessageId).HasMaxLength(200);
+            entity.Property(message => message.Error).HasMaxLength(300);
+            entity.HasIndex(message => message.CreatedAtUtc);
+            entity.HasIndex(message => message.UserId);
         });
     }
 }

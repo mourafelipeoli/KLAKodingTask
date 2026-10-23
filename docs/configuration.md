@@ -29,6 +29,7 @@ dotnet user-secrets set "ConnectionStrings:KodingTask" "Server=…;Database=…;
 | `RateLimits:ConversionsPerMinute` | `120` | Per client address. |
 | `RateLimits:AiPerMinute` | `10` | Per client address, for the AI engine. |
 | `RateLimits:InfrastructurePerMinute` | `30` | Per client address, for the infrastructure page. |
+| `RateLimits:AccountPerMinute` | `20` | Per client address, for every account, phone-code and delivery call. |
 | `Privacy:ClientHashKey` | empty (random per process) | Secret key of the anonymised client fingerprints used by per-client limits. Store it as a secret. |
 | `App:Version` | from `versions.json` | Override of the version reported by `/health`. |
 | `BUILD_COMMIT` | empty | Commit reported by `/health`; set by the deployment. |
@@ -73,6 +74,62 @@ store cannot be read, every paid feature is closed until it can.
 | `AiCallsPerDay` | `200` | All visitors together, per UTC day. |
 | `AiCallsPerClientPerDay` | `20` | Per client address, per UTC day. |
 | `AiMonthlyBudgetUsd` | `2` | Estimated AI spend per calendar month (UTC). |
+| `EmailsPerDay` | `100` | Every email of the instance per UTC day: results, confirmations, password resets. |
+| `WhatsAppPerDay` | `50` | Every WhatsApp message per UTC day: results and phone codes. |
+| `DeliveriesPerUserPerDay` | `10` | Results one account may send to itself per UTC day, both channels together. |
+| `PhoneCodesPerUserPerDay` | `3` | One-time WhatsApp codes per account per UTC day. |
+| `AccountEmailsPerUserPerDay` | `3` | Confirmation and password-reset emails per account per UTC day. |
+| `RegistrationsPerClientPerDay` | `5` | New accounts per client address per UTC day. |
+
+A cap missing from the parameter store reads as zero, which switches its feature off.
+
+## Email (Amazon SES)
+
+On when `Email:Sender` and `Email:Region` are set. It also switches accounts on: an account
+is only useful once its address is confirmed, and that needs email.
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `Email:Sender` | empty | The `From` address. Must be a verified SES identity (the address or its domain). |
+| `Email:SenderName` | `Koding Task` | Display name next to it. |
+| `Email:Region` | empty | SES region of that identity. |
+| `Email:ConfigurationSet` | empty | Optional SES configuration set, to get sending metrics in CloudWatch. |
+| `Email:Mode` | `Ses` | `Log` writes emails to the application log instead (Development only; refuses to start elsewhere). |
+
+Minimal IAM permission: `ses:SendEmail` on the identity and the configuration set, with the
+condition `ses:FromAddress` equal to the sender, so the role cannot send as anyone else.
+See `deploy/aws/task-role-policy.template.json`.
+
+## WhatsApp (Meta Cloud API)
+
+On when the phone number id, the access token and both template names are set.
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `WhatsApp:PhoneNumberId` | empty | The sending number's id in the WhatsApp Business account. |
+| `WhatsApp:AccessToken` | empty | System-user token with `whatsapp_business_messaging`. A secret: use a secret store. |
+| `WhatsApp:ResultTemplate` | `koding_task_result` | UTILITY template, body `{{1}}` = amount, `{{2}}` = words. |
+| `WhatsApp:CodeTemplate` | `koding_task_code` | AUTHENTICATION template with a copy-code button. |
+| `WhatsApp:FallbackLanguage` | `en_US` | Used when a template is not approved in the visitor's language. |
+| `WhatsApp:ApiBaseUrl` | `https://graph.facebook.com/v22.0` | Graph API version. |
+| `WhatsApp:TimeoutSeconds` | `15` | Per request; no automatic retry (a duplicate message is worse than a failed one). |
+| `WhatsApp:Mode` | `Meta` | `Log` writes messages and codes to the application log instead (Development only). |
+
+Business-initiated WhatsApp messages can only be approved templates, so the application can
+never send free text: it only fills in the amount, the words and the code. Results go only to
+a number the account verified with a one-time code.
+
+### Trying accounts locally
+
+```sh
+cd src/KodingTask.Api
+dotnet user-secrets set "Email:Mode" "Log"
+dotnet user-secrets set "Email:Sender" "dev@example.com"
+dotnet user-secrets set "WhatsApp:Mode" "Log"
+```
+
+Register, open the confirmation link printed in the console, send results; phone codes are
+printed there too.
 
 ## Infrastructure page
 

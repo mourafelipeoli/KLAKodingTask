@@ -4,6 +4,39 @@
 
 export const NETWORK_ERROR = "NetworkError";
 
+// The antiforgery token the server issued for the current session, sent with every
+// state-changing request. Fetched again whenever the session changes (sign in, sign out),
+// and fetched first if a state-changing request starts before the app has one (a page
+// opened from an email link posts right away).
+let antiforgeryToken: string | null = null;
+let antiforgeryRequest: Promise<void> | null = null;
+
+export function setAntiforgeryToken(token: string | null): void {
+  antiforgeryToken = token;
+}
+
+async function ensureAntiforgeryToken(): Promise<void> {
+  if (antiforgeryToken) {
+    return;
+  }
+  antiforgeryRequest ??= fetch("/api/account/antiforgery", {
+    headers: { Accept: "application/json" },
+    credentials: "same-origin",
+  })
+    .then(async (response) => {
+      if (response.ok) {
+        antiforgeryToken = ((await response.json()) as { token: string }).token;
+      }
+    })
+    .catch(() => {
+      // The request itself will fail and report the network error.
+    })
+    .finally(() => {
+      antiforgeryRequest = null;
+    });
+  await antiforgeryRequest;
+}
+
 export class ApiError extends Error {
   readonly status: number;
   readonly code: string;
@@ -53,6 +86,12 @@ async function request<T>(
   if (body !== undefined) {
     headers["Content-Type"] = "application/json";
   }
+  if (method !== "GET") {
+    await ensureAntiforgeryToken();
+    if (antiforgeryToken) {
+      headers["X-XSRF-TOKEN"] = antiforgeryToken;
+    }
+  }
 
   let response: Response;
   try {
@@ -72,6 +111,9 @@ async function request<T>(
 
   if (!response.ok) {
     throw await toApiError(response);
+  }
+  if (response.status === 204) {
+    return undefined as T;
   }
   return (await response.json()) as T;
 }

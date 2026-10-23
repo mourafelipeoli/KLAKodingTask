@@ -8,7 +8,7 @@ database:
 | Hosting, service, traffic, certificate, managed database | `InfrastructureSnapshotSource` | cached, minutes |
 | Build | configuration (`versions.json`, `BUILD_COMMIT`, `BUILD_DATE`) | fixed per deploy |
 | Data | database options + snapshot | fixed per deploy |
-| Guardrails | limits (Parameter Store or configuration), `DailyUsage`, `AiCalls` | live |
+| Guardrails | limits (Parameter Store or configuration), `DailyUsage` (AI calls, emails, WhatsApp messages today), `AiCalls` | live |
 | Features | `FeatureAvailability` | fixed per start |
 
 The guardrail numbers are the same ones the AI engine enforces (same counter name, same

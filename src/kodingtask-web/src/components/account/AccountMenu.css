@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Account menu in the header: "Sign in", or the address and a sign-out button.
+   On a phone only the icons show.
+   ========================================================================== */
+
+.account-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.account-menu__identity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding-inline: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.account-menu__identity .bi,
+.account-menu__sign-in .bi {
+  font-size: 1.25rem;
+  color: var(--color-brand-text);
+}
+
+.account-menu__email,
+.account-menu__label {
+  display: none;
+}
+
+.account-menu__sign-in {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding-inline: var(--space-2);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.account-menu__sign-in:hover {
+  color: var(--color-link-hover);
+}
+
+@media (min-width: 1024px) {
+  .account-menu__email {
+    display: inline;
+    max-width: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .account-menu__label {
+    display: inline;
+  }
+}

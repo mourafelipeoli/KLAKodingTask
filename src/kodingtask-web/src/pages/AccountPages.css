@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Account pages: sign in, register, confirm email, forgot and reset password.
+   ========================================================================== */
+
+.account-page {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-12);
+}
+
+.account-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: min(30rem, 100%);
+  padding: var(--space-8) var(--space-6);
+}
+
+.account-card__title {
+  margin: 0;
+  font-size: var(--text-3xl);
+}
+
+.account-card__lead,
+.account-card__note {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.account-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.account-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.account-form .button {
+  justify-self: start;
+}
+
+.account-card > .button {
+  align-self: flex-start;
+}

@@ -10,5 +10,17 @@ public sealed record UsageLimits
 
     public decimal AiMonthlyBudgetUsd { get; init; }
 
+    public int EmailsPerDay { get; init; }
+
+    public int WhatsAppPerDay { get; init; }
+
+    public int DeliveriesPerUserPerDay { get; init; }
+
+    public int PhoneCodesPerUserPerDay { get; init; }
+
+    public int AccountEmailsPerUserPerDay { get; init; }
+
+    public int RegistrationsPerClientPerDay { get; init; }
+
     public static UsageLimits Closed { get; } = new() { KillSwitch = true };
 }

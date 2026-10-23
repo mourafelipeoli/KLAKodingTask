@@ -54,4 +54,8 @@ public sealed record GuardrailFacts(
     int AiCallsToday,
     int AiCallsPerDay,
     decimal AiSpendThisMonthUsd,
-    decimal AiMonthlyBudgetUsd);
+    decimal AiMonthlyBudgetUsd,
+    int EmailsToday,
+    int EmailsPerDay,
+    int WhatsAppToday,
+    int WhatsAppPerDay);

@@ -1,0 +1,18 @@
+{
+  "{{amount}} in words": "{{amount}} en letras",
+  "Here is the amount you converted on Koding Task.": "Este es el importe que has convertido en Koding Task.",
+  "Amount": "Importe",
+  "In words": "En letras",
+  "Language": "Idioma",
+  "Open this conversion": "Abrir esta conversión",
+  "You received this email because you asked Koding Task to send you this result.": "Recibes este correo porque pediste a Koding Task que te enviara este resultado.",
+  "Confirm your email address": "Confirma tu dirección de correo electrónico",
+  "Confirm my email address": "Confirmar mi correo electrónico",
+  "Confirm your email address to send conversion results to yourself by email or WhatsApp.": "Confirma tu dirección de correo electrónico para enviarte resultados de conversión por correo electrónico o WhatsApp.",
+  "If you did not create an account on Koding Task, you can ignore this email.": "Si no has creado una cuenta en Koding Task, puedes ignorar este correo.",
+  "Reset your password": "Restablece tu contraseña",
+  "Someone asked to reset the password of your Koding Task account. If it was you, choose a new password.": "Alguien ha pedido restablecer la contraseña de tu cuenta de Koding Task. Si has sido tú, elige una contraseña nueva.",
+  "Choose a new password": "Elegir una contraseña nueva",
+  "If you did not ask for this, you can ignore this email. Your password stays the same.": "Si no lo has pedido, puedes ignorar este correo. Tu contraseña no cambia.",
+  "This link is valid for 24 hours.": "Este enlace es válido durante 24 horas."
+}

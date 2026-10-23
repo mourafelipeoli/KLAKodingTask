@@ -1,0 +1,18 @@
+{
+  "{{amount}} in words": "{{amount}} の文字表記",
+  "Here is the amount you converted on Koding Task.": "Koding Task で変換した金額です。",
+  "Amount": "金額",
+  "In words": "文字表記",
+  "Language": "言語",
+  "Open this conversion": "この変換を開く",
+  "You received this email because you asked Koding Task to send you this result.": "このメールは、Koding Task にこの結果の送信をご依頼いただいたため送信しています。",
+  "Confirm your email address": "メールアドレスの確認",
+  "Confirm my email address": "メールアドレスを確認する",
+  "Confirm your email address to send conversion results to yourself by email or WhatsApp.": "メールアドレスを確認すると、変換結果をメールまたは WhatsApp でご自身に送れるようになります。",
+  "If you did not create an account on Koding Task, you can ignore this email.": "Koding Task でアカウントを作成した覚えがない場合は、このメールを無視してください。",
+  "Reset your password": "パスワードの再設定",
+  "Someone asked to reset the password of your Koding Task account. If it was you, choose a new password.": "Koding Task アカウントのパスワード再設定がリクエストされました。ご本人の場合は、新しいパスワードを設定してください。",
+  "Choose a new password": "新しいパスワードを設定する",
+  "If you did not ask for this, you can ignore this email. Your password stays the same.": "お心当たりがない場合は、このメールを無視してください。パスワードは変更されません。",
+  "This link is valid for 24 hours.": "このリンクの有効期限は 24 時間です。"
+}

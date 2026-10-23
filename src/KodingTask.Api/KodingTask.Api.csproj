@@ -13,6 +13,7 @@
     <PackageReference Include="AWSSDK.ECS" Version="4.0.108.1" />
     <PackageReference Include="AWSSDK.ElasticLoadBalancingV2" Version="4.0.101.17" />
     <PackageReference Include="AWSSDK.RDS" Version="4.0.107.1" />
+    <PackageReference Include="AWSSDK.SimpleEmailV2" Version="4.0.106.6" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.104.6" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
@@ -32,6 +33,11 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="KodingTask.Api.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Messaging\Texts\*.json" LogicalName="KodingTask.Api.Messaging.Texts.%(Filename)%(Extension)" />
+    <Content Remove="Messaging\Texts\*.json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,10 +1,13 @@
 ﻿using System.Text.Json.Serialization;
+using KodingTask.Api.Accounts;
 using KodingTask.Api.Ai;
 using KodingTask.Api.Contracts;
+using KodingTask.Api.Deliveries;
 using KodingTask.Api.Features;
 using KodingTask.Api.Hosting;
 using KodingTask.Api.Infrastructure;
 using KodingTask.Api.Limits;
+using KodingTask.Api.Messaging;
 using KodingTask.Conversion;
 using KodingTask.Data;
 using Microsoft.AspNetCore.DataProtection;
@@ -28,9 +31,13 @@ builder.Services.AddSingleton<CurrencyConverter>();
 builder.Services.Configure<PublicSiteOptions>(builder.Configuration.GetSection(PublicSiteOptions.SectionName));
 
 var aiConfigured = builder.Services.AddAiConversion(builder.Configuration);
+var (emailConfigured, whatsAppConfigured) = builder.Services.AddMessaging(builder.Configuration, builder.Environment);
+builder.Services.AddAccounts();
+builder.Services.AddScoped<DeliveryService>();
+builder.Services.AddHostedService<RetentionJob>();
 builder.Services.AddSingleton(new FeatureAvailability(
-    Email: false,
-    WhatsApp: false,
+    Email: emailConfigured,
+    WhatsApp: whatsAppConfigured,
     Ai: aiConfigured,
     MachineTranslation: false,
     ExternalLogin: false));
@@ -61,6 +68,8 @@ app.UseDefaultFiles();
 app.MapStaticAssets();
 app.UseRouting();
 app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapOpenApi();

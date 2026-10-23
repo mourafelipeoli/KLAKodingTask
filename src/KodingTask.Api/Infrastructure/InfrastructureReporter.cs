@@ -25,6 +25,8 @@ public sealed class InfrastructureReporter(
         var limits = await limitsSource.GetAsync(cancellationToken);
         var aiCallsToday = await limiter.CountAsync(AiConversionService.DailyCounter, cancellationToken);
         var spentMicroUsd = await database.MonthToDateMicroUsdAsync(timeProvider.GetUtcNow().UtcDateTime, cancellationToken);
+        var emailsToday = await limiter.CountAsync(Counters.Emails, cancellationToken);
+        var whatsAppToday = await limiter.CountAsync(Counters.WhatsAppMessages, cancellationToken);
 
         return new InfrastructureReport(
             snapshot.TakenAt,
@@ -34,7 +36,16 @@ public sealed class InfrastructureReporter(
             Build(),
             Data(snapshot),
             new SecurityFacts(https, snapshot.Aws.CertificateValidUntil, !string.IsNullOrWhiteSpace(limitsOptions.Value.SsmPath)),
-            new GuardrailFacts(limits.KillSwitch, aiCallsToday, limits.AiCallsPerDay, spentMicroUsd / 1_000_000m, limits.AiMonthlyBudgetUsd),
+            new GuardrailFacts(
+                limits.KillSwitch,
+                aiCallsToday,
+                limits.AiCallsPerDay,
+                spentMicroUsd / 1_000_000m,
+                limits.AiMonthlyBudgetUsd,
+                emailsToday,
+                limits.EmailsPerDay,
+                whatsAppToday,
+                limits.WhatsAppPerDay),
             features);
     }
 

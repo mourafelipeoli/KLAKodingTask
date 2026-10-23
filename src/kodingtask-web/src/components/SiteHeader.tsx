@@ -4,6 +4,7 @@ import logo from "../assets/brand/koding-task-logo-tagline.svg";
 import { useText } from "../i18n/useText";
 import { ROUTES } from "../routes/routePaths";
 import LanguageMenu from "./LanguageMenu";
+import AccountMenu from "./account/AccountMenu";
 import ThemeToggle from "./ThemeToggle";
 import "./SiteHeader.css";
 
@@ -44,6 +45,7 @@ export default function SiteHeader() {
             <i className="bi bi-hdd-network" aria-hidden="true" />
             <span className="site-header__nav-text">{t("Where this runs")}</span>
           </NavLink>
+          <AccountMenu />
           <LanguageMenu />
           <ThemeToggle />
         </div>

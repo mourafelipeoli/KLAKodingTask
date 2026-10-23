@@ -10,12 +10,14 @@ public static class RequestRateLimits
     public const string Conversion = "conversion";
     public const string Ai = "ai";
     public const string Infrastructure = "infrastructure";
+    public const string Account = "account";
 
     public static IServiceCollection AddRequestRateLimits(this IServiceCollection services, IConfiguration configuration)
     {
         var conversionsPerMinute = configuration.GetValue("RateLimits:ConversionsPerMinute", 120);
         var aiPerMinute = configuration.GetValue("RateLimits:AiPerMinute", 10);
         var infrastructurePerMinute = configuration.GetValue("RateLimits:InfrastructurePerMinute", 30);
+        var accountPerMinute = configuration.GetValue("RateLimits:AccountPerMinute", 20);
 
         return services.AddRateLimiter(options =>
         {
@@ -34,6 +36,7 @@ public static class RequestRateLimits
             options.AddPolicy(Conversion, context => PerClientPerMinute(context, conversionsPerMinute));
             options.AddPolicy(Ai, context => PerClientPerMinute(context, aiPerMinute));
             options.AddPolicy(Infrastructure, context => PerClientPerMinute(context, infrastructurePerMinute));
+            options.AddPolicy(Account, context => PerClientPerMinute(context, accountPerMinute));
         });
     }
 

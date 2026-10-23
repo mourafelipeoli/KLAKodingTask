@@ -10,4 +10,6 @@ public sealed record FeatureAvailability(
     public static FeatureAvailability None { get; } = new(false, false, false, false, false);
 
     public bool Deliveries => Email || WhatsApp;
+
+    public bool Accounts => Email;
 }

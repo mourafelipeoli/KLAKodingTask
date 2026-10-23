@@ -1,0 +1,18 @@
+{
+  "{{amount}} in words": "{{amount}} 的文字表述",
+  "Here is the amount you converted on Koding Task.": "这是您在 Koding Task 上转换的金额。",
+  "Amount": "金额",
+  "In words": "文字表述",
+  "Language": "语言",
+  "Open this conversion": "打开此转换",
+  "You received this email because you asked Koding Task to send you this result.": "您收到这封邮件，是因为您请 Koding Task 把这个结果发送给您。",
+  "Confirm your email address": "确认您的电子邮件地址",
+  "Confirm my email address": "确认我的电子邮件地址",
+  "Confirm your email address to send conversion results to yourself by email or WhatsApp.": "确认您的电子邮件地址后，即可通过电子邮件或 WhatsApp 把转换结果发送给自己。",
+  "If you did not create an account on Koding Task, you can ignore this email.": "如果您没有在 Koding Task 上创建账户，请忽略这封邮件。",
+  "Reset your password": "重置您的密码",
+  "Someone asked to reset the password of your Koding Task account. If it was you, choose a new password.": "有人请求重置您 Koding Task 账户的密码。如果是您本人，请设置一个新密码。",
+  "Choose a new password": "设置新密码",
+  "If you did not ask for this, you can ignore this email. Your password stays the same.": "如果您没有提出此请求，请忽略这封邮件，您的密码保持不变。",
+  "This link is valid for 24 hours.": "此链接 24 小时内有效。"
+}

@@ -17,4 +17,16 @@ public sealed class LimitsOptions
     public int AiCallsPerClientPerDay { get; set; } = 20;
 
     public decimal AiMonthlyBudgetUsd { get; set; } = 2m;
+
+    public int EmailsPerDay { get; set; } = 100;
+
+    public int WhatsAppPerDay { get; set; } = 50;
+
+    public int DeliveriesPerUserPerDay { get; set; } = 10;
+
+    public int PhoneCodesPerUserPerDay { get; set; } = 3;
+
+    public int AccountEmailsPerUserPerDay { get; set; } = 3;
+
+    public int RegistrationsPerClientPerDay { get; set; } = 5;
 }

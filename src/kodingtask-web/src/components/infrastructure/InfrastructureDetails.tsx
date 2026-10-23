@@ -295,6 +295,30 @@ export default function InfrastructureDetails({ report }: InfrastructureDetailsP
                     : 1
                 }
               />
+              <UsageMeter
+                label={t("Emails today")}
+                valueText={t("{{used}} of {{limit}}", {
+                  used: formatNumber(guardrails.emailsToday, locale),
+                  limit: formatNumber(guardrails.emailsPerDay, locale),
+                })}
+                ratio={
+                  guardrails.emailsPerDay > 0
+                    ? guardrails.emailsToday / guardrails.emailsPerDay
+                    : 1
+                }
+              />
+              <UsageMeter
+                label={t("WhatsApp messages today")}
+                valueText={t("{{used}} of {{limit}}", {
+                  used: formatNumber(guardrails.whatsAppToday, locale),
+                  limit: formatNumber(guardrails.whatsAppPerDay, locale),
+                })}
+                ratio={
+                  guardrails.whatsAppPerDay > 0
+                    ? guardrails.whatsAppToday / guardrails.whatsAppPerDay
+                    : 1
+                }
+              />
               <p className="fact-card__note">
                 {t(
                   "The code can read these limits but not change them. When one is reached, the paid feature refuses politely until the next day or month.",

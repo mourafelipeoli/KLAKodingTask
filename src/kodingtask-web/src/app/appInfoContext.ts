@@ -18,6 +18,7 @@ export const OFFLINE_APP_INFO: AppInfo = {
     machineTranslation: false,
     externalLogin: false,
     deliveries: false,
+    accounts: false,
   },
 };
 

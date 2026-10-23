@@ -21,3 +21,8 @@ region). `Program` builds the record from those results and registers it as a si
 so the flags reflect what was actually wired into the container, never a guess.
 
 The deterministic converter is not listed: it is always available.
+
+`Accounts` follows `Email`: an account is only useful once its address is confirmed, and
+confirming needs email. Without email, signing in is handed over to the deployed version
+like every other optional feature.
+

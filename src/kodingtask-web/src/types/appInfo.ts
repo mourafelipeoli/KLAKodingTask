@@ -5,6 +5,7 @@ export interface FeatureAvailability {
   machineTranslation: boolean;
   externalLogin: boolean;
   deliveries: boolean;
+  accounts: boolean;
 }
 
 export interface Author {

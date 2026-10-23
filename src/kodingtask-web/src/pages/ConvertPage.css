@@ -307,6 +307,41 @@
   scroll-margin-top: calc(var(--header-height) + var(--space-6));
 }
 
+.send-panel__hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.send-panel__inline-action {
+  padding: 0;
+  color: var(--color-link);
+  font: inherit;
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.send-panel__inline-action:hover {
+  color: var(--color-link-hover);
+}
+
+.send-panel__verification,
+.send-panel__form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  max-width: 28rem;
+}
+
+.send-panel__form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
 .send-panel__soon {
   margin: var(--space-3) 0 0;
   font-size: var(--text-sm);

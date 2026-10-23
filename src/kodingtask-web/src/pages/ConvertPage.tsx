@@ -71,6 +71,11 @@ export default function ConvertPage() {
   // delivery it cannot produce; closing the offer keeps the visitor here.
   const [isAiOfferDismissed, setIsAiOfferDismissed] = useState(false);
   const [deliveryOffer, setDeliveryOffer] = useState<DeliveryChannel | null>(null);
+  // A delivery channel carried by the address (a hand-over, or a sign-in on the way back):
+  // the send panel completes it once.
+  const [pendingChannel, setPendingChannel] = useState(
+    () => readLinkTarget(searchParams, window.location.hash).channel,
+  );
   const [isConverting, startConversion] = useTransition();
   const [isAsking, startAsking] = useTransition();
   const [isComparing, startComparison] = useTransition();
@@ -298,7 +303,15 @@ export default function ConvertPage() {
           />
         )}
 
-        {result && <SendResultPanel onUnavailable={setDeliveryOffer} />}
+        {result && (
+          <SendResultPanel
+            result={result}
+            engine={engine}
+            pendingChannel={pendingChannel}
+            onPendingHandled={() => setPendingChannel(null)}
+            onUnavailable={setDeliveryOffer}
+          />
+        )}
       </div>
 
       <StatsStrip

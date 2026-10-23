@@ -12,6 +12,9 @@ KLA Senior Software Engineer coding task (web variant).
 - **Two engines:** the rules engine (deterministic, the reference) and an optional AI engine
   (Claude on Amazon Bedrock) whose answer is shown next to the rules engine's, with an
   "agrees / differs" badge.
+- **Send it to yourself:** after signing in, a result can be emailed to the account's
+  confirmed address or sent by WhatsApp to a verified number, within daily caps that live
+  outside the code.
 - **Where it runs:** the hosted version has a live
   [infrastructure page](https://klakodingtask.mourafelipe.com/infrastructure) (container,
   traffic, database, certificate, guardrails) that never shows an identifier.
@@ -109,6 +112,8 @@ browser ──HTTPS──► KodingTask.Api (ASP.NET Core 10)
                     ├─ /api/conversions …  ─► KodingTask.Conversion (pure C#, no I/O)
                     ├─ /api/app-info          instance info + optional feature flags
                     ├─ /api/infrastructure    read-only facts for the "Where this runs" page
+                    ├─ /api/account …         local accounts (Identity), phone verification
+                    ├─ /api/deliveries        a result by email (SES) or WhatsApp (Meta)
                     ├─ /health                version and commit, never touches the DB
                     └─ everything else        the React app (static files; Vite in development)
                          │
@@ -167,6 +172,12 @@ under the file). That is where to look for the "why" of any class.
   and a few read-only AWS calls, are cached for five minutes and are copied field by field
   into a whitelisted report; a test proves that no ARN, account id or resource name leaks.
   See [decision 5](docs/decisions/0005-infrastructure-page-from-read-only-facts.md).
+
+- **Messages only reach their own owner.** No recipient field: email goes to the account's
+  confirmed address, WhatsApp to a number verified by a one-time code, and the words are
+  converted again on the server. Daily caps per channel, per account and per client live in
+  the parameter store. See
+  [decision 6](docs/decisions/0006-accounts-and-deliveries-to-yourself.md).
 
 More decisions, with their alternatives, are recorded in [docs/decisions](docs/decisions).
 

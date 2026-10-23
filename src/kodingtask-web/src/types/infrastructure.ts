@@ -60,6 +60,10 @@ export interface GuardrailFacts {
   aiCallsPerDay: number;
   aiSpendThisMonthUsd: number;
   aiMonthlyBudgetUsd: number;
+  emailsToday: number;
+  emailsPerDay: number;
+  whatsAppToday: number;
+  whatsAppPerDay: number;
 }
 
 export interface InfrastructureReport {

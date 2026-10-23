@@ -31,3 +31,14 @@ break a local run.
 and authentication cookies are encrypted with those keys; storing them in the database
 keeps cookies valid across container restarts and deploys, and across tasks when the
 service runs more than one.
+
+## Accounts
+
+The context is an `IdentityDbContext<IdentityUser>`: the standard ASP.NET Core Identity
+tables (`AspNetUsers`, `AspNetUserLogins` and the rest) live in the application's own
+database, next to the application's per-user tables (`UserProfiles`, `VerifiedPhones`,
+`PhoneChallenges`) and the delivery history (`OutboundMessages`). Those are keyed by the
+user id string and never reference Identity columns beyond it, so the user store can be
+replaced (an external identity provider) without migrating them. `base.OnModelCreating`
+must run first: it maps the Identity tables.
+

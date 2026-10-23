@@ -58,6 +58,12 @@ public sealed class UsageLimitsSource(
         AiCallsPerDay = settings.AiCallsPerDay,
         AiCallsPerClientPerDay = settings.AiCallsPerClientPerDay,
         AiMonthlyBudgetUsd = settings.AiMonthlyBudgetUsd,
+        EmailsPerDay = settings.EmailsPerDay,
+        WhatsAppPerDay = settings.WhatsAppPerDay,
+        DeliveriesPerUserPerDay = settings.DeliveriesPerUserPerDay,
+        PhoneCodesPerUserPerDay = settings.PhoneCodesPerUserPerDay,
+        AccountEmailsPerUserPerDay = settings.AccountEmailsPerUserPerDay,
+        RegistrationsPerClientPerDay = settings.RegistrationsPerClientPerDay,
     };
 
     private async Task<UsageLimits> ReadParameterStoreAsync(string path, CancellationToken cancellationToken)
@@ -86,6 +92,12 @@ public sealed class UsageLimitsSource(
             AiCallsPerDay = Read(values, nameof(UsageLimits.AiCallsPerDay), ParseInt, 0),
             AiCallsPerClientPerDay = Read(values, nameof(UsageLimits.AiCallsPerClientPerDay), ParseInt, 0),
             AiMonthlyBudgetUsd = Read(values, nameof(UsageLimits.AiMonthlyBudgetUsd), ParseDecimal, 0m),
+            EmailsPerDay = Read(values, nameof(UsageLimits.EmailsPerDay), ParseInt, 0),
+            WhatsAppPerDay = Read(values, nameof(UsageLimits.WhatsAppPerDay), ParseInt, 0),
+            DeliveriesPerUserPerDay = Read(values, nameof(UsageLimits.DeliveriesPerUserPerDay), ParseInt, 0),
+            PhoneCodesPerUserPerDay = Read(values, nameof(UsageLimits.PhoneCodesPerUserPerDay), ParseInt, 0),
+            AccountEmailsPerUserPerDay = Read(values, nameof(UsageLimits.AccountEmailsPerUserPerDay), ParseInt, 0),
+            RegistrationsPerClientPerDay = Read(values, nameof(UsageLimits.RegistrationsPerClientPerDay), ParseInt, 0),
         };
     }
 

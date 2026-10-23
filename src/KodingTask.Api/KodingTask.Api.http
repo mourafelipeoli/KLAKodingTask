@@ -1,0 +1,35 @@
+### Requests for Visual Studio, Rider or the VS Code REST Client extension.
+@host = https://localhost:7162
+
+### Health (version and commit of the running build)
+GET {{host}}/health
+
+### Supported output languages
+GET {{host}}/api/conversions/languages
+
+### Convert (the task's largest example, in Belgian French)
+POST {{host}}/api/conversions
+Content-Type: application/json
+
+{ "amount": "999 999 999,99", "language": "fr-BE" }
+
+### Convert from the query string
+GET {{host}}/api/conversions?amount=25,1&language=de-DE
+
+### Every language at once
+POST {{host}}/api/conversions/all-languages
+Content-Type: application/json
+
+{ "amount": "45 100" }
+
+### A refusal: points are not decimal separators
+POST {{host}}/api/conversions
+Content-Type: application/json
+
+{ "amount": "25.10", "language": "en-US" }
+
+### Instance information and optional features
+GET {{host}}/api/app-info
+
+### OpenAPI document
+GET {{host}}/openapi/v1.json

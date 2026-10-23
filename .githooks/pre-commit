@@ -1,0 +1,21 @@
+#!/bin/sh
+# Rejects broken encodings and private terms before they become a commit.
+# Enable once per clone:   git config core.hooksPath .githooks
+ROOT="$(git rev-parse --show-toplevel)"
+
+# On Windows "python3" may be a Microsoft Store placeholder that exists but does not run,
+# so each candidate is tried for real.
+PY=""
+for candidate in python3 python py; do
+  if "$candidate" -c "import sys" >/dev/null 2>&1; then
+    PY="$candidate"
+    break
+  fi
+done
+if [ -z "$PY" ]; then
+  echo "pre-commit: Python not found; skipping the encoding and private-terms checks." >&2
+  exit 0
+fi
+
+"$PY" "$ROOT/scripts/checks/check-encoding.py" || exit 1
+"$PY" "$ROOT/scripts/checks/check-private-terms.py" --staged || exit 1

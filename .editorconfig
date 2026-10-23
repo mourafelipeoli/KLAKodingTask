@@ -1,0 +1,45 @@
+# File encoding and line endings for the whole repository.
+# Stack-specific style lives in nested .editorconfig files (see src/kodingtask-web/.editorconfig).
+#
+# Why .cs files carry a BOM and everything else does not:
+#
+#   `dotnet ef migrations add` writes .cs files with a BOM on every operating system,
+#   so demanding "no BOM" would fight the tool on every migration. Without a BOM an
+#   editor also has to GUESS the encoding, and a wrong guess (UTF-8 read as CP1252 and
+#   saved back) silently corrupts every accented character in the file.
+#
+#   In JSON, shell, Python and YAML the BOM is a real problem: JSON parsers throw and
+#   shells execute the invisible bytes. There the BOM is forbidden.
+#
+# This file only guides editors. scripts/checks/check-encoding.py enforces it in the
+# pre-commit hook and in CI.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{cs,csproj,sln,slnx,resx}]
+charset = utf-8-bom
+
+[*.{bat,cmd}]
+end_of_line = crlf
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+indent_style = space
+indent_size = 4
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_prefer_braces = when_multiline:suggestion
+dotnet_sort_system_directives_first = true
+
+[*.{csproj,slnx,props,targets,json,yml,yaml}]
+indent_style = space
+indent_size = 2

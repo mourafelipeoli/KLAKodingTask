@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KodingTask.Conversion/KodingTask.Conversion.csproj" />
+    <Project Path="src/KodingTask.Data/KodingTask.Data.csproj" />
+    <Project Path="src/KodingTask.Api/KodingTask.Api.csproj" />
+    <Project Path="src/kodingtask-web/kodingtask-web.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KodingTask.Conversion.Tests/KodingTask.Conversion.Tests.csproj" />
+    <Project Path="tests/KodingTask.Api.Tests/KodingTask.Api.Tests.csproj" />
+  </Folder>
+</Solution>

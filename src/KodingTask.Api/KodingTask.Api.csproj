@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>KodingTask.Api</RootNamespace>
+    <UserSecretsId>kodingtask-api-4f2b9c1e</UserSecretsId>
+    <SpaRoot>..\kodingtask-web</SpaRoot>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KodingTask.Conversion\KodingTask.Conversion.csproj" />
+    <ProjectReference Include="..\KodingTask.Data\KodingTask.Data.csproj" />
+    <ProjectReference Include="..\kodingtask-web\kodingtask-web.esproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="KodingTask.Api.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\versions.json" Link="versions.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!--
+    Clone-and-run: the first `dotnet run` installs the web client's packages, so a fresh
+    clone needs no separate npm step. Only in Debug, only when node_modules is missing.
+  -->
+  <Target Name="EnsureWebClientDependencies" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)\node_modules')">
+    <Exec Command="node --version" ContinueOnError="true" StandardOutputImportance="low">
+      <Output TaskParameter="ExitCode" PropertyName="NodeExitCode" />
+    </Exec>
+    <Error Condition="'$(NodeExitCode)' != '0'" Text="Node.js is required to build and run the web client. Install Node.js 22 LTS or newer from https://nodejs.org and open a new terminal." />
+    <Message Importance="high" Text="Installing the web client packages (npm ci). This runs once and takes about a minute..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm ci --no-audit --no-fund" />
+  </Target>
+
+</Project>

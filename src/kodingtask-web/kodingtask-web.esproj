@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.3982316">
+  <PropertyGroup>
+    <StartupCommand>npm run dev</StartupCommand>
+    <!-- `dotnet build` stays fast: the bundle is only produced on publish. -->
+    <ShouldRunBuildScript>false</ShouldRunBuildScript>
+    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+  </PropertyGroup>
+</Project>

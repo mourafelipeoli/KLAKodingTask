@@ -1,0 +1,182 @@
+# Koding Task · Dollars in words
+
+A web application that converts US dollar amounts from digits into words, written for the
+KLA Senior Software Engineer coding task (web variant).
+
+- **Live:** https://klakodingtask.mourafelipe.com
+- **Languages:** English, Portuguese (Brazil), German, French (France, Canada, Switzerland,
+  Belgium) and Italian, for both the interface and the converted words.
+- **Stack:** ASP.NET Core 10 Web API (conversion on the server) + React 19 / TypeScript /
+  Vite single-page app, served from the same origin.
+
+```
+0                → zero dollars
+1                → one dollar
+25,1             → twenty-five dollars and ten cents
+0,01             → zero dollars and one cent
+45 100           → forty-five thousand one hundred dollars
+999 999 999,99   → nine hundred ninety-nine million nine hundred ninety-nine thousand
+                   nine hundred ninety-nine dollars and ninety-nine cents
+```
+
+## Run it
+
+Prerequisites: the [.NET 10 SDK](https://dotnet.microsoft.com/download) and
+[Node.js 22 LTS](https://nodejs.org) or newer. Nothing else: no database server, no cloud
+account, no API key.
+
+```sh
+git clone <this repository>
+cd KLAKodingTask
+dotnet dev-certs https --trust          # once per machine, for https://localhost
+dotnet run --project src/KodingTask.Api
+```
+
+Open **https://localhost:7162**. The first run installs the web client's npm packages
+(about a minute), creates a local SQLite database in `src/KodingTask.Api/App_Data/`, and
+starts the Vite dev server behind the API host. Conversion, the eight languages, the
+comparison across languages, light and dark themes all work offline.
+
+The optional features that need credentials (sending the result by e-mail or WhatsApp,
+the AI conversion engine, machine translation, sign-in with an external identity provider)
+show a message in the selected language pointing to the hosted version, where they are
+configured. To enable them on your own instance, see
+[docs/configuration.md](docs/configuration.md).
+
+### Tests and checks
+
+```sh
+dotnet test KodingTask.slnx              # converter golden tables + API tests (in memory)
+
+cd src/kodingtask-web
+npm run check:i18n                       # the eight dictionaries are complete and consistent
+npm run lint
+npm run build
+```
+
+### The API on its own
+
+```sh
+curl -X POST https://localhost:7162/api/conversions \
+     -H "Content-Type: application/json" \
+     -d '{ "amount": "999 999 999,99", "language": "fr-BE" }'
+```
+
+```json
+{
+  "amount": "999 999 999,99",
+  "normalizedAmount": "999 999 999,99",
+  "dollars": 999999999,
+  "cents": 99,
+  "language": "fr-BE",
+  "words": "neuf cent nonante-neuf millions neuf cent nonante-neuf mille neuf cent nonante-neuf dollars et nonante-neuf cents",
+  "engine": "Deterministic"
+}
+```
+
+All endpoints are described in the OpenAPI document at `/openapi/v1.json`, and
+[`src/KodingTask.Api/KodingTask.Api.http`](src/KodingTask.Api/KodingTask.Api.http) has
+ready-made requests.
+
+## How the requirements are met
+
+| Requirement | Where |
+|---|---|
+| Convert dollars from numbers into words, max 999 999 999 dollars and 99 cents, comma separator | [`AmountParser`](src/KodingTask.Conversion/AmountParser.cs), one speller per language in [`Languages/`](src/KodingTask.Conversion/Languages) |
+| The six examples of the statement | [`OfficialExamplesTests`](tests/KodingTask.Conversion.Tests/OfficialExamplesTests.cs), in every language |
+| At least two languages, selectable, output follows the selection | Eight output languages; the output language follows the interface language and can be changed independently |
+| .NET 8 or newer, ASP.NET backend | .NET 10, ASP.NET Core Web API |
+| Client-server, conversion on the server | The browser only sends text and shows the answer; see [`ConversionsController`](src/KodingTask.Api/Controllers/ConversionsController.cs) |
+| Modern frontend framework | React 19 + TypeScript + Vite |
+| README, design decisions, assumptions, limitations | This file, [docs/](docs) and the `.notes.md` files next to the code |
+| Prompt history of AI use | [docs/ai/prompt-history.md](docs/ai/prompt-history.md) |
+
+## Architecture
+
+```
+browser ──HTTPS──► KodingTask.Api (ASP.NET Core 10)
+                    ├─ /api/conversions …  ─► KodingTask.Conversion (pure C#, no I/O)
+                    ├─ /api/app-info          instance info + optional feature flags
+                    ├─ /health                version and commit, never touches the DB
+                    └─ everything else        the React app (static files; Vite in development)
+                         │
+                         └─ KodingTask.Data (EF Core: SQLite locally, MySQL when hosted)
+```
+
+| Project | Responsibility |
+|---|---|
+| [`src/KodingTask.Conversion`](src/KodingTask.Conversion) | The domain: parsing and spelling. No framework, no I/O, fully unit tested. |
+| [`src/KodingTask.Data`](src/KodingTask.Data) | EF Core context for the optional features; SQLite or MySQL by configuration. |
+| [`src/KodingTask.Api`](src/KodingTask.Api) | HTTP API, hosting concerns (health, security headers, rate limits) and the SPA host. |
+| [`src/kodingtask-web`](src/kodingtask-web) | React client: UI, translations, themes. |
+| [`tests/`](tests) | xUnit: converter golden tables and API tests through the real pipeline. |
+
+Each C# file has a sibling `*.notes.md` that explains its decisions (Visual Studio nests it
+under the file). That is where to look for the "why" of any class.
+
+## Key design decisions
+
+- **A hand-written parser with precise errors.** The input format is the task's own:
+  digits grouped by spaces, a comma before one or two cent digits. Every refusal has a code
+  (`InvalidGrouping`, `DecimalPointNotAllowed`, …) that the UI translates into an
+  actionable message. See [`AmountParser.notes.md`](src/KodingTask.Conversion/AmountParser.notes.md).
+- **One speller class per language, whole sentence included.** Where the number meets the
+  currency each language has its own grammar (German "ein Dollar" vs "einhunderteins
+  Dollar", Portuguese "um milhão de dólares", French "zéro dollar", Italian elisions), so a
+  speller owns the complete sentence. Adding a language is one class and one line in
+  [`SpellerCatalog`](src/KodingTask.Conversion/SpellerCatalog.cs).
+- **Regional French as data, not copies.** France and Canada say *quatre-vingt-dix*,
+  Belgium and Switzerland *nonante*, and Switzerland also *huitante*; one `FrenchSpeller`
+  takes the numbering as a constructor argument.
+- **Refusals are values, not exceptions**, and the API has one error shape:
+  `400 { "error": "<code>", "message": "<English sentence>" }`.
+- **The server is the single source of truth for languages**: the client builds its menu
+  from `GET /api/conversions/languages`.
+- **One origin in development and production.** The API host serves the React app; in
+  development it starts Vite and forwards to it. No CORS, and cookies, redirects and the
+  content security policy behave the same in both.
+- **Optional features never block the core.** Each one reports whether it is configured;
+  a fresh clone has all of them off and still converts in every language.
+- **Interface translations ship with the app** as JSON dictionaries (checked for
+  completeness by `npm run check:i18n`), so the UI is fully translated offline.
+
+More decisions, with their alternatives, are recorded in [docs/decisions](docs/decisions).
+
+## Assumptions
+
+- **`,1` means ten cents.** The task's example `25,1 → … and ten cents` fixes it: one cent
+  digit is a tenth.
+- **Spaces group thousands, in blocks of three.** `45 100` and `1 000 000` are valid;
+  `4 5100` is refused rather than guessed. Non-breaking and thin spaces count as spaces.
+- **A point is never a decimal separator.** `25.10` is refused with a hint to use a comma,
+  because `1.000` means one thousand in German and one in English.
+- **American English style**: no "and" inside the number ("one hundred one"), hyphens for
+  21-99, as in the task's examples.
+- **Zero is plural in English, Portuguese and Italian, singular in French** ("zero
+  dollars", "zéro dollar"), following each language's grammar.
+- **The cent is "cent" in English and French, "Cent" in German, "centavo" in Portuguese and
+  "centesimo" in Italian.**
+- The full rules per language, with examples, are in [docs/languages.md](docs/languages.md).
+
+## Limitations and known issues
+
+- Only US dollars, as the task specifies; the currency is not a parameter.
+- Amounts must be typed in the task's format; locale-specific input such as `1.000,50` or
+  `1,000.50` is refused with a precise hint instead of being interpreted.
+- German amounts ending in one above one hundred use the uninflected written form
+  ("einhunderteins Dollar"); the inflected "hundertundein Dollar" is also correct German.
+- The local SQLite database is recreated automatically when the data model changes; it
+  holds nothing worth keeping on a development machine.
+
+## Repository layout
+
+```
+src/            application code (see Architecture)
+tests/          xUnit test projects
+docs/           configuration, languages, decisions, AI prompt history
+scripts/checks/ encoding and private-terms checks used by the git hooks and CI
+.githooks/      pre-commit and commit-msg hooks (git config core.hooksPath .githooks)
+.claude/skills/ conventions for AI coding agents (also readable by humans)
+Documents/Logo/ the Koding Task logos and fonts
+versions.json   the application version, shown by /health and in the footer
+```

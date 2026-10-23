@@ -1,0 +1,14 @@
+#!/bin/sh
+# Rejects commit messages that contain private terms (see scripts/checks/check-private-terms.py).
+ROOT="$(git rev-parse --show-toplevel)"
+
+PY=""
+for candidate in python3 python py; do
+  if "$candidate" -c "import sys" >/dev/null 2>&1; then
+    PY="$candidate"
+    break
+  fi
+done
+[ -z "$PY" ] && exit 0
+
+"$PY" "$ROOT/scripts/checks/check-private-terms.py" --message "$1"

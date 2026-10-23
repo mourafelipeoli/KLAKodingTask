@@ -1,0 +1,54 @@
+# Continuous integration: build, test, lint and package on every push and pull request.
+# Deliberately no deployment step and no cloud credentials: the repository is public, and
+# deployment is a manual, separately controlled operation (see docs/infrastructure.md).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/kodingtask-web/package-lock.json
+
+      - name: Encoding
+        run: python3 scripts/checks/check-encoding.py
+
+      - name: Web client
+        working-directory: src/kodingtask-web
+        run: |
+          npm ci --no-audit --no-fund
+          npm run check:i18n
+          npm run lint
+          npm run format:check
+          npm run build
+
+      - name: Build
+        run: dotnet build KodingTask.slnx -c Release
+
+      - name: Test
+        run: dotnet test KodingTask.slnx -c Release --no-build
+
+      - name: Vulnerable packages
+        run: |
+          dotnet list KodingTask.slnx package --vulnerable --include-transitive | tee vulnerable.txt
+          ! grep -q "has the following vulnerable packages" vulnerable.txt
+
+      - name: Container image
+        run: docker build -f src/KodingTask.Api/Dockerfile -t kodingtask:ci .

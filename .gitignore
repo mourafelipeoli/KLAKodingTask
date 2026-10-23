@@ -1,0 +1,56 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+artifacts/
+TestResults/
+*.trx
+coverage*/
+
+# IDEs
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.DotSettings.user
+.vscode/*
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+
+# Local data and secrets: never committed
+*.db
+*.db-shm
+*.db-wal
+App_Data/
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+
+# The API publish copies the SPA build here; the source is src/kodingtask-web.
+/src/KodingTask.Api/wwwroot/
+
+# Agent configuration: only the shared skills and settings are versioned.
+.claude/*
+!.claude/skills/
+!.claude/settings.json
+
+# The JavaScript SDK built on macOS/Linux can create folders with a Windows backslash
+# in the NAME (e.g. "obj\Debug"), which escape the obj/ rule. No legitimate file in
+# this repository has a backslash in its name.
+*\\*

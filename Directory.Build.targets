@@ -1,0 +1,12 @@
+<Project>
+  <!--
+    Linked notes: every C# file explains its decisions in a sibling *.notes.md file.
+    These rules nest the note under its source file in Visual Studio's Solution Explorer.
+    They live in a .targets file because the SDK default items (the None globs they
+    update) only exist after the project body is evaluated.
+  -->
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <None Update="**\*.notes.md" DependentUpon="$([System.IO.Path]::GetFileNameWithoutExtension('%(Filename)')).cs" />
+    <None Update="**\*.cshtml.notes.md" DependentUpon="$([System.IO.Path]::GetFileNameWithoutExtension('%(Filename)'))" />
+  </ItemGroup>
+</Project>

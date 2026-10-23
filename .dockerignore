@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/App_Data/
+**/*.db
+**/.vs/
+**/.vscode/
+**/*.user
+.git/
+.github/
+.claude/
+.githooks/
+Documents/
+docs/
+tests/
+src/KodingTask.Api/wwwroot/

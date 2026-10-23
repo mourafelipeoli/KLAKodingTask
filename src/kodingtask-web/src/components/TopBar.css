@@ -1,0 +1,101 @@
+/* ==========================================================================
+   Top bar: the purple strip above the header (as on kla.com), with the author's
+   wordmark and terminal link. Dark purple in both themes, so its text keeps the
+   same contrast everywhere.
+   ========================================================================== */
+
+.top-bar {
+  color: var(--color-on-top-bar);
+  background-color: var(--color-top-bar);
+}
+
+.top-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-6);
+  min-height: 3rem;
+}
+
+.top-bar__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 3rem;
+  color: var(--color-on-top-bar);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.top-bar__link:hover {
+  color: var(--color-on-top-bar);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.top-bar__link:focus-visible {
+  outline: 2px solid var(--color-on-top-bar);
+  outline-offset: 2px;
+}
+
+.top-bar__prompt {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  color: var(--color-top-bar-accent);
+}
+
+.top-bar__external {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* The author's wordmark (AuthorWordmark): prompt, light first name, heavy surname and
+   a blinking cursor, after the author's own portfolio design. */
+.author-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  line-height: 1;
+}
+
+.author-wordmark__prompt,
+.author-wordmark__cursor {
+  font-family: var(--font-mono);
+  color: var(--color-top-bar-accent);
+}
+
+.author-wordmark__prompt {
+  font-weight: var(--weight-bold);
+}
+
+.author-wordmark__name {
+  font-size: var(--text-lg);
+  letter-spacing: -0.02em;
+}
+
+.author-wordmark__light {
+  font-weight: var(--weight-light);
+  color: var(--color-on-top-bar-muted);
+}
+
+.author-wordmark__strong {
+  font-weight: var(--weight-bold);
+}
+
+.author-wordmark__cursor {
+  font-weight: var(--weight-regular);
+  animation: author-wordmark-blink 1.4s steps(2, start) infinite;
+}
+
+@keyframes author-wordmark-blink {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .author-wordmark__cursor {
+    animation: none;
+  }
+}

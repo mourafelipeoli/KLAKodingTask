@@ -10,6 +10,7 @@ export interface FeatureAvailability {
 export interface Author {
   name: string;
   url: string;
+  terminalUrl: string | null;
 }
 
 export interface AppInfo {

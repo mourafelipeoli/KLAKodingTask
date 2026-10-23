@@ -18,6 +18,6 @@ The server side of the task: every conversion happens here, never in the browser
 - Rate limited per client address (`RequestRateLimits.Conversion`); the language list is
   not, because it is static.
 - The all-languages endpoint validates the amount once per language through the same
-  converter. That repeats a microsecond of parsing eight times and keeps one code path for
+  converter. That repeats a microsecond of parsing for each language and keeps one code path for
   every conversion; any failure is the same failure in every language, so the first one is
   returned.

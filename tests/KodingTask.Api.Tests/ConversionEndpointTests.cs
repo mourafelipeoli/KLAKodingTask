@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using KodingTask.Api.Contracts;
+using KodingTask.Conversion;
 
 namespace KodingTask.Api.Tests;
 
@@ -63,16 +64,19 @@ public sealed class ConversionEndpointTests(ApiFactory factory) : IClassFixture<
         response.EnsureSuccessStatusCode();
         var results = await response.Content.ReadFromJsonAsync<List<ConversionResponse>>();
         Assert.NotNull(results);
-        Assert.Equal(8, results.Count);
+        Assert.Equal(SpellerCatalog.Default.Languages.Count, results.Count);
         Assert.Equal("huitante dollars", results.Single(result => result.Language == "fr-CH").Words);
         Assert.Equal("quatre-vingts dollars", results.Single(result => result.Language == "fr-BE").Words);
+        Assert.Equal("八十美元", results.Single(result => result.Language == "zh-CN").Words);
+        Assert.Equal("팔십 달러", results.Single(result => result.Language == "ko-KR").Words);
     }
 
     [Fact]
     public async Task Lists_the_languages()
     {
         var languages = await _client.GetFromJsonAsync<List<LanguageResponse>>("/api/conversions/languages");
-        Assert.Equal(8, languages?.Count);
+        Assert.Equal(SpellerCatalog.Default.Languages.Count, languages?.Count);
+        Assert.Equal("日本語", languages?.Single(language => language.Code == "ja-JP").NativeName);
         Assert.Equal("Français (Belgique)", languages?.Single(language => language.Code == "fr-BE").NativeName);
     }
 

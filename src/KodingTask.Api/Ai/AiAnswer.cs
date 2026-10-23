@@ -22,11 +22,19 @@ public static partial class AiAnswer
         return answer;
     }
 
-    public static bool SameWords(string first, string second) =>
-        string.Equals(Normalize(first), Normalize(second), StringComparison.Ordinal);
+    public static bool SameWords(string first, string second, string languageCode)
+    {
+        var separator = SpacingIsStyle(languageCode) ? string.Empty : " ";
+        return string.Equals(Normalize(first, separator), Normalize(second, separator), StringComparison.Ordinal);
+    }
 
-    private static string Normalize(string text) =>
-        Whitespace().Replace(text.Replace('’', '\'').Replace('‑', '-').Replace(' ', ' '), " ").Trim().ToLowerInvariant();
+    private static bool SpacingIsStyle(string languageCode) =>
+        languageCode.StartsWith("zh-", StringComparison.OrdinalIgnoreCase)
+        || languageCode.StartsWith("ja-", StringComparison.OrdinalIgnoreCase)
+        || languageCode.StartsWith("ko-", StringComparison.OrdinalIgnoreCase);
+
+    private static string Normalize(string text, string separator) =>
+        Whitespace().Replace(text.Replace('’', '\'').Replace('‑', '-').Replace(' ', ' '), separator).Trim().ToLowerInvariant();
 
     [GeneratedRegex(@"\s+")]
     private static partial Regex Whitespace();

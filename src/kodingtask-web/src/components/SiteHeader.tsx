@@ -1,5 +1,4 @@
 import { Link, NavLink } from "react-router-dom";
-import { useAppInfo } from "../app/useAppInfo";
 import logoWhite from "../assets/brand/koding-task-logo-white.svg";
 import logo from "../assets/brand/koding-task-logo.svg";
 import { useText } from "../i18n/useText";
@@ -10,7 +9,6 @@ import "./SiteHeader.css";
 
 export default function SiteHeader() {
   const { t } = useText();
-  const { author } = useAppInfo();
 
   return (
     <header className="site-header">
@@ -46,23 +44,6 @@ export default function SiteHeader() {
             <i className="bi bi-hdd-network" aria-hidden="true" />
             <span className="site-header__nav-text">{t("Where this runs")}</span>
           </NavLink>
-          {author && (
-            <a
-              className="site-header__author"
-              href={author.url}
-              target="_blank"
-              rel="noopener"
-              aria-label={t("Portfolio of {{name}}", { name: author.name })}
-              title={t("Portfolio of {{name}}", { name: author.name })}
-            >
-              <i className="bi bi-person-circle" aria-hidden="true" />
-              <span className="site-header__author-name">{author.name}</span>
-              <i
-                className="bi bi-box-arrow-up-right site-header__external"
-                aria-hidden="true"
-              />
-            </a>
-          )}
           <LanguageMenu />
           <ThemeToggle />
         </div>

@@ -34,6 +34,12 @@
   --purple-900: #2a1241;
   --purple-950: #1b0a2c;
 
+  /* Indigo: the top bar, the deep purple of kla.com's utility strip. */
+  --indigo-800: #4a0d87;
+
+  /* Sky: the author's command-line prompt on dark backgrounds. */
+  --sky-400: #4fb3e8;
+
   /* Cyan: the logo accent. Decoration only, never text on white. */
   --cyan-500: #00a3e0;
 
@@ -159,12 +165,23 @@
   --color-on-band-border: rgb(255 255 255 / 22%);
   --color-on-band-online: var(--green-300);
 
+  /* Behind a modal dialog. */
+  --color-backdrop: rgb(14 13 20 / 55%);
+
+  /* Top bar: deep purple in both themes; white text >= 12:1, the sky prompt >= 5:1. */
+  --color-top-bar: var(--indigo-800);
+  --color-on-top-bar: var(--neutral-0);
+  --color-on-top-bar-muted: rgb(255 255 255 / 75%);
+  --color-top-bar-accent: var(--sky-400);
+
   --shadow-card: 0 8px 12px rgb(0 0 0 / 10%);
   --shadow-raised: 0 12px 28px rgb(27 10 44 / 16%);
 
   /* Type */
   --font-heading: "Ubuntu", "Segoe UI", system-ui, sans-serif;
   --font-body: "Open Sans Variable", "Open Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
   --text-md: 1rem;
@@ -667,6 +684,12 @@ select {
 
 .chip:hover {
   background-color: var(--color-chip-hover);
+}
+
+/* Korean breaks lines between words, not inside them; Chinese and Japanese break anywhere,
+   which is the browser default. */
+:lang(ko) {
+  word-break: keep-all;
 }
 
 /* Hero: the title block at the top of every page. */

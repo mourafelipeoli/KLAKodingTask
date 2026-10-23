@@ -63,10 +63,11 @@ One component per file. Interfaces in `types/`, not inside services.
 
 ## Components
 
-- Use the shared pieces before writing new markup: `Notice`, `FeatureUnavailable`,
+- Use the shared pieces before writing new markup: `Notice`, `DeployedVersionDialog`,
   `CopyButton`, the `.button`, `.card`, `.field`, `.chip` classes.
-- An optional feature that is not configured renders `FeatureUnavailable`, never a broken
-  button.
+- An optional feature that is not configured stays usable: on a local copy the action
+  opens `DeployedVersionDialog`, which continues on the deployed version with the same
+  parameters (`useDeployedVersion`, `converterPath`). Never a broken or silent button.
 - Declared state is used state. `useEffect` lists all dependencies. No synchronous
   `setState` inside an effect body: use event handlers, promise callbacks or transitions.
 - No `any`, no `console.log` (`console.error` only for genuine failures), no `alert()` or

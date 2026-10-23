@@ -11,4 +11,6 @@ public sealed class PublicSiteOptions
     public string? AuthorName { get; set; }
 
     public string? AuthorUrl { get; set; }
+
+    public string? AuthorTerminalUrl { get; set; }
 }

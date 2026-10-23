@@ -1,7 +1,7 @@
 # Languages
 
-Eight output languages, five spellers. The code of each speller has a note with the full
-rule set; this page is the overview.
+Twelve output languages, eight spellers, five scripts. The code of each speller has a note
+with the full rule set; this page is the overview.
 
 | Code | Speller | 1 | 25,1 | 45 100 |
 |---|---|---|---|---|
@@ -13,6 +13,10 @@ rule set; this page is the overview.
 | fr-CH | French, Swiss numbering | un dollar | vingt-cinq dollars et dix cents | quarante-cinq mille cent dollars |
 | fr-BE | French, Belgian numbering | un dollar | vingt-cinq dollars et dix cents | quarante-cinq mille cent dollars |
 | it-IT | [Italian](../src/KodingTask.Conversion/Languages/ItalianSpeller.notes.md) | un dollaro | venticinque dollari e dieci centesimi | quarantacinquemilacento dollari |
+| zh-CN | [Chinese](../src/KodingTask.Conversion/Languages/ChineseSpeller.notes.md), simplified | 一美元 | 二十五美元十美分 | 四万五千一百美元 |
+| zh-TW | Chinese, traditional | 一美元 | 二十五美元十美分 | 四萬五千一百美元 |
+| ja-JP | [Japanese](../src/KodingTask.Conversion/Languages/JapaneseSpeller.notes.md) | 一ドル | 二十五ドル十セント | 四万五千百ドル |
+| ko-KR | [Korean](../src/KodingTask.Conversion/Languages/KoreanSpeller.notes.md) | 일 달러 | 이십오 달러 십 센트 | 사만 오천백 달러 |
 
 ## Where the French variants differ
 
@@ -25,6 +29,20 @@ rule set; this page is the overview.
 Switzerland is not uniform: *huitante* is used in Vaud, Valais and Fribourg, while Geneva
 and Neuchâtel mostly say *quatre-vingts*. `fr-CH` follows the cantons with the distinct
 Swiss form.
+
+## Where Chinese, Japanese and Korean differ
+
+All three count in myriads: 万 (zh-CN, ja-JP), 萬 (zh-TW) or 만 (ko-KR) is ten thousand, and
+亿, 億 or 억 a hundred million.
+
+| Amount | zh-CN | ja-JP | ko-KR |
+|---|---|---|---|
+| 2 | 两美元 | 二ドル | 이 달러 |
+| 10 | 十美元 | 十ドル | 십 달러 |
+| 1 001 | 一千零一美元 | 千一ドル | 천일 달러 |
+| 11 000 | 一万一千美元 | 一万一千ドル | 만 천 달러 |
+| 100 100 | 十万零一百美元 | 十万百ドル | 십만 백 달러 |
+| 100 000 001 | 一亿零一美元 | 一億一ドル | 일억 일 달러 |
 
 ## Rules that are easy to get wrong
 
@@ -39,6 +57,13 @@ Swiss form.
   before "mille"; singular for zero and one.
 - **Italian**: one word below a million; elision before "uno" and "otto" ("ventuno",
   "ventotto"); "centottanta"; accent on a final "tre" ("ventitré").
+- **Chinese**: one 零 for each gap followed by a digit; 十 without 一 only at the start;
+  两/兩 for two before the currency word and before a leading 千, 万 or 亿; ordinary
+  numerals, not the financial capitals used on bank cheques.
+- **Japanese**: no zero inside a number; 一 is silent before 十, 百 and 千 but said before 万
+  and 億, and before 千 once a larger unit is present (一万一千).
+- **Korean**: Sino-Korean numerals in Hangul; 일 is silent before 십, 백, 천 and a lone 만,
+  but not before 억; a space after each myriad group and around the currency words.
 
 All of these have a test in
 [`LanguageRulesTests`](../tests/KodingTask.Conversion.Tests/LanguageRulesTests.cs).
@@ -46,7 +71,11 @@ All of these have a test in
 ## Interface translations
 
 The interface texts live in `src/kodingtask-web/src/i18n/dictionaries/`. The English
-sentence is the key. `pt-BR`, `de-DE`, `fr-FR` and `it-IT` translate every key; `fr-CA`,
+sentence is the key. `pt-BR`, `de-DE`, `fr-FR`, `it-IT`, `zh-CN`, `zh-TW`, `ja-JP` and
+`ko-KR` translate every key; `fr-CA`,
 `fr-CH` and `fr-BE` only hold what differs from France (Canada writes "courriel" for
 e-mail) and fall back to `fr-FR` for the rest. `npm run check:i18n` verifies completeness,
 placeholders and that every key in use exists.
+
+A browser asking for Chinese from Taiwan, Hong Kong or Macau, or for `zh-Hant`, gets
+traditional characters; any other Chinese gets simplified ones.

@@ -1,8 +1,9 @@
 # FeatureAvailability
 
 Which optional capabilities this instance can actually perform. The single-page app reads
-it from `GET /api/app-info` and, for anything that is off, shows a message in the user's
-language pointing to the hosted version instead of a broken button.
+it from `GET /api/app-info`. On a local copy, using a feature that is off opens a dialog in
+the user's language that continues on the hosted version, same page and same parameters,
+instead of a broken button.
 
 ## Why it exists
 

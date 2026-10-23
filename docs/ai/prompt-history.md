@@ -17,6 +17,8 @@ I (Felipe Moura) gave to the AI assistant while building this project.
 - **How the prompts are reproduced:** as I typed them, typos included, with one kind of
   change: where I named my private projects or other private names, the name is replaced by
   a description in brackets. One message I typed in Portuguese by mistake is translated.
+  Text in brackets and italics describes screenshots, my answers to the assistant's
+  questions and what happened next.
 
 ---
 
@@ -88,3 +90,34 @@ I attached the temporary policy for this project to my AWS CLI user and detached
 I accidentally wrote the last sentence in pt-BR. Only english here, please
 
 Please add a link to my portifolio mourafelipe.com on the layout.
+
+I've changed to "edit automatically". Can you run it now?
+
+Please run the script awstask.bat located on c:/Scripts, it will open the connection to the RDS database
+
+Aren't the credentials on the appsettings from my personal website's codebase? *(The original names that private project.)*
+
+No problem on my personal website's codebase, it's a private repo, used just from myself go on and run the script
+
+*[The assistant did not sign in with that password. I ran the database scripts myself and typed it in my own terminal.]*
+
+Ok, then. They're running. Auto mode again
+
+What are my risks here? If someone clones the public repo, can he sign or save things in the RDS database? How? Will he/she have access direclty to the database? What does he/she need do to to run it locally?
+
+And I changed back the mode to edit automatically.
+
+I ran the deploy-kodingtask.bat once
+
+*[Screenshot of the header and of the key-figures band: "8 output languages", "4 variants of French", "999 999 999,99 maximum amount".]* Is there any difference between Canadian and French French? And between Swiss and Belgian French? If not, let's merge them into only two types of French and the rest of the common European languages, correcting the text in the pasted sections (there is no need to keep the text in 'variants of French'). The number printed in 'output languages' must be a count, not hardcoded.
+Let's change the UX logic a little bit... Instead of showing the grayed-out message that says 'This feature is only accessible online' (I don't remember the exact message), when running locally, we will let the user click or perform the action and then show a popup message: 'To access this result, you must use the deployed version here'. When they click it, the local version will redirect them with the same parameters, so they'll see the same page in the deployed version, with the same parameters.
+
+I've just noticed that they use these languages on their website. So let's keep the French as it is and implement the rest of the languages, included these on the attached png. *[Screenshot of the language menu on kla.com: US (English), Mainland China (简体中文), Taiwan (繁體中文), Japan (日本語), Korea (한국어).]*
+
+And keep the section "variants of French"
+
+Let's keep the light layout as the standard, as the kla.com. And put this purple section with 2 links: one redirecting to https://mourafelipe.com other to the terminal, https://mourafelipe.com/terminal. For my portifolio, use the terminal, lets use the standard design from my personal website, you can copy from there. *[Screenshots: the purple utility bar at the top of kla.com, and the author's ">_ felipemoura" wordmark and ">_" icon in dark and light versions.]*
+
+Don't forget to keep the >_ and the blinking cursor after felipemoura... It's my charm :)
+
+I've just moved the logos to the folder "design" to match the projects standard.

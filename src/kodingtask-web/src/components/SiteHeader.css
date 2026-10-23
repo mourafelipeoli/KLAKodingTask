@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Site header: logo on the left, author link, language and theme on the right.
+   Site header: logo on the left, navigation, language and theme on the right.
    ========================================================================== */
 
 .site-header {
@@ -52,28 +52,6 @@
   flex-shrink: 0;
 }
 
-.site-header__author {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 40px;
-  padding-inline: var(--space-2);
-  color: var(--color-text);
-  font-weight: var(--weight-semibold);
-  font-size: var(--text-sm);
-  text-decoration: none;
-  transition: color var(--duration-base) var(--ease);
-}
-
-.site-header__author:hover {
-  color: var(--color-link-hover);
-}
-
-.site-header__author .bi-person-circle {
-  font-size: 1.25rem;
-  color: var(--color-brand-text);
-}
-
 /* Below 480px the bar is full with the logo, the portfolio link, the language and the
    theme; the infrastructure page stays reachable from the converter page and the footer. */
 .site-header__nav-link {
@@ -106,9 +84,7 @@
   color: var(--color-brand-text);
 }
 
-.site-header__author-name,
-.site-header__nav-text,
-.site-header__external {
+.site-header__nav-text {
   display: none;
 }
 
@@ -116,11 +92,6 @@
   .site-header__nav-link {
     display: inline-flex;
   }
-}
-
-.site-header__external {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
 }
 
 @media (min-width: 768px) {
@@ -132,9 +103,7 @@
     gap: var(--space-3);
   }
 
-  .site-header__author-name,
-  .site-header__nav-text,
-  .site-header__external {
+  .site-header__nav-text {
     display: inline;
   }
 }

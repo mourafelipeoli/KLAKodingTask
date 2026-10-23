@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAppInfo } from "../app/useAppInfo";
+import { LOCALES } from "../config/locales";
 import logoWhite from "../assets/brand/koding-task-logo-white.svg";
 import RichText from "../i18n/RichText";
 import { useText } from "../i18n/useText";
@@ -22,7 +23,9 @@ export default function SiteFooter() {
             height={150}
           />
           <p className="site-footer__tagline">
-            {t("Dollar amounts in words, in eight languages.")}
+            {t("Dollar amounts in words, in {{count}} languages.", {
+              count: LOCALES.length,
+            })}
           </p>
         </div>
 

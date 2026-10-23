@@ -66,6 +66,42 @@ public sealed class OfficialExamplesTests
     [InlineData("999 999 999,99", "novecentonovantanove milioni novecentonovantanovemilanovecentonovantanove dollari e novantanove centesimi")]
     public void Italian(string input, string expected) => AssertWords(input, "it-IT", expected);
 
+    [Theory]
+    [InlineData("0", "零美元")]
+    [InlineData("1", "一美元")]
+    [InlineData("25,1", "二十五美元十美分")]
+    [InlineData("0,01", "零美元一美分")]
+    [InlineData("45 100", "四万五千一百美元")]
+    [InlineData("999 999 999,99", "九亿九千九百九十九万九千九百九十九美元九十九美分")]
+    public void Chinese_simplified(string input, string expected) => AssertWords(input, "zh-CN", expected);
+
+    [Theory]
+    [InlineData("0", "零美元")]
+    [InlineData("1", "一美元")]
+    [InlineData("25,1", "二十五美元十美分")]
+    [InlineData("0,01", "零美元一美分")]
+    [InlineData("45 100", "四萬五千一百美元")]
+    [InlineData("999 999 999,99", "九億九千九百九十九萬九千九百九十九美元九十九美分")]
+    public void Chinese_traditional(string input, string expected) => AssertWords(input, "zh-TW", expected);
+
+    [Theory]
+    [InlineData("0", "零ドル")]
+    [InlineData("1", "一ドル")]
+    [InlineData("25,1", "二十五ドル十セント")]
+    [InlineData("0,01", "零ドル一セント")]
+    [InlineData("45 100", "四万五千百ドル")]
+    [InlineData("999 999 999,99", "九億九千九百九十九万九千九百九十九ドル九十九セント")]
+    public void Japanese(string input, string expected) => AssertWords(input, "ja-JP", expected);
+
+    [Theory]
+    [InlineData("0", "영 달러")]
+    [InlineData("1", "일 달러")]
+    [InlineData("25,1", "이십오 달러 십 센트")]
+    [InlineData("0,01", "영 달러 일 센트")]
+    [InlineData("45 100", "사만 오천백 달러")]
+    [InlineData("999 999 999,99", "구억 구천구백구십구만 구천구백구십구 달러 구십구 센트")]
+    public void Korean(string input, string expected) => AssertWords(input, "ko-KR", expected);
+
     internal static void AssertWords(string input, string language, string expected)
     {
         var result = Converter.Convert(input, language);

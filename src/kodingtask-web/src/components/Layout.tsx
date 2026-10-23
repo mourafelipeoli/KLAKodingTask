@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useText } from "../i18n/useText";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import TopBar from "./TopBar";
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ export default function Layout({ children }: LayoutProps) {
       <a className="skip-link" href="#content">
         {t("Skip to content")}
       </a>
+      <TopBar />
       <SiteHeader />
       <main id="content" className="layout__main" tabIndex={-1}>
         {children}

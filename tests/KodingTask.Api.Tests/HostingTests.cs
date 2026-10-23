@@ -43,6 +43,7 @@ public sealed class HostingTests(ApiFactory factory) : IClassFixture<ApiFactory>
             Assert.False(features.GetProperty(name).GetBoolean(), name);
         Assert.Equal("https://klakodingtask.mourafelipe.com", info.GetProperty("publicSiteUrl").GetString());
         Assert.Equal("https://mourafelipe.com", info.GetProperty("author").GetProperty("url").GetString());
+        Assert.Equal("https://mourafelipe.com/terminal", info.GetProperty("author").GetProperty("terminalUrl").GetString());
     }
 
     [Fact]

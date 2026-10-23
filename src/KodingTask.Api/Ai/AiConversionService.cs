@@ -81,7 +81,7 @@ public sealed class AiConversionService(
         {
             (null, _) => AiCallOutcome.Failed,
             (_, null) => AiCallOutcome.UnexpectedOutput,
-            _ when AiAnswer.SameWords(words, referenceWords) => AiCallOutcome.Agreed,
+            _ when AiAnswer.SameWords(words, referenceWords, language.Code) => AiCallOutcome.Agreed,
             _ => AiCallOutcome.Differed,
         };
         if (outcome == AiCallOutcome.UnexpectedOutput)

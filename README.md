@@ -5,7 +5,8 @@ KLA Senior Software Engineer coding task (web variant).
 
 - **Live:** https://klakodingtask.mourafelipe.com
 - **Languages:** English, Portuguese (Brazil), German, French (France, Canada, Switzerland,
-  Belgium) and Italian, for both the interface and the converted words.
+  Belgium), Italian, Chinese (Simplified and Traditional), Japanese and Korean, for both the
+  interface and the converted words. The Asian languages are the ones on KLA's own website.
 - **Stack:** ASP.NET Core 10 Web API (conversion on the server) + React 19 / TypeScript /
   Vite single-page app, served from the same origin.
 - **Two engines:** the rules engine (deterministic, the reference) and an optional AI engine
@@ -40,13 +41,15 @@ dotnet run --project src/KodingTask.Api
 
 Open **https://localhost:7162**. The first run installs the web client's npm packages
 (about a minute), creates a local SQLite database in `src/KodingTask.Api/App_Data/`, and
-starts the Vite dev server behind the API host. Conversion, the eight languages, the
-comparison across languages, light and dark themes all work offline.
+starts the Vite dev server behind the API host. Conversion in every language, the
+comparison across languages, the light theme (the default, as on kla.com) and the dark one
+all work offline.
 
 The optional features that need credentials (sending the result by e-mail or WhatsApp,
 the AI conversion engine, machine translation, sign-in with an external identity provider)
-show a message in the selected language pointing to the hosted version, where they are
-configured. To enable them on your own instance, see
+still respond when used: a dialog in the selected language explains that the result is on
+the deployed version and opens the same page there, with the same amount, language and
+engine. To enable them on your own instance, see
 [docs/configuration.md](docs/configuration.md).
 
 ### Tests and checks
@@ -55,7 +58,7 @@ configured. To enable them on your own instance, see
 dotnet test KodingTask.slnx              # converter golden tables + API tests (in memory)
 
 cd src/kodingtask-web
-npm run check:i18n                       # the eight dictionaries are complete and consistent
+npm run check:i18n                       # every dictionary is complete and consistent
 npm run lint
 npm run build
 ```
@@ -90,7 +93,7 @@ ready-made requests.
 |---|---|
 | Convert dollars from numbers into words, max 999 999 999 dollars and 99 cents, comma separator | [`AmountParser`](src/KodingTask.Conversion/AmountParser.cs), one speller per language in [`Languages/`](src/KodingTask.Conversion/Languages) |
 | The six examples of the statement | [`OfficialExamplesTests`](tests/KodingTask.Conversion.Tests/OfficialExamplesTests.cs), in every language |
-| At least two languages, selectable, output follows the selection | Eight output languages; the output language follows the interface language and can be changed independently |
+| At least two languages, selectable, output follows the selection | Twelve output languages in five scripts; the output language follows the interface language and can be changed independently |
 | .NET 8 or newer, ASP.NET backend | .NET 10, ASP.NET Core Web API |
 | Client-server, conversion on the server | The browser only sends text and shows the answer; see [`ConversionsController`](src/KodingTask.Api/Controllers/ConversionsController.cs) |
 | Modern frontend framework | React 19 + TypeScript + Vite |
@@ -132,6 +135,11 @@ under the file). That is where to look for the "why" of any class.
   Dollar", Portuguese "um milhão de dólares", French "zéro dollar", Italian elisions), so a
   speller owns the complete sentence. Adding a language is one class and one line in
   [`SpellerCatalog`](src/KodingTask.Conversion/SpellerCatalog.cs).
+- **Counting in myriads where the language does.** Chinese, Japanese and Korean name
+  ten-thousands (万/萬/만) and hundred-millions (亿/億/억), so 45 100 is "four myriads, five
+  thousand one hundred". They share the split, not the rules: Chinese marks gaps with 零 and
+  says 两 for two before a measure, Japanese and Korean skip gaps silently, Korean puts a
+  space after each myriad group.
 - **Regional French as data, not copies.** France and Canada say *quatre-vingt-dix*,
   Belgium and Switzerland *nonante*, and Switzerland also *huitante*; one `FrenchSpeller`
   takes the numbering as a constructor argument.
@@ -195,6 +203,6 @@ docs/           configuration, languages, decisions, AI prompt history
 scripts/checks/ encoding and private-terms checks used by the git hooks and CI
 .githooks/      pre-commit and commit-msg hooks (git config core.hooksPath .githooks)
 .claude/skills/ conventions for AI coding agents (also readable by humans)
-Documents/Logo/ the Koding Task logos and fonts
+design/         the Koding Task logos, icons and fonts
 versions.json   the application version, shown by /health and in the footer
 ```

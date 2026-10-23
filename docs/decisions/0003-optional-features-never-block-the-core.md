@@ -14,14 +14,17 @@ for, and a team adopting the code must be able to switch every feature on.
 
 - Each optional feature registers itself only when its configuration is complete, and
   reports that in `FeatureAvailability` (`GET /api/app-info`).
-- The client shows unavailable features with a translated message pointing to the hosted
-  version, instead of hiding them or failing.
+- The client keeps unavailable features usable. On a copy that lacks one, using it opens a
+  translated dialog that continues on the hosted version with the same page and parameters
+  (amount, output language, engine, interface language), instead of hiding the feature,
+  greying it out or failing. On the hosted version itself, a feature that is not switched
+  on yet is disabled with a short note.
 - The local defaults need no service at all: SQLite, bundled interface dictionaries, no
   external calls.
 - Every setting is documented in `docs/configuration.md`.
 
 ## Consequences
 
-- `git clone` + `dotnet run` gives a complete converter in eight languages.
+- `git clone` + `dotnet run` gives a complete converter in every language.
 - The hosted version shows the full feature set; the code is identical.
 - Each feature carries its own "is configured" logic, tested with no configuration at all.

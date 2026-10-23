@@ -24,7 +24,8 @@ dotnet user-secrets set "ConnectionStrings:KodingTask" "Server=…;Database=…;
 | `Database:MySqlMaxRetries` | `3` | Transient-failure retries for MySQL. |
 | `PublicSite:Url` | `https://klakodingtask.mourafelipe.com` | Where users are sent to try features this instance does not have. Point it at your own deployment. |
 | `PublicSite:RepositoryUrl` | empty | Source code link in the footer (hidden when empty). |
-| `PublicSite:AuthorName`, `PublicSite:AuthorUrl` | Felipe Moura, https://mourafelipe.com | Author link in the header and footer (hidden unless both are set). |
+| `PublicSite:AuthorName`, `PublicSite:AuthorUrl` | Felipe Moura, https://mourafelipe.com | Author links in the top bar and the footer (hidden unless both are set). |
+| `PublicSite:AuthorTerminalUrl` | https://mourafelipe.com/terminal | Second link in the top bar (hidden when empty). |
 | `RateLimits:ConversionsPerMinute` | `120` | Per client address. |
 | `RateLimits:AiPerMinute` | `10` | Per client address, for the AI engine. |
 | `RateLimits:InfrastructurePerMinute` | `30` | Per client address, for the infrastructure page. |

@@ -301,6 +301,12 @@
   color: var(--color-text-muted);
 }
 
+.send-panel__soon {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
 .send-panel__channels {
   display: flex;
   flex-wrap: wrap;

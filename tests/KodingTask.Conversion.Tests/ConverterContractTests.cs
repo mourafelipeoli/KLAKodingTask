@@ -5,15 +5,16 @@ public sealed class ConverterContractTests
     private static readonly CurrencyConverter Converter = new(SpellerCatalog.Default);
 
     [Fact]
-    public void Lists_the_eight_languages_in_display_order()
+    public void Lists_the_supported_languages_in_display_order()
     {
         var codes = Converter.Languages.Select(language => language.Code);
-        Assert.Equal(["en-US", "pt-BR", "de-DE", "fr-FR", "fr-CA", "fr-CH", "fr-BE", "it-IT"], codes);
+        Assert.Equal(["en-US", "pt-BR", "de-DE", "fr-FR", "fr-CA", "fr-CH", "fr-BE", "it-IT", "zh-CN", "zh-TW", "ja-JP", "ko-KR"], codes);
     }
 
     [Theory]
     [InlineData("EN-us", "en-US")]
     [InlineData("fr_be", "fr-BE")]
+    [InlineData("zh-tw", "zh-TW")]
     public void Normalises_the_language_code(string requested, string canonical)
     {
         var result = Converter.Convert("5", requested);

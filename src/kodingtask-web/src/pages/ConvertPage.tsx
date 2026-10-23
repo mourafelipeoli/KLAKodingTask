@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAppInfo } from "../app/useAppInfo";
+import DeployedVersionDialog from "../components/DeployedVersionDialog";
 import AiAnswerPanel from "../components/converter/AiAnswerPanel";
 import ConverterForm from "../components/converter/ConverterForm";
 import HowItWorks from "../components/converter/HowItWorks";
@@ -9,16 +9,19 @@ import ResultCard from "../components/converter/ResultCard";
 import SendResultPanel from "../components/converter/SendResultPanel";
 import StatsStrip from "../components/converter/StatsStrip";
 import { LOCALES } from "../config/locales";
+import { useDeployedVersion } from "../hooks/useDeployedVersion";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useText } from "../i18n/useText";
 import { conversionService } from "../services/conversionService";
 import { ApiError, NETWORK_ERROR, isAbortError } from "../services/httpClient";
 import type { AiAnswer, ConversionResult, OutputLanguage } from "../types/conversion";
 import { Engine } from "../types/conversion";
+import { AI_UNAVAILABLE } from "../utils/aiErrors";
 import { conversionErrorKey } from "../utils/conversionErrors";
+import { converterPath } from "../utils/converterLink";
 import "./ConvertPage.css";
 
-// Used until the server's list arrives (and if it never does): the same eight codes.
+// Used until the server's list arrives (and if it never does): the same codes as the UI.
 const FALLBACK_LANGUAGES: readonly OutputLanguage[] = LOCALES.map((locale) => ({
   code: locale.code,
   englishName: locale.nativeName,
@@ -37,7 +40,7 @@ function aiErrorOf(error: unknown): string {
 
 export default function ConvertPage() {
   const { t, locale } = useText();
-  const { features } = useAppInfo();
+  const { isDeployedVersion, urlFor } = useDeployedVersion();
   useDocumentTitle(t("Dollars in words"));
 
   const [searchParams] = useSearchParams();
@@ -59,6 +62,10 @@ export default function ConvertPage() {
   const [aiError, setAiError] = useState<string | null>(null);
   const [comparison, setComparison] = useState<readonly ConversionResult[] | null>(null);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
+  // A copy without credentials offers the deployed version instead of an AI answer or a
+  // delivery it cannot produce; closing the offer keeps the visitor here.
+  const [isAiOfferDismissed, setIsAiOfferDismissed] = useState(false);
+  const [isDeliveryOfferOpen, setIsDeliveryOfferOpen] = useState(false);
   const [isConverting, startConversion] = useTransition();
   const [isAsking, startAsking] = useTransition();
   const [isComparing, startComparison] = useTransition();
@@ -106,6 +113,7 @@ export default function ConvertPage() {
     aiAbort.current?.abort();
     const controller = new AbortController();
     aiAbort.current = controller;
+    setIsAiOfferDismissed(false);
     startAsking(async () => {
       try {
         const answer = await conversionService.convertWithAi(
@@ -194,6 +202,20 @@ export default function ConvertPage() {
   const nameOf = (code: string) =>
     languages.find((language) => language.code === code)?.nativeName ?? code;
 
+  const isAiOfferOpen =
+    engine === Engine.Ai &&
+    aiError === AI_UNAVAILABLE &&
+    !isDeployedVersion &&
+    !isAiOfferDismissed;
+  const deployedUrl = urlFor(
+    converterPath({
+      amount: result?.amount ?? amount,
+      language: result?.language ?? outputLanguage,
+      engine,
+      uiLocale: locale,
+    }),
+  );
+
   return (
     <>
       <section className="hero">
@@ -202,8 +224,8 @@ export default function ConvertPage() {
           <h1 className="hero__title">{t("Write any dollar amount in words")}</h1>
           <p className="hero__lead">
             {t(
-              "Type an amount up to {{maximum}} and read it in English, Portuguese, German, French or Italian. The conversion runs on the server.",
-              { maximum: "999 999 999,99" },
+              "Type an amount up to {{maximum}} and read it in {{count}} languages. The conversion runs on the server.",
+              { maximum: "999 999 999,99", count: languages.length },
             )}
           </p>
         </div>
@@ -216,7 +238,6 @@ export default function ConvertPage() {
             language={outputLanguage}
             languages={languages}
             engine={engine}
-            isAiAvailable={features.ai}
             isConverting={isConverting}
             errorKey={errorKey}
             onAmountChange={setAmount}
@@ -253,11 +274,25 @@ export default function ConvertPage() {
           />
         )}
 
-        {result && <SendResultPanel />}
+        {result && <SendResultPanel onUnavailable={() => setIsDeliveryOfferOpen(true)} />}
       </div>
 
-      <StatsStrip />
+      <StatsStrip
+        languageCount={languages.length}
+        frenchVariantCount={
+          languages.filter((language) => language.code.startsWith("fr-")).length
+        }
+      />
       <HowItWorks />
+
+      <DeployedVersionDialog
+        isOpen={isAiOfferOpen || isDeliveryOfferOpen}
+        url={deployedUrl}
+        onClose={() => {
+          setIsAiOfferDismissed(true);
+          setIsDeliveryOfferOpen(false);
+        }}
+      />
     </>
   );
 }

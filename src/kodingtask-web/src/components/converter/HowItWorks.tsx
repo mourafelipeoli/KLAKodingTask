@@ -15,7 +15,7 @@ const STEPS = [
     icon: "bi-spellcheck",
     title: textKey("Spelled by grammar rules"),
     body: textKey(
-      "Each language has its own speller: German compound words, Portuguese conjunctions, French plural rules, and septante and nonante in Belgium and Switzerland.",
+      "Each language has its own speller: German compound words, Portuguese conjunctions, French plural rules, septante and nonante in Belgium and Switzerland, and counting in ten-thousands in Chinese, Japanese and Korean.",
     ),
   },
   {

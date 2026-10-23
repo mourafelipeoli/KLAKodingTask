@@ -10,4 +10,4 @@ public sealed record AppInfoResponse(
     AuthorResponse? Author,
     FeatureAvailability Features);
 
-public sealed record AuthorResponse(string Name, string Url);
+public sealed record AuthorResponse(string Name, string Url, string? TerminalUrl);

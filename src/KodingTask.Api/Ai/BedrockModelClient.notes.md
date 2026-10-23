@@ -7,7 +7,7 @@ Calls a Claude model through Amazon Bedrock's **Converse** API (`AWSSDK.BedrockR
 - **Credentials** come from the default AWS chain: the ECS task role when hosted, a local
   profile (`AWS_PROFILE`) on a developer machine. Nothing is configured in code.
 - **Prompt caching**: a cache point follows the system prompt, which is identical for every
-  request (rules plus examples in all eight languages; see `AiPromptBuilder`). When the
+  request (rules plus examples in every language; see `AiPromptBuilder`). When the
   prefix is long enough for the model's cache, repeated calls read it at a fraction of the
   input price; when it is not, the cache point is simply ignored.
 - **Thinking blocks are skipped**: the model may return a reasoning block before the text;

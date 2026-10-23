@@ -1,6 +1,6 @@
 // Checks the bundled UI dictionaries (npm run check:i18n):
 // - en-US.json is the source: every key maps to itself;
-// - pt-BR, de-DE, fr-FR and it-IT translate every key;
+// - pt-BR, de-DE, fr-FR, it-IT, zh-CN, zh-TW, ja-JP and ko-KR translate every key;
 // - fr-CA, fr-CH and fr-BE only override fr-FR, so they may hold a subset;
 // - no dictionary has unknown keys, empty values or different {{placeholders}};
 // - every literal t("…") / textKey("…") in the code exists in en-US.json, and every
@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dictionaryFolder = join(root, "src", "i18n", "dictionaries");
-const COMPLETE = ["pt-BR", "de-DE", "fr-FR", "it-IT"];
+const COMPLETE = ["pt-BR", "de-DE", "fr-FR", "it-IT", "zh-CN", "zh-TW", "ja-JP", "ko-KR"];
 const REGIONAL = ["fr-CA", "fr-CH", "fr-BE"];
 
 const read = (locale) =>

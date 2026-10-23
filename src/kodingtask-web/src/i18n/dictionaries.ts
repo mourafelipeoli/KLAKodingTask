@@ -7,7 +7,11 @@ import frCA from "./dictionaries/fr-CA.json";
 import frCH from "./dictionaries/fr-CH.json";
 import frFR from "./dictionaries/fr-FR.json";
 import itIT from "./dictionaries/it-IT.json";
+import jaJP from "./dictionaries/ja-JP.json";
+import koKR from "./dictionaries/ko-KR.json";
 import ptBR from "./dictionaries/pt-BR.json";
+import zhCN from "./dictionaries/zh-CN.json";
+import zhTW from "./dictionaries/zh-TW.json";
 
 export type Dictionary = Readonly<Record<string, string>>;
 
@@ -24,6 +28,10 @@ const BUNDLED: Record<LocaleCode, Dictionary> = {
   "fr-CH": frCH,
   "fr-BE": frBE,
   "it-IT": itIT,
+  "zh-CN": zhCN,
+  "zh-TW": zhTW,
+  "ja-JP": jaJP,
+  "ko-KR": koKR,
 };
 
 export function translate(

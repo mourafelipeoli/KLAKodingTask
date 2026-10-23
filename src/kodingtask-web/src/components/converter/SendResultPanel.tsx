@@ -1,10 +1,23 @@
 import { useAppInfo } from "../../app/useAppInfo";
+import { useDeployedVersion } from "../../hooks/useDeployedVersion";
 import { useText } from "../../i18n/useText";
-import FeatureUnavailable from "../FeatureUnavailable";
 
-export default function SendResultPanel() {
+interface SendResultPanelProps {
+  /** Called when the visitor picks a channel this copy cannot deliver through. */
+  onUnavailable: () => void;
+}
+
+// On a copy without delivery credentials the buttons stay clickable and offer the deployed
+// version; on the deployed version itself a channel that is not switched on yet is disabled.
+export default function SendResultPanel({ onUnavailable }: SendResultPanelProps) {
   const { t } = useText();
   const { features } = useAppInfo();
+  const { isDeployedVersion } = useDeployedVersion();
+
+  const channel = (isAvailable: boolean) => ({
+    disabled: !isAvailable && isDeployedVersion,
+    onClick: isAvailable ? undefined : onUnavailable,
+  });
 
   return (
     <section className="send-panel card">
@@ -18,7 +31,7 @@ export default function SendResultPanel() {
         <button
           type="button"
           className="button button--secondary"
-          disabled={!features.email}
+          {...channel(features.email)}
         >
           <i className="bi bi-envelope" aria-hidden="true" />
           {t("By email")}
@@ -26,13 +39,17 @@ export default function SendResultPanel() {
         <button
           type="button"
           className="button button--secondary"
-          disabled={!features.whatsApp}
+          {...channel(features.whatsApp)}
         >
           <i className="bi bi-whatsapp" aria-hidden="true" />
           {t("By WhatsApp")}
         </button>
       </div>
-      {!features.deliveries && <FeatureUnavailable />}
+      {isDeployedVersion && !features.deliveries && (
+        <p className="send-panel__soon">
+          {t("Sending by email and WhatsApp is coming soon.")}
+        </p>
+      )}
     </section>
   );
 }

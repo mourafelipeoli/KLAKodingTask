@@ -5,6 +5,9 @@ export const AI_UNAVAILABLE = "AiUnavailable";
 // Why the AI engine did not answer. The rules engine always did, so every message says
 // where the words on screen come from.
 const MESSAGES: Readonly<Record<string, string>> = {
+  [AI_UNAVAILABLE]: textKey(
+    "The AI engine is not available right now. The words above come from the rules engine.",
+  ),
   AiPaused: textKey(
     "The AI engine is paused right now. The words above come from the rules engine.",
   ),

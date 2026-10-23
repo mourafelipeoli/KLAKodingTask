@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { useText } from "../../i18n/useText";
 import type { ConversionResult } from "../../types/conversion";
-import { Engine } from "../../types/conversion";
+import type { Engine } from "../../types/conversion";
+import { converterPath } from "../../utils/converterLink";
 import { formatUsd } from "../../utils/formatAmount";
 import CopyButton from "../CopyButton";
 
@@ -15,11 +16,12 @@ interface ResultCardProps {
 }
 
 function shareLink(result: ConversionResult, engine: Engine): string {
-  const query = new URLSearchParams({ amount: result.amount, language: result.language });
-  if (engine === Engine.Ai) {
-    query.set("engine", Engine.Ai);
-  }
-  return `${window.location.origin}/?${query.toString()}`;
+  const path = converterPath({
+    amount: result.amount,
+    language: result.language,
+    engine,
+  });
+  return `${window.location.origin}${path}`;
 }
 
 export default function ResultCard({

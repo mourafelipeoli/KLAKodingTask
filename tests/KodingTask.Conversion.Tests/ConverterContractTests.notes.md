@@ -2,7 +2,7 @@
 
 Properties that hold for every language, independent of grammar:
 
-- the catalog lists exactly the eight supported codes, in display order;
+- the catalog lists exactly the supported codes, in display order;
 - language codes are normalised (`EN-us`, `fr_be`) and unknown codes are refused before the
   amount is even looked at;
 - across the first 2 100 integers plus 3 000 random amounts (fixed seed, so a failure is

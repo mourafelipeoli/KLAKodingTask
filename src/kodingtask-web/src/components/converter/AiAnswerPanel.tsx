@@ -1,3 +1,4 @@
+import { useDeployedVersion } from "../../hooks/useDeployedVersion";
 import { useText } from "../../i18n/useText";
 import type { AiAnswer } from "../../types/conversion";
 import { AI_UNAVAILABLE, aiErrorKey } from "../../utils/aiErrors";
@@ -17,6 +18,7 @@ export default function AiAnswerPanel({
   isLoading,
 }: AiAnswerPanelProps) {
   const { t, locale } = useText();
+  const { isDeployedVersion } = useDeployedVersion();
 
   if (isLoading) {
     return (
@@ -27,8 +29,8 @@ export default function AiAnswerPanel({
     );
   }
 
-  // Without AI on this instance the form already shows the pointer to the hosted version.
-  if (errorCode === AI_UNAVAILABLE) {
+  // A copy without AI offers the deployed version in a dialog instead (see ConvertPage).
+  if (errorCode === AI_UNAVAILABLE && !isDeployedVersion) {
     return null;
   }
 

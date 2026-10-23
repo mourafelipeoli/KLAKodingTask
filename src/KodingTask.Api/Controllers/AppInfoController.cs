@@ -20,7 +20,10 @@ public sealed class AppInfoController(
         var site = publicSite.Value;
         var author = string.IsNullOrWhiteSpace(site.AuthorName) || string.IsNullOrWhiteSpace(site.AuthorUrl)
             ? null
-            : new AuthorResponse(site.AuthorName, site.AuthorUrl);
+            : new AuthorResponse(
+                site.AuthorName,
+                site.AuthorUrl,
+                string.IsNullOrWhiteSpace(site.AuthorTerminalUrl) ? null : site.AuthorTerminalUrl);
 
         return new(
             configuration.Version(),

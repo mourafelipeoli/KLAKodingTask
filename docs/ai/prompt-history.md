@@ -18,7 +18,8 @@ I (Felipe Moura) gave to the AI assistant while building this project.
   change: where I named my private projects or other private names, the name is replaced by
   a description in brackets. One message I typed in Portuguese by mistake is translated.
   Text in brackets and italics describes screenshots, my answers to the assistant's
-  questions and what happened next.
+  questions and what happened next; the short sections without prompts summarise what the
+  assistant sessions agreed between themselves.
 
 ---
 
@@ -138,3 +139,40 @@ No big deal paste the API key here, ok?
 Did you do anything about the OpenId? Or is it still pending to implement?
 
 Change the main logos for the ones with "Keep Coding Ahead" below.
+
+Let's implement the SES part and then the Whatsapp. I'm creating the plan via another agent for the OpenID part on my personal website's codebase. After finishing the plan, I'll paste a prompt here so you can work together, you here, and the another agent there, in my personal website's codebase. But, while he plans, implement everything you need but the OpenId fmID, ok? *(The original names that private project.)*
+
+You can coordinate by yourselves.
+
+He is running this. *[Screenshot of the other Claude Code session's tab, titled after the fmID work in that codebase, with the message "You can coordinate between yourselves" sent there too.]*
+
+At the end, please record this coordination by yourselfs in the honest prompt, ok?
+
+## 6. Coordination with the identity-provider session
+
+At this point I ran a second Claude Code session in my personal website's codebase, which is
+becoming the fmID OpenID Connect provider, and told both sessions to coordinate directly.
+What they exchanged, in short (the full contract arrives later as a handoff file in my
+private operations folder):
+
+- The provider session asked for this app's development and production URLs, its current
+  authentication and the scopes and claims it needs. This session answered:
+  `https://localhost:7162` and `https://klakodingtask.mourafelipe.com`; local ASP.NET Core
+  Identity accounts being built now; scopes `openid profile email`; claims `sub`, `email`,
+  `email_verified`, `name`, no roles; callbacks `/signin-fmid` and `/signout-fmid`; clients
+  `kodingtask` and `kodingtask-dev`; the client secret only in a secret store, never in a
+  message.
+- The provider session asked to hold the provisioning model (sharing the provider's
+  identity database versus a local store linked by the external subject) and noted cookie,
+  refusal-code and claim details. This session raised that sharing the identity database
+  would give a public-code container access to every user of my other systems, kept all
+  app-specific user data in separate tables keyed by the user id, chose a `SameSite=Lax`
+  session cookie with an antiforgery header, and English refusal codes.
+- The provider session relayed my rule that nothing on this side may be written in
+  Portuguese, so the refusal codes keep their meaning but get English spellings.
+- The provider session confirmed the design already decided in the plan: this app keeps
+  its own Identity store and links the fmID subject through `AspNetUserLogins`; the
+  provider will emit `email_verified`, only returns standard OAuth errors, and is the
+  authority for both development and production; this app must allow the provider in its
+  `form-action` content security policy. Draft contract: authorization code with PKCE
+  (S256), `response_mode=query`, no refresh tokens, 15-minute tokens, RP-initiated logout.

@@ -24,6 +24,8 @@ public sealed class SpellerCatalog
         new FrenchSpeller(new("fr-CH", "French (Switzerland)", "Français (Suisse)"), FrenchNumbering.Swiss),
         new FrenchSpeller(new("fr-BE", "French (Belgium)", "Français (Belgique)"), FrenchNumbering.Belgian),
         new ItalianSpeller(),
+        new SpanishSpeller(),
+        new PolishSpeller(),
         new ChineseSpeller(new("zh-CN", "Chinese (Simplified, Mainland China)", "简体中文"), ChineseScript.Simplified),
         new ChineseSpeller(new("zh-TW", "Chinese (Traditional, Taiwan)", "繁體中文"), ChineseScript.Traditional),
         new JapaneseSpeller(),

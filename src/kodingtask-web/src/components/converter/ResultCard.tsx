@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useText } from "../../i18n/useText";
 import type { ConversionResult } from "../../types/conversion";
 import type { Engine } from "../../types/conversion";
-import { converterPath } from "../../utils/converterLink";
+import { ConverterSection, converterPath } from "../../utils/converterLink";
 import { formatUsd } from "../../utils/formatAmount";
 import CopyButton from "../CopyButton";
 
@@ -35,7 +35,7 @@ export default function ResultCard({
   const { t, locale } = useText();
 
   return (
-    <section className="result-card" aria-live="polite">
+    <section id={ConverterSection.Result} className="result-card" aria-live="polite">
       <p className="eyebrow">{t("In words")}</p>
       <p className="result-card__words" lang={result.language}>
         {result.words}

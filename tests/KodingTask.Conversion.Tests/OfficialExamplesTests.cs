@@ -67,6 +67,24 @@ public sealed class OfficialExamplesTests
     public void Italian(string input, string expected) => AssertWords(input, "it-IT", expected);
 
     [Theory]
+    [InlineData("0", "cero dólares")]
+    [InlineData("1", "un dólar")]
+    [InlineData("25,1", "veinticinco dólares con diez centavos")]
+    [InlineData("0,01", "cero dólares con un centavo")]
+    [InlineData("45 100", "cuarenta y cinco mil cien dólares")]
+    [InlineData("999 999 999,99", "novecientos noventa y nueve millones novecientos noventa y nueve mil novecientos noventa y nueve dólares con noventa y nueve centavos")]
+    public void Spanish(string input, string expected) => AssertWords(input, "es-ES", expected);
+
+    [Theory]
+    [InlineData("0", "zero dolarów")]
+    [InlineData("1", "jeden dolar")]
+    [InlineData("25,1", "dwadzieścia pięć dolarów i dziesięć centów")]
+    [InlineData("0,01", "zero dolarów i jeden cent")]
+    [InlineData("45 100", "czterdzieści pięć tysięcy sto dolarów")]
+    [InlineData("999 999 999,99", "dziewięćset dziewięćdziesiąt dziewięć milionów dziewięćset dziewięćdziesiąt dziewięć tysięcy dziewięćset dziewięćdziesiąt dziewięć dolarów i dziewięćdziesiąt dziewięć centów")]
+    public void Polish(string input, string expected) => AssertWords(input, "pl-PL", expected);
+
+    [Theory]
     [InlineData("0", "零美元")]
     [InlineData("1", "一美元")]
     [InlineData("25,1", "二十五美元十美分")]

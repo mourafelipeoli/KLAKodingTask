@@ -1,6 +1,6 @@
 # Languages
 
-Twelve output languages, eight spellers, five scripts. The code of each speller has a note
+Fourteen output languages, ten spellers, five scripts. The code of each speller has a note
 with the full rule set; this page is the overview.
 
 | Code | Speller | 1 | 25,1 | 45 100 |
@@ -13,6 +13,8 @@ with the full rule set; this page is the overview.
 | fr-CH | French, Swiss numbering | un dollar | vingt-cinq dollars et dix cents | quarante-cinq mille cent dollars |
 | fr-BE | French, Belgian numbering | un dollar | vingt-cinq dollars et dix cents | quarante-cinq mille cent dollars |
 | it-IT | [Italian](../src/KodingTask.Conversion/Languages/ItalianSpeller.notes.md) | un dollaro | venticinque dollari e dieci centesimi | quarantacinquemilacento dollari |
+| es-ES | [Spanish](../src/KodingTask.Conversion/Languages/SpanishSpeller.notes.md) | un dólar | veinticinco dólares con diez centavos | cuarenta y cinco mil cien dólares |
+| pl-PL | [Polish](../src/KodingTask.Conversion/Languages/PolishSpeller.notes.md) | jeden dolar | dwadzieścia pięć dolarów i dziesięć centów | czterdzieści pięć tysięcy sto dolarów |
 | zh-CN | [Chinese](../src/KodingTask.Conversion/Languages/ChineseSpeller.notes.md), simplified | 一美元 | 二十五美元十美分 | 四万五千一百美元 |
 | zh-TW | Chinese, traditional | 一美元 | 二十五美元十美分 | 四萬五千一百美元 |
 | ja-JP | [Japanese](../src/KodingTask.Conversion/Languages/JapaneseSpeller.notes.md) | 一ドル | 二十五ドル十セント | 四万五千百ドル |
@@ -57,6 +59,11 @@ All three count in myriads: 万 (zh-CN, ja-JP), 萬 (zh-TW) or 만 (ko-KR) is te
   before "mille"; singular for zero and one.
 - **Italian**: one word below a million; elision before "uno" and "otto" ("ventuno",
   "ventotto"); "centottanta"; accent on a final "tre" ("ventitré").
+- **Spanish**: "uno" always shortened before a noun or "mil" ("veintiún dólares", "ciento un
+  dólares", "veintiún mil"); "cien" alone, "ciento" before more; "con" before the cents.
+- **Polish**: three noun forms after a number, chosen by its last digits ("jeden dolar",
+  "dwa dolary", "pięć dolarów", "dwanaście dolarów", "dwadzieścia dwa dolary"), the same for
+  "tysiąc" and "milion"; no "jeden" before them.
 - **Chinese**: one 零 for each gap followed by a digit; 十 without 一 only at the start;
   两/兩 for two before the currency word and before a leading 千, 万 or 亿; ordinary
   numerals, not the financial capitals used on bank cheques.
@@ -71,8 +78,8 @@ All of these have a test in
 ## Interface translations
 
 The interface texts live in `src/kodingtask-web/src/i18n/dictionaries/`. The English
-sentence is the key. `pt-BR`, `de-DE`, `fr-FR`, `it-IT`, `zh-CN`, `zh-TW`, `ja-JP` and
-`ko-KR` translate every key; `fr-CA`,
+sentence is the key. `pt-BR`, `de-DE`, `fr-FR`, `it-IT`, `es-ES`, `pl-PL`, `zh-CN`,
+`zh-TW`, `ja-JP` and `ko-KR` translate every key; `fr-CA`,
 `fr-CH` and `fr-BE` only hold what differs from France (Canada writes "courriel" for
 e-mail) and fall back to `fr-FR` for the rest. `npm run check:i18n` verifies completeness,
 placeholders and that every key in use exists.

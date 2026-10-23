@@ -301,6 +301,12 @@
   color: var(--color-text-muted);
 }
 
+/* Sections a link can land on clear the sticky header. */
+.result-card,
+.send-panel {
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
+}
+
 .send-panel__soon {
   margin: var(--space-3) 0 0;
   font-size: var(--text-sm);

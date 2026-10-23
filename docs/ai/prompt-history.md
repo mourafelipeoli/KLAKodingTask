@@ -121,3 +121,18 @@ Let's keep the light layout as the standard, as the kla.com. And put this purple
 Don't forget to keep the >_ and the blinking cursor after felipemoura... It's my charm :)
 
 I've just moved the logos to the folder "design" to match the projects standard.
+
+*[Screenshot of the "Send this result" panel with greyed-out buttons and the notice "To test this feature, use the version published at klakodingtask.mourafelipe.com."]* The message I told you before is this: "
+To test this feature, use the version published at klakodingtask.mourafelipe.com."
+
+Instead of showing "to test this feature..." let's keep the page on https://klakodingtask.mourafelipe.com/, AS IT IS and send the results from the deployed version (we can also scroll to the section that triggered de redirect. Let use this statement as a standard for this project.
+
+Let's add also Spanisch and Polish
+
+And you can use this API key to make the DeepL service work: *[DeepL API key redacted]*
+
+No big deal paste the API key here, ok?
+
+*[The assistant did not use the pasted key. The key the application uses was stored in AWS Secrets Manager by me, typed in a terminal prompt.]*
+
+Did you do anything about the OpenId? Or is it still pending to implement?

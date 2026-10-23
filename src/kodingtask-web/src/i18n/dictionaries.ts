@@ -2,6 +2,7 @@ import type { LocaleCode } from "../config/locales";
 import { PARENT_LOCALE } from "../config/locales";
 import deDE from "./dictionaries/de-DE.json";
 import enUS from "./dictionaries/en-US.json";
+import esES from "./dictionaries/es-ES.json";
 import frBE from "./dictionaries/fr-BE.json";
 import frCA from "./dictionaries/fr-CA.json";
 import frCH from "./dictionaries/fr-CH.json";
@@ -9,6 +10,7 @@ import frFR from "./dictionaries/fr-FR.json";
 import itIT from "./dictionaries/it-IT.json";
 import jaJP from "./dictionaries/ja-JP.json";
 import koKR from "./dictionaries/ko-KR.json";
+import plPL from "./dictionaries/pl-PL.json";
 import ptBR from "./dictionaries/pt-BR.json";
 import zhCN from "./dictionaries/zh-CN.json";
 import zhTW from "./dictionaries/zh-TW.json";
@@ -28,6 +30,8 @@ const BUNDLED: Record<LocaleCode, Dictionary> = {
   "fr-CH": frCH,
   "fr-BE": frBE,
   "it-IT": itIT,
+  "es-ES": esES,
+  "pl-PL": plPL,
   "zh-CN": zhCN,
   "zh-TW": zhTW,
   "ja-JP": jaJP,

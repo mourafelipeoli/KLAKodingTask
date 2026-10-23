@@ -143,6 +143,7 @@ public sealed class AiConversionServiceTests : IDisposable
         Assert.Contains("fr-CH | 80 | huitante dollars", prompt);
         Assert.Contains("fr-BE | 91 | nonante et un dollars", prompt);
         Assert.Contains("zh-CN | 2 | 两美元", prompt);
+        Assert.Contains("pl-PL | 22 | dwadzieścia dwa dolary", prompt);
         Assert.Contains("ko-KR | 11 000 | 만 천 달러", prompt);
         Assert.Contains("fr-FR | 71 | soixante et onze dollars", prompt);
     }

@@ -18,8 +18,8 @@ description: Checklist before declaring a functional change done in this reposit
    ADRs in `docs/decisions/` when a decision is made or reversed. Keep the reason and the
    cost of a reverted decision; do not erase history.
 4. **Translations.** Every new UI text goes into `en-US.json` and is translated into all
-   complete dictionaries (`pt-BR`, `de-DE`, `fr-FR`, `it-IT`, `zh-CN`, `zh-TW`, `ja-JP`,
-   `ko-KR`); regional French files only override what differs.
+   complete dictionaries (`pt-BR`, `de-DE`, `fr-FR`, `it-IT`, `es-ES`, `pl-PL`, `zh-CN`,
+   `zh-TW`, `ja-JP`, `ko-KR`); regional French files only override what differs.
 5. **Prompt history.** Append the user's prompts for this task to
    `docs/ai/prompt-history.md`, verbatim and in English. If a prompt names a private system
    or company, propose a neutral wording to the user before appending.

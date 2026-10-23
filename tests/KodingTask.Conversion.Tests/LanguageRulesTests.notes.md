@@ -9,6 +9,10 @@ One case per grammatical rule documented in the speller notes: the places where 
 - French: 70/80/90 per region, "et un", the plural "s" of "cent" and "quatre-vingts" before
   "mille" (no s) and before "millions" (s), singular for zero.
 - Italian: elision before "uno" and "otto", "centottanta", the accent on a final "tre".
+- Spanish: the shortened "un" (veintiún, treinta y un, ciento un, veintiún mil), "cien" vs
+  "ciento", the irregular hundreds, "de" after an exact million.
+- Polish: the three noun forms (dolar / dolary / dolarów) including 12-14 and 21, the same
+  rule for "tysiąc" and "milion", the silent one before them.
 - Chinese: one 零 per gap, 十 without 一 only at the start, 两/兩 for two before a measure,
   the 万/亿 and 萬/億 groups.
 - Japanese: no zero marker, one silent before 十, 百 and 千 but said before 万 and 億 and

@@ -20,6 +20,12 @@ Instructions for AI coding agents working in this repository. Humans: start with
 - Optional features (email, WhatsApp, AI, machine translation, external login) must keep
   the application fully usable when they are not configured: a fresh clone runs with no
   credentials at all.
+- **Hand-over standard.** A copy that lacks an optional feature never shows a passive
+  "use the published version" notice and never greys the action out. The action stays
+  usable; using it opens `DeployedVersionDialog`, which continues on the deployed version
+  with the same page and state (amount, output language, engine, interface language), lands
+  on the section that triggered it, and the deployed version completes the action there.
+  Build every new optional feature this way (`useDeployedVersion`, `converterPath`).
 - Migrations are MySQL-only, never run at startup, and are applied by an operator:
   `dotnet ef migrations add <Name> --project src/KodingTask.Data --startup-project src/KodingTask.Api`.
   SQLite (local default) is created with `EnsureCreated()`.

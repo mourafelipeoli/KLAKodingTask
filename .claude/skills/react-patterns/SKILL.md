@@ -65,9 +65,12 @@ One component per file. Interfaces in `types/`, not inside services.
 
 - Use the shared pieces before writing new markup: `Notice`, `DeployedVersionDialog`,
   `CopyButton`, the `.button`, `.card`, `.field`, `.chip` classes.
-- An optional feature that is not configured stays usable: on a local copy the action
-  opens `DeployedVersionDialog`, which continues on the deployed version with the same
-  parameters (`useDeployedVersion`, `converterPath`). Never a broken or silent button.
+- **Hand-over standard** (see `AGENTS.md`): an optional feature that is not configured stays
+  usable. On a local copy the action opens `DeployedVersionDialog`, which continues on the
+  deployed version with the same page and state (`useDeployedVersion`, `converterPath`),
+  scrolled to the section that triggered it (`section` becomes the URL hash and must be the
+  id of that section) and with the pending action in the query (`send=email`), so the
+  deployed version can complete it. Never a passive notice, a greyed-out or a silent button.
 - Declared state is used state. `useEffect` lists all dependencies. No synchronous
   `setState` inside an effect body: use event handlers, promise callbacks or transitions.
 - No `any`, no `console.log` (`console.error` only for genuine failures), no `alert()` or

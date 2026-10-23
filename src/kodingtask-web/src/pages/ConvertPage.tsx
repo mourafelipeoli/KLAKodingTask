@@ -14,11 +14,16 @@ import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useText } from "../i18n/useText";
 import { conversionService } from "../services/conversionService";
 import { ApiError, NETWORK_ERROR, isAbortError } from "../services/httpClient";
-import type { AiAnswer, ConversionResult, OutputLanguage } from "../types/conversion";
+import type {
+  AiAnswer,
+  ConversionResult,
+  DeliveryChannel,
+  OutputLanguage,
+} from "../types/conversion";
 import { Engine } from "../types/conversion";
 import { AI_UNAVAILABLE } from "../utils/aiErrors";
 import { conversionErrorKey } from "../utils/conversionErrors";
-import { converterPath } from "../utils/converterLink";
+import { ConverterSection, converterPath, readLinkTarget } from "../utils/converterLink";
 import "./ConvertPage.css";
 
 // Used until the server's list arrives (and if it never does): the same codes as the UI.
@@ -65,7 +70,7 @@ export default function ConvertPage() {
   // A copy without credentials offers the deployed version instead of an AI answer or a
   // delivery it cannot produce; closing the offer keeps the visitor here.
   const [isAiOfferDismissed, setIsAiOfferDismissed] = useState(false);
-  const [isDeliveryOfferOpen, setIsDeliveryOfferOpen] = useState(false);
+  const [deliveryOffer, setDeliveryOffer] = useState<DeliveryChannel | null>(null);
   const [isConverting, startConversion] = useTransition();
   const [isAsking, startAsking] = useTransition();
   const [isComparing, startComparison] = useTransition();
@@ -77,6 +82,23 @@ export default function ConvertPage() {
   const conversionAbort = useRef<AbortController | null>(null);
   const aiAbort = useRef<AbortController | null>(null);
   const comparisonAbort = useRef<AbortController | null>(null);
+  // Where a link (a hand-over from a local copy, typically) asked to land: scrolled to once,
+  // as soon as the amount it carries has been converted.
+  const linkTarget = useRef(readLinkTarget(searchParams, window.location.hash));
+
+  useEffect(() => {
+    const target = linkTarget.current;
+    if (!result || !target.section) {
+      return;
+    }
+    linkTarget.current = { section: null, channel: null };
+    document.getElementById(target.section)?.scrollIntoView({ block: "start" });
+    if (target.channel) {
+      document
+        .querySelector<HTMLButtonElement>(`[data-channel="${target.channel}"]`)
+        ?.focus({ preventScroll: true });
+    }
+  }, [result]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -213,6 +235,8 @@ export default function ConvertPage() {
       language: result?.language ?? outputLanguage,
       engine,
       uiLocale: locale,
+      section: deliveryOffer ? ConverterSection.Send : ConverterSection.Result,
+      channel: deliveryOffer ?? undefined,
     }),
   );
 
@@ -274,7 +298,7 @@ export default function ConvertPage() {
           />
         )}
 
-        {result && <SendResultPanel onUnavailable={() => setIsDeliveryOfferOpen(true)} />}
+        {result && <SendResultPanel onUnavailable={setDeliveryOffer} />}
       </div>
 
       <StatsStrip
@@ -286,11 +310,11 @@ export default function ConvertPage() {
       <HowItWorks />
 
       <DeployedVersionDialog
-        isOpen={isAiOfferOpen || isDeliveryOfferOpen}
+        isOpen={isAiOfferOpen || deliveryOffer !== null}
         url={deployedUrl}
         onClose={() => {
           setIsAiOfferDismissed(true);
-          setIsDeliveryOfferOpen(false);
+          setDeliveryOffer(null);
         }}
       />
     </>

@@ -45,7 +45,7 @@ public sealed class ConversionEndpointTests(ApiFactory factory) : IClassFixture<
     [InlineData("25.10", "en-US", "DecimalPointNotAllowed")]
     [InlineData("1 000 000 000", "en-US", "DollarsOutOfRange")]
     [InlineData("", "en-US", "Empty")]
-    [InlineData("5", "es-ES", "UnsupportedLanguage")]
+    [InlineData("5", "sv-SE", "UnsupportedLanguage")]
     public async Task Refuses_with_an_error_code(string amount, string language, string expectedCode)
     {
         var response = await _client.PostAsJsonAsync("/api/conversions", new { amount, language });

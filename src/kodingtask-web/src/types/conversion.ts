@@ -33,3 +33,10 @@ export const Engine = {
 } as const;
 
 export type Engine = (typeof Engine)[keyof typeof Engine];
+
+export const DeliveryChannel = {
+  Email: "email",
+  WhatsApp: "whatsapp",
+} as const;
+
+export type DeliveryChannel = (typeof DeliveryChannel)[keyof typeof DeliveryChannel];

@@ -7,6 +7,7 @@ The list of supported output languages and the lookup by code.
   and the UI menu all follow from it.
 - The order of `Default` is the order shown to users: English first (the task's language and
   the code's default), then the languages in the order the product owner listed them.
+- Spanish and Polish close the European group.
 - Chinese, Japanese and Korean follow, in the order KLA's own website lists them. They
   count in myriads (see `NumberGroups.SplitMyriads`), not in thousands.
 - The two Chinese entries share one class too; only four characters differ between the

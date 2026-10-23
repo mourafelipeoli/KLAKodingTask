@@ -1,26 +1,30 @@
 import { useAppInfo } from "../../app/useAppInfo";
 import { useDeployedVersion } from "../../hooks/useDeployedVersion";
 import { useText } from "../../i18n/useText";
+import { DeliveryChannel } from "../../types/conversion";
+import { ConverterSection } from "../../utils/converterLink";
 
 interface SendResultPanelProps {
-  /** Called when the visitor picks a channel this copy cannot deliver through. */
-  onUnavailable: () => void;
+  /** Called with the channel the visitor picked when this copy cannot deliver through it. */
+  onUnavailable: (channel: DeliveryChannel) => void;
 }
 
-// On a copy without delivery credentials the buttons stay clickable and offer the deployed
-// version; on the deployed version itself a channel that is not switched on yet is disabled.
+// On a copy without delivery credentials the buttons stay clickable and hand the visitor
+// over to the deployed version, which lands on this panel with the same channel. On the
+// deployed version itself a channel that is not switched on yet is disabled.
 export default function SendResultPanel({ onUnavailable }: SendResultPanelProps) {
   const { t } = useText();
   const { features } = useAppInfo();
   const { isDeployedVersion } = useDeployedVersion();
 
-  const channel = (isAvailable: boolean) => ({
+  const channel = (name: DeliveryChannel, isAvailable: boolean) => ({
+    "data-channel": name,
     disabled: !isAvailable && isDeployedVersion,
-    onClick: isAvailable ? undefined : onUnavailable,
+    onClick: isAvailable ? undefined : () => onUnavailable(name),
   });
 
   return (
-    <section className="send-panel card">
+    <section id={ConverterSection.Send} className="send-panel card">
       <div className="send-panel__header">
         <h2 className="send-panel__title">{t("Send this result")}</h2>
         <p className="send-panel__lead">
@@ -31,7 +35,7 @@ export default function SendResultPanel({ onUnavailable }: SendResultPanelProps)
         <button
           type="button"
           className="button button--secondary"
-          {...channel(features.email)}
+          {...channel(DeliveryChannel.Email, features.email)}
         >
           <i className="bi bi-envelope" aria-hidden="true" />
           {t("By email")}
@@ -39,7 +43,7 @@ export default function SendResultPanel({ onUnavailable }: SendResultPanelProps)
         <button
           type="button"
           className="button button--secondary"
-          {...channel(features.whatsApp)}
+          {...channel(DeliveryChannel.WhatsApp, features.whatsApp)}
         >
           <i className="bi bi-whatsapp" aria-hidden="true" />
           {t("By WhatsApp")}

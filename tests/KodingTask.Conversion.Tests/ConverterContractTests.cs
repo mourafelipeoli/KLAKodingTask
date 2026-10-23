@@ -8,7 +8,7 @@ public sealed class ConverterContractTests
     public void Lists_the_supported_languages_in_display_order()
     {
         var codes = Converter.Languages.Select(language => language.Code);
-        Assert.Equal(["en-US", "pt-BR", "de-DE", "fr-FR", "fr-CA", "fr-CH", "fr-BE", "it-IT", "zh-CN", "zh-TW", "ja-JP", "ko-KR"], codes);
+        Assert.Equal(["en-US", "pt-BR", "de-DE", "fr-FR", "fr-CA", "fr-CH", "fr-BE", "it-IT", "es-ES", "pl-PL", "zh-CN", "zh-TW", "ja-JP", "ko-KR"], codes);
     }
 
     [Theory]
@@ -25,7 +25,7 @@ public sealed class ConverterContractTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    [InlineData("es-ES")]
+    [InlineData("sv-SE")]
     [InlineData("fr")]
     public void Refuses_unknown_languages_before_parsing(string? language)
     {

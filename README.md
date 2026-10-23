@@ -5,8 +5,8 @@ KLA Senior Software Engineer coding task (web variant).
 
 - **Live:** https://klakodingtask.mourafelipe.com
 - **Languages:** English, Portuguese (Brazil), German, French (France, Canada, Switzerland,
-  Belgium), Italian, Chinese (Simplified and Traditional), Japanese and Korean, for both the
-  interface and the converted words. The Asian languages are the ones on KLA's own website.
+  Belgium), Italian, Spanish, Polish, Chinese (Simplified and Traditional), Japanese and
+  Korean, for both the interface and the converted words. The Asian languages are the ones on KLA's own website.
 - **Stack:** ASP.NET Core 10 Web API (conversion on the server) + React 19 / TypeScript /
   Vite single-page app, served from the same origin.
 - **Two engines:** the rules engine (deterministic, the reference) and an optional AI engine
@@ -49,7 +49,9 @@ The optional features that need credentials (sending the result by e-mail or Wha
 the AI conversion engine, machine translation, sign-in with an external identity provider)
 still respond when used: a dialog in the selected language explains that the result is on
 the deployed version and opens the same page there, with the same amount, language and
-engine. To enable them on your own instance, see
+engine, scrolled to the section that asked for it, where the deployed version completes
+the action. This hand-over is the project's standard for every optional feature (see
+`AGENTS.md`). To enable them on your own instance, see
 [docs/configuration.md](docs/configuration.md).
 
 ### Tests and checks
@@ -93,7 +95,7 @@ ready-made requests.
 |---|---|
 | Convert dollars from numbers into words, max 999 999 999 dollars and 99 cents, comma separator | [`AmountParser`](src/KodingTask.Conversion/AmountParser.cs), one speller per language in [`Languages/`](src/KodingTask.Conversion/Languages) |
 | The six examples of the statement | [`OfficialExamplesTests`](tests/KodingTask.Conversion.Tests/OfficialExamplesTests.cs), in every language |
-| At least two languages, selectable, output follows the selection | Twelve output languages in five scripts; the output language follows the interface language and can be changed independently |
+| At least two languages, selectable, output follows the selection | Fourteen output languages in five scripts; the output language follows the interface language and can be changed independently |
 | .NET 8 or newer, ASP.NET backend | .NET 10, ASP.NET Core Web API |
 | Client-server, conversion on the server | The browser only sends text and shows the answer; see [`ConversionsController`](src/KodingTask.Api/Controllers/ConversionsController.cs) |
 | Modern frontend framework | React 19 + TypeScript + Vite |

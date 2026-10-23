@@ -9,7 +9,8 @@ Every check that can refuse runs **before** the model is called, cheapest first:
 
 1. not configured → `Unavailable` (a fresh clone);
 2. kill switch → `Paused`;
-3. month-to-date spend (sum of `AiCalls.CostMicroUsd`) at or above the monthly budget →
+3. month-to-date spend (sum of `AiCalls.CostMicroUsd`, shared with the infrastructure page
+   through `AiCallQueries`) at or above the monthly budget →
    `MonthlyBudgetReached`;
 4. global daily counter → `DailyLimitReached`;
 5. per-client daily counter (keyed IP hash) → `ClientLimitReached`;

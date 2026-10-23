@@ -27,9 +27,11 @@ dotnet user-secrets set "ConnectionStrings:KodingTask" "Server=…;Database=…;
 | `PublicSite:AuthorName`, `PublicSite:AuthorUrl` | Felipe Moura, https://mourafelipe.com | Author link in the header and footer (hidden unless both are set). |
 | `RateLimits:ConversionsPerMinute` | `120` | Per client address. |
 | `RateLimits:AiPerMinute` | `10` | Per client address, for the AI engine. |
+| `RateLimits:InfrastructurePerMinute` | `30` | Per client address, for the infrastructure page. |
 | `Privacy:ClientHashKey` | empty (random per process) | Secret key of the anonymised client fingerprints used by per-client limits. Store it as a secret. |
 | `App:Version` | from `versions.json` | Override of the version reported by `/health`. |
 | `BUILD_COMMIT` | empty | Commit reported by `/health`; set by the deployment. |
+| `BUILD_DATE` | empty | Build time shown on the infrastructure page; set by the deployment. |
 | `Development:ViteServerUrl` | `http://localhost:5179` | Development only. |
 | `Development:WebClientPath` | `../kodingtask-web` | Development only. |
 
@@ -70,6 +72,27 @@ store cannot be read, every paid feature is closed until it can.
 | `AiCallsPerDay` | `200` | All visitors together, per UTC day. |
 | `AiCallsPerClientPerDay` | `20` | Per client address, per UTC day. |
 | `AiMonthlyBudgetUsd` | `2` | Estimated AI spend per calendar month (UTC). |
+
+## Infrastructure page
+
+The page at `/infrastructure` works without any setting. Off AWS it says that the app runs
+locally. On Amazon ECS it discovers the cluster, service, target group and load balancer by
+itself (task metadata, then the service description); only two things must be named:
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `Infrastructure:CertificateArn` | empty | ACM certificate whose expiry date is shown. |
+| `Infrastructure:DatabaseInstanceId` | empty | RDS instance whose engine and version are shown (with `Database:Provider=MySql`). |
+| `Infrastructure:CacheMinutes` | `5` | How long the AWS facts are cached. |
+| `Infrastructure:AwsCallTimeoutSeconds` | `5` | Per AWS call; a slow or failing call only hides its own facts. |
+
+Read-only permissions for the task role, all optional (a missing one hides its facts and
+logs the AWS error code): `ecs:DescribeServices` on the service,
+`elasticloadbalancing:DescribeTargetHealth` and `elasticloadbalancing:DescribeTargetGroups`,
+`cloudwatch:GetMetricData`, `rds:DescribeDBInstances` on the instance and
+`acm:DescribeCertificate` on the certificate. See
+`deploy/aws/task-role-policy.template.json` and
+[decision 5](decisions/0005-infrastructure-page-from-read-only-facts.md).
 
 ## Database on MySQL
 

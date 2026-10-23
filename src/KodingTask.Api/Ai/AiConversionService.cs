@@ -2,7 +2,6 @@
 using KodingTask.Conversion;
 using KodingTask.Data;
 using KodingTask.Data.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace KodingTask.Api.Ai;
@@ -36,7 +35,7 @@ public sealed class AiConversionService(
         var limits = await limitsSource.GetAsync(cancellationToken);
         if (limits.KillSwitch)
             return AiConversionOutcome.Refused(AiRefusal.Paused);
-        if (await MonthToDateMicroUsdAsync(cancellationToken) >= ToMicroUsd(limits.AiMonthlyBudgetUsd))
+        if (await database.MonthToDateMicroUsdAsync(timeProvider.GetUtcNow().UtcDateTime, cancellationToken) >= ToMicroUsd(limits.AiMonthlyBudgetUsd))
             return AiConversionOutcome.Refused(AiRefusal.MonthlyBudgetReached);
         if (!await limiter.TryConsumeAsync(DailyCounter, limits.AiCallsPerDay, cancellationToken))
             return AiConversionOutcome.Refused(AiRefusal.DailyLimitReached);
@@ -111,15 +110,6 @@ public sealed class AiConversionService(
         return words is null
             ? AiConversionOutcome.Refused(AiRefusal.Failed)
             : AiConversionOutcome.Answered(words, outcome == AiCallOutcome.Agreed, latencyMs);
-    }
-
-    private async Task<long> MonthToDateMicroUsdAsync(CancellationToken cancellationToken)
-    {
-        var now = timeProvider.GetUtcNow().UtcDateTime;
-        var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-        return await database.AiCalls
-            .Where(call => call.CreatedAtUtc >= monthStart)
-            .SumAsync(call => (long?)call.CostMicroUsd, cancellationToken) ?? 0;
     }
 
     internal static long CostMicroUsd(AiModelReply reply, AiPricing pricing) => (long)Math.Ceiling(

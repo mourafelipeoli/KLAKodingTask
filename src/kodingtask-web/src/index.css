@@ -26,6 +26,7 @@
   --purple-200: #d8c3eb;
   --purple-300: #c9aef0;
   --purple-400: #9a6cc6;
+  --purple-450: #8a5bbd;
   --purple-500: #7a45aa;
   --purple-600: #5b2a86;
   --purple-700: #4a2270;
@@ -70,12 +71,16 @@
   --green-700: #1d6b43;
   --green-50: #e5f3ea;
   --green-200: #b9dcc6;
+  --green-300: #7ee2a8;
   --amber-700: #7a4f00;
   --amber-50: #fbf0d9;
   --amber-200: #ecd29b;
+  --amber-300: #f2c97a;
+  --amber-500: #b7791f;
   --red-700: #a61b2e;
   --red-50: #fbe8ea;
   --red-200: #efbcc3;
+  --red-300: #f3a1ad;
   --blue-50: #e7f1fa;
   --blue-200: #bcd6ec;
 
@@ -132,12 +137,27 @@
   --color-danger-bg: var(--red-50);
   --color-danger-border: var(--red-200);
 
+  /* Charts and meters (infrastructure page). One hue for one series: the quieter step
+     for past hours, the brand step for the current one; contrast >= 3:1 on the surface
+     in both themes (checked with a palette validator). Warning and danger fills are
+     status colours and always come with an icon and a label. */
+  --color-chart-bar: var(--purple-400);
+  --color-chart-bar-current: var(--purple-600);
+  --color-chart-track: var(--purple-100);
+  --color-meter-fill: var(--purple-600);
+  --color-meter-warning: var(--amber-500);
+  --color-meter-danger: var(--red-700);
+  --color-badge-muted-text: var(--neutral-600);
+  --color-badge-muted-bg: var(--neutral-50);
+  --color-badge-muted-border: var(--neutral-200);
+
   /* Bands (footer, stats): dark in both themes, so white text keeps >= 7:1. */
   --gradient-band: linear-gradient(90deg, var(--purple-800) 0%, var(--blue-700) 100%);
   --gradient-accent: linear-gradient(90deg, var(--purple-600) 0%, var(--blue-600) 100%);
   --color-on-band: var(--neutral-0);
   --color-on-band-muted: rgb(255 255 255 / 80%);
   --color-on-band-border: rgb(255 255 255 / 22%);
+  --color-on-band-online: var(--green-300);
 
   --shadow-card: 0 8px 12px rgb(0 0 0 / 10%);
   --shadow-raised: 0 12px 28px rgb(27 10 44 / 16%);
@@ -242,6 +262,16 @@
   --color-danger-border: rgb(243 161 173 / 35%);
 
   --gradient-accent: linear-gradient(90deg, #5a1aa8 0%, #1e8fd6 100%);
+
+  --color-chart-bar: var(--purple-450);
+  --color-chart-bar-current: var(--purple-300);
+  --color-chart-track: rgb(154 108 198 / 20%);
+  --color-meter-fill: var(--purple-300);
+  --color-meter-warning: var(--amber-300);
+  --color-meter-danger: var(--red-300);
+  --color-badge-muted-text: var(--neutral-400);
+  --color-badge-muted-bg: var(--neutral-850);
+  --color-badge-muted-border: rgb(255 255 255 / 12%);
 
   --shadow-card: 0 8px 24px rgb(0 0 0 / 45%);
   --shadow-raised: 0 12px 32px rgb(0 0 0 / 55%);
@@ -639,6 +669,24 @@ select {
   background-color: var(--color-chip-hover);
 }
 
+/* Hero: the title block at the top of every page. */
+.hero {
+  padding-block: var(--space-12) var(--space-8);
+}
+
+.hero__title {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+  font-size: var(--text-display);
+  letter-spacing: 0.005em;
+}
+
+.hero__lead {
+  max-width: 62ch;
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+}
+
 /* Badges: a short status next to a result. */
 .badge {
   display: inline-flex;
@@ -661,6 +709,12 @@ select {
   color: var(--color-warning-text);
   background-color: var(--color-warning-bg);
   border-color: var(--color-warning-border);
+}
+
+.badge--muted {
+  color: var(--color-badge-muted-text);
+  background-color: var(--color-badge-muted-bg);
+  border-color: var(--color-badge-muted-border);
 }
 
 /* Notices. */
@@ -752,7 +806,7 @@ select {
 .language-menu__select {
   appearance: none;
   min-height: 40px;
-  max-width: 11rem;
+  max-width: 8.5rem;
   padding: var(--space-1) var(--space-3) var(--space-1) var(--space-8);
   color: var(--color-text);
   background-color: transparent;
@@ -771,6 +825,12 @@ select {
 .language-menu__select option {
   color: var(--color-text);
   background-color: var(--color-surface);
+}
+
+@media (min-width: 480px) {
+  .language-menu__select {
+    max-width: 11rem;
+  }
 }
 
 @media (min-width: 768px) {

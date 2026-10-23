@@ -12,3 +12,5 @@ fallback.
   `UseSetting` is used instead of `ConfigureAppConfiguration` because the minimal hosting
   model reads configuration while `Program` runs, before later configuration sources are
   applied.
+- `ServiceOverrides` replaces services after `Program` registered them (the infrastructure
+  tests swap the ECS task metadata and the AWS probe for fakes to pretend to run on AWS).

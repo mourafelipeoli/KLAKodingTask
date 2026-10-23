@@ -1,25 +1,7 @@
 /* ==========================================================================
-   Converter page: hero, converter card, result, comparison, send panel,
+   Converter page: converter card, result, comparison, send panel,
    stats strip and "how it works".
    ========================================================================== */
-
-/* Hero */
-.hero {
-  padding-block: var(--space-12) var(--space-8);
-}
-
-.hero__title {
-  max-width: 18ch;
-  margin-bottom: var(--space-5);
-  font-size: var(--text-display);
-  letter-spacing: 0.005em;
-}
-
-.hero__lead {
-  max-width: 62ch;
-  font-size: var(--text-lg);
-  color: var(--color-text-muted);
-}
 
 /* Every grid on this page uses minmax(0, 1fr) tracks: an auto track would grow to the
    intrinsic width of its widest control (a text input or a select is wide by default)
@@ -390,6 +372,11 @@
   margin-bottom: var(--space-3);
   font-size: var(--text-xl);
   font-weight: var(--weight-regular);
+}
+
+.how-it-works__more {
+  display: inline-block;
+  margin-top: var(--space-6);
 }
 
 .how-it-works__step-body {

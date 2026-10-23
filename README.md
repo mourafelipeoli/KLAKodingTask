@@ -11,6 +11,9 @@ KLA Senior Software Engineer coding task (web variant).
 - **Two engines:** the rules engine (deterministic, the reference) and an optional AI engine
   (Claude on Amazon Bedrock) whose answer is shown next to the rules engine's, with an
   "agrees / differs" badge.
+- **Where it runs:** the hosted version has a live
+  [infrastructure page](https://klakodingtask.mourafelipe.com/infrastructure) (container,
+  traffic, database, certificate, guardrails) that never shows an identifier.
 
 ```
 0                → zero dollars
@@ -100,6 +103,7 @@ ready-made requests.
 browser ──HTTPS──► KodingTask.Api (ASP.NET Core 10)
                     ├─ /api/conversions …  ─► KodingTask.Conversion (pure C#, no I/O)
                     ├─ /api/app-info          instance info + optional feature flags
+                    ├─ /api/infrastructure    read-only facts for the "Where this runs" page
                     ├─ /health                version and commit, never touches the DB
                     └─ everything else        the React app (static files; Vite in development)
                          │
@@ -148,6 +152,11 @@ under the file). That is where to look for the "why" of any class.
   per-client cap and a concurrency gate before it is made. The caps live in a parameter
   store, outside the code. See
   [`AiConversionService.notes.md`](src/KodingTask.Api/Ai/AiConversionService.notes.md).
+
+- **The infrastructure page reads, never reveals.** Facts come from the ECS task metadata
+  and a few read-only AWS calls, are cached for five minutes and are copied field by field
+  into a whitelisted report; a test proves that no ARN, account id or resource name leaks.
+  See [decision 5](docs/decisions/0005-infrastructure-page-from-read-only-facts.md).
 
 More decisions, with their alternatives, are recorded in [docs/decisions](docs/decisions).
 

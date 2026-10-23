@@ -10,6 +10,9 @@ load balancer).
   container.
 - **AI conversions**: 10 per minute per address (`RateLimits:AiPerMinute`). Each one may call
   a paid model, so the window is much tighter; the daily and monthly limits sit behind it.
+- **Infrastructure page**: 30 per minute per address (`RateLimits:InfrastructurePerMinute`).
+  The page asks once per visit; the limit only stops a loop from turning its database
+  queries into load.
 - **No queueing**: a rejected request gets 429 immediately with `Retry-After` and the same
   JSON error shape as every other refusal (`{ "error": "TooManyRequests", "message": … }`),
   so the client shows a translated message instead of hanging.

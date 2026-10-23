@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAppInfo } from "../app/useAppInfo";
 import logoWhite from "../assets/brand/koding-task-logo-white.svg";
 import logo from "../assets/brand/koding-task-logo.svg";
@@ -37,6 +37,15 @@ export default function SiteHeader() {
         </Link>
 
         <div className="site-header__tools">
+          <NavLink
+            to={ROUTES.infrastructure}
+            className="site-header__nav-link"
+            aria-label={t("Where this runs")}
+            title={t("Where this runs")}
+          >
+            <i className="bi bi-hdd-network" aria-hidden="true" />
+            <span className="site-header__nav-text">{t("Where this runs")}</span>
+          </NavLink>
           {author && (
             <a
               className="site-header__author"

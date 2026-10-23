@@ -1,15 +1,8 @@
 import { useAppInfo } from "../app/useAppInfo";
 import RichText from "../i18n/RichText";
 import { useText } from "../i18n/useText";
+import { hostOf } from "../utils/hostOf";
 import Notice from "./Notice";
-
-function hostOf(url: string): string {
-  try {
-    return new URL(url).host;
-  } catch {
-    return url;
-  }
-}
 
 // Shown wherever an optional feature is not configured on this instance (a fresh clone
 // has no e-mail, WhatsApp or AI credentials): the feature is still described, and the

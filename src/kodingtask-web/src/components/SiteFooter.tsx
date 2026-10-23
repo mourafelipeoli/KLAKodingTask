@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { useAppInfo } from "../app/useAppInfo";
 import logoWhite from "../assets/brand/koding-task-logo-white.svg";
 import RichText from "../i18n/RichText";
 import { useText } from "../i18n/useText";
+import { ROUTES } from "../routes/routePaths";
 import "./SiteFooter.css";
 
 export default function SiteFooter() {
@@ -47,6 +49,10 @@ export default function SiteFooter() {
               {t("Source code on GitHub")}
             </a>
           )}
+          <Link className="site-footer__link" to={ROUTES.infrastructure}>
+            <i className="bi bi-hdd-network" aria-hidden="true" />
+            {t("Where this runs")}
+          </Link>
           <a className="site-footer__link" href="/openapi/v1.json">
             <i className="bi bi-braces" aria-hidden="true" />
             {t("API documentation (OpenAPI)")}

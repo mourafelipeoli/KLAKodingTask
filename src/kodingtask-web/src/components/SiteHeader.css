@@ -74,9 +74,48 @@
   color: var(--color-brand-text);
 }
 
+/* Below 480px the bar is full with the logo, the portfolio link, the language and the
+   theme; the infrastructure page stays reachable from the converter page and the footer. */
+.site-header__nav-link {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding-inline: var(--space-2);
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition:
+    color var(--duration-base) var(--ease),
+    border-color var(--duration-base) var(--ease);
+}
+
+.site-header__nav-link:hover {
+  color: var(--color-link-hover);
+}
+
+.site-header__nav-link.active {
+  color: var(--color-brand-text);
+  border-bottom-color: var(--color-brand-accent);
+}
+
+.site-header__nav-link .bi {
+  font-size: 1.125rem;
+  color: var(--color-brand-text);
+}
+
 .site-header__author-name,
+.site-header__nav-text,
 .site-header__external {
   display: none;
+}
+
+@media (min-width: 480px) {
+  .site-header__nav-link {
+    display: inline-flex;
+  }
 }
 
 .site-header__external {
@@ -94,6 +133,7 @@
   }
 
   .site-header__author-name,
+  .site-header__nav-text,
   .site-header__external {
     display: inline;
   }

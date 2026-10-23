@@ -1,5 +1,7 @@
+import { Link } from "react-router-dom";
 import { useText } from "../../i18n/useText";
 import { textKey } from "../../i18n/textKey";
+import { ROUTES } from "../../routes/routePaths";
 
 const STEPS = [
   {
@@ -40,6 +42,9 @@ export default function HowItWorks() {
           </article>
         ))}
       </div>
+      <Link className="link-cta how-it-works__more" to={ROUTES.infrastructure}>
+        {t("See where this runs")}
+      </Link>
     </section>
   );
 }

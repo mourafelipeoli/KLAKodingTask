@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.BedrockRuntime" Version="4.0.101.13" />
+    <PackageReference Include="AWSSDK.CertificateManager" Version="4.0.102.12" />
+    <PackageReference Include="AWSSDK.CloudWatch" Version="4.0.107.1" />
+    <PackageReference Include="AWSSDK.ECS" Version="4.0.108.1" />
+    <PackageReference Include="AWSSDK.ElasticLoadBalancingV2" Version="4.0.101.17" />
+    <PackageReference Include="AWSSDK.RDS" Version="4.0.107.1" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="4.0.104.6" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">

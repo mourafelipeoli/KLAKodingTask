@@ -4,29 +4,69 @@
     {
       "Sid": "InvokeOwnInferenceProfile",
       "Effect": "Allow",
-      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Action": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream"
+      ],
       "Resource": "<APPLICATION_INFERENCE_PROFILE_ARN>"
     },
     {
       "Sid": "InvokeModelOnlyThroughOwnProfile",
       "Effect": "Allow",
-      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Action": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream"
+      ],
       "Resource": [
         "arn:aws:bedrock:<REGION>:<ACCOUNT_ID>:inference-profile/<SOURCE_INFERENCE_PROFILE_ID>",
         "arn:aws:bedrock:*::foundation-model/<FOUNDATION_MODEL_ID>"
       ],
       "Condition": {
-        "StringEquals": { "bedrock:InferenceProfileArn": "<APPLICATION_INFERENCE_PROFILE_ARN>" }
+        "StringEquals": {
+          "bedrock:InferenceProfileArn": "<APPLICATION_INFERENCE_PROFILE_ARN>"
+        }
       }
     },
     {
       "Sid": "ReadOwnLimits",
       "Effect": "Allow",
-      "Action": ["ssm:GetParametersByPath", "ssm:GetParameters", "ssm:GetParameter"],
+      "Action": [
+        "ssm:GetParametersByPath",
+        "ssm:GetParameters",
+        "ssm:GetParameter"
+      ],
       "Resource": [
         "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/<APP>/limits",
         "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/<APP>/limits/*"
       ]
+    },
+    {
+      "Sid": "DescribeOwnService",
+      "Effect": "Allow",
+      "Action": "ecs:DescribeServices",
+      "Resource": "arn:aws:ecs:<REGION>:<ACCOUNT_ID>:service/<CLUSTER>/<SERVICE>"
+    },
+    {
+      "Sid": "ReadTargetHealthAndMetrics",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:DescribeTargetHealth",
+        "elasticloadbalancing:DescribeTargetGroups",
+        "cloudwatch:GetMetricData"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DescribeOwnDatabase",
+      "Effect": "Allow",
+      "Action": "rds:DescribeDBInstances",
+      "Resource": "arn:aws:rds:<REGION>:<ACCOUNT_ID>:db:<DB_INSTANCE_ID>"
+    },
+    {
+      "Sid": "DescribeOwnCertificate",
+      "Effect": "Allow",
+      "Action": "acm:DescribeCertificate",
+      "Resource": "<CERTIFICATE_ARN>"
     }
   ]
 }

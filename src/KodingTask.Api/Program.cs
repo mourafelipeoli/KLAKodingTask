@@ -3,6 +3,7 @@ using KodingTask.Api.Ai;
 using KodingTask.Api.Contracts;
 using KodingTask.Api.Features;
 using KodingTask.Api.Hosting;
+using KodingTask.Api.Infrastructure;
 using KodingTask.Api.Limits;
 using KodingTask.Conversion;
 using KodingTask.Data;
@@ -33,6 +34,7 @@ builder.Services.AddSingleton(new FeatureAvailability(
     Ai: aiConfigured,
     MachineTranslation: false,
     ExternalLogin: false));
+builder.Services.AddInfrastructureReport(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers()

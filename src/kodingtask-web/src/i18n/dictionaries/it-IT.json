@@ -64,5 +64,19 @@
   "The maximum is 999 999 999 dollars.": "Il massimo è 999 999 999 dollari.",
   "This language is not supported.": "Questa lingua non è supportata.",
   "Too many conversions in a short time. Wait a minute and try again.": "Troppe conversioni in poco tempo. Attendi un minuto e riprova.",
-  "The conversion service is not reachable right now. Try again in a moment.": "Il servizio di conversione non è raggiungibile al momento. Riprova tra poco."
+  "The conversion service is not reachable right now. Try again in a moment.": "Il servizio di conversione non è raggiungibile al momento. Riprova tra poco.",
+  "Conversion engine": "Motore di conversione",
+  "Rules": "Regole",
+  "AI": "IA",
+  "Asking the AI engine…": "Interrogazione dell’IA…",
+  "AI answer": "Risposta dell’IA",
+  "Same answer as the rules engine": "Stessa risposta del motore a regole",
+  "Different from the rules engine": "Diversa dal motore a regole",
+  "Answered by {{model}} in {{seconds}} s": "Risposta di {{model}} in {{seconds}} s",
+  "The AI engine is paused right now. The words above come from the rules engine.": "L’IA è in pausa al momento. Il testo qui sopra viene dal motore a regole.",
+  "The AI engine has used its budget for this month. The words above come from the rules engine.": "L’IA ha esaurito il budget di questo mese. Il testo qui sopra viene dal motore a regole.",
+  "The AI engine has reached today's limit. The words above come from the rules engine.": "L’IA ha raggiunto il limite di oggi. Il testo qui sopra viene dal motore a regole.",
+  "You have reached today's limit of AI conversions. The words above come from the rules engine.": "Hai raggiunto il limite di conversioni con l’IA per oggi. Il testo qui sopra viene dal motore a regole.",
+  "The AI engine is busy. Try again in a few seconds.": "L’IA è occupata. Riprova tra qualche secondo.",
+  "The AI engine could not answer this time. The words above come from the rules engine.": "L’IA non è riuscita a rispondere questa volta. Il testo qui sopra viene dal motore a regole."
 }

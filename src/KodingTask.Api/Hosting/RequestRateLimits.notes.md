@@ -8,6 +8,8 @@ load balancer).
   A person typing and clicking never gets near it; a script looping over the endpoint is
   slowed to two requests per second, which keeps one client from monopolising a small
   container.
+- **AI conversions**: 10 per minute per address (`RateLimits:AiPerMinute`). Each one may call
+  a paid model, so the window is much tighter; the daily and monthly limits sit behind it.
 - **No queueing**: a rejected request gets 429 immediately with `Retry-After` and the same
   JSON error shape as every other refusal (`{ "error": "TooManyRequests", "message": … }`),
   so the client shows a translated message instead of hanging.

@@ -1,25 +1,34 @@
+import type { ReactNode } from "react";
 import { useText } from "../../i18n/useText";
 import type { ConversionResult } from "../../types/conversion";
+import { Engine } from "../../types/conversion";
 import { formatUsd } from "../../utils/formatAmount";
 import CopyButton from "../CopyButton";
 
 interface ResultCardProps {
   result: ConversionResult;
+  engine: Engine;
   languageName: string;
   isComparisonOpen: boolean;
   onToggleComparison: () => void;
+  children?: ReactNode;
 }
 
-function shareLink(result: ConversionResult): string {
+function shareLink(result: ConversionResult, engine: Engine): string {
   const query = new URLSearchParams({ amount: result.amount, language: result.language });
+  if (engine === Engine.Ai) {
+    query.set("engine", Engine.Ai);
+  }
   return `${window.location.origin}/?${query.toString()}`;
 }
 
 export default function ResultCard({
   result,
+  engine,
   languageName,
   isComparisonOpen,
   onToggleComparison,
+  children,
 }: ResultCardProps) {
   const { t, locale } = useText();
 
@@ -40,6 +49,7 @@ export default function ResultCard({
           {languageName}
         </span>
       </p>
+      {children}
       <div className="result-card__actions">
         <CopyButton
           text={result.words}
@@ -48,7 +58,7 @@ export default function ResultCard({
           icon="bi-clipboard"
         />
         <CopyButton
-          text={shareLink(result)}
+          text={shareLink(result, engine)}
           label={t("Copy link")}
           copiedLabel={t("Link copied")}
           icon="bi-link-45deg"

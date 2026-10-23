@@ -1,4 +1,5 @@
-﻿using System.Threading.RateLimiting;
+﻿using System.Globalization;
+using System.Threading.RateLimiting;
 using KodingTask.Api.Contracts;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -7,10 +8,12 @@ namespace KodingTask.Api.Hosting;
 public static class RequestRateLimits
 {
     public const string Conversion = "conversion";
+    public const string Ai = "ai";
 
     public static IServiceCollection AddRequestRateLimits(this IServiceCollection services, IConfiguration configuration)
     {
         var conversionsPerMinute = configuration.GetValue("RateLimits:ConversionsPerMinute", 120);
+        var aiPerMinute = configuration.GetValue("RateLimits:AiPerMinute", 10);
 
         return services.AddRateLimiter(options =>
         {
@@ -18,21 +21,29 @@ public static class RequestRateLimits
             options.OnRejected = async (context, cancellationToken) =>
             {
                 if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
-                    context.HttpContext.Response.Headers.RetryAfter = ((int)Math.Ceiling(retryAfter.TotalSeconds)).ToString();
+                {
+                    context.HttpContext.Response.Headers.RetryAfter =
+                        ((int)Math.Ceiling(retryAfter.TotalSeconds)).ToString(CultureInfo.InvariantCulture);
+                }
+
                 await context.HttpContext.Response.WriteAsJsonAsync(ErrorResponse.TooManyRequests, cancellationToken);
             };
 
-            options.AddPolicy(Conversion, context => RateLimitPartition.GetFixedWindowLimiter(
-                ClientAddress(context),
-                _ => new FixedWindowRateLimiterOptions
-                {
-                    PermitLimit = conversionsPerMinute,
-                    Window = TimeSpan.FromMinutes(1),
-                    QueueLimit = 0,
-                }));
+            options.AddPolicy(Conversion, context => PerClientPerMinute(context, conversionsPerMinute));
+            options.AddPolicy(Ai, context => PerClientPerMinute(context, aiPerMinute));
         });
     }
 
     internal static string ClientAddress(HttpContext context) =>
         context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+    private static RateLimitPartition<string> PerClientPerMinute(HttpContext context, int permitLimit) =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            ClientAddress(context),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = permitLimit,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            });
 }

@@ -1,0 +1,61 @@
+﻿using System.Text;
+using KodingTask.Conversion;
+
+namespace KodingTask.Api.Ai;
+
+public sealed class AiPromptBuilder
+{
+    private static readonly string[] ExampleInputs = ["0", "1", "25,1", "0,01", "45 100", "999 999 999,99"];
+    private static readonly string[] FrenchNumberingInputs = ["71", "80", "91"];
+
+    private const string Instructions =
+        """
+        You write amounts of US dollars in words, the way they are written out in full on a cheque, in the language and regional variant you are given.
+
+        The amount has already been validated: whole dollars from 0 to 999 999 999 and cents from 0 to 99.
+
+        Answer with the words only: no quotes, no digits, no explanation, no final punctuation, on a single line. Use lower case, except where the language capitalises nouns (German: Dollar, Cent, Million, Millionen).
+
+        Structure: the dollars in words followed by the currency word; when the cents are not zero, the language's word for "and", then the cents in words followed by the cent word. Write zero dollars even when there are cents.
+
+        Language rules:
+        - en-US: American style, no "and" inside a number ("one hundred one"); hyphens from twenty-one to ninety-nine; "dollar" only for exactly one, otherwise "dollars"; "cent" only for exactly one, otherwise "cents".
+        - pt-BR: "e" between hundreds, tens and units; between groups only before the last group, and only when that group is below one hundred or a multiple of one hundred ("mil e cem", "mil duzentos e cinquenta"); "cem" alone, "cento" before more; "mil", never "um mil"; "um milhão de dólares" and "dois milhões de dólares" for exact millions; "um dólar", "dólares", "um centavo", "centavos"; "zero dólares".
+        - de-DE: everything below a million is one word ("fünfundvierzigtausendeinhundert"); "einhundert", "eintausend"; "eine Million", "zwei Millionen"; "ein Dollar" and "ein Cent" for exactly one; "Dollar" and "Cent" do not change in the plural; an amount ending in one above one hundred ends in "eins" ("einhunderteins Dollar"); "null Dollar".
+        - fr-FR and fr-CA: soixante-dix, soixante et onze, quatre-vingts, quatre-vingt-un, quatre-vingt-dix, quatre-vingt-onze.
+        - fr-BE: septante, septante et un, quatre-vingts, quatre-vingt-un, nonante, nonante et un.
+        - fr-CH: septante, septante et un, huitante, huitante et un, nonante, nonante et un.
+        - All French variants: traditional spelling (hyphens below one hundred, "et un" for 21 to 71); "cents" and "quatre-vingts" take an "s" only at the end of the number or before "millions", never before "mille"; "mille" never takes "un" and never changes; "un million de dollars"; "zéro dollar" and "un dollar" in the singular, "dollars" from two; "un cent", "cents".
+        - it-IT: everything below a million is one word ("quarantacinquemilacento"); the tens drop their last vowel before "uno" and "otto" ("ventuno", "ventotto"); "centottanta"; an accent on a final "tre" ("ventitré"); "mille", "duemila"; "un milione di dollari" for exact millions; "un dollaro", "dollari", "un centesimo", "centesimi"; "zero dollari".
+
+        Examples (language | amount | words):
+        """;
+
+    public AiPromptBuilder(SpellerCatalog catalog)
+    {
+        var builder = new StringBuilder(Instructions).AppendLine();
+        foreach (var language in catalog.Languages)
+        {
+            catalog.TryGet(language.Code, out var speller);
+            var inputs = language.Code.StartsWith("fr-", StringComparison.Ordinal)
+                ? ExampleInputs.Concat(FrenchNumberingInputs)
+                : ExampleInputs;
+            foreach (var input in inputs)
+            {
+                AmountParser.TryParse(input, out var amount, out _);
+                builder.Append(language.Code).Append(" | ").Append(input).Append(" | ").AppendLine(speller!.Spell(amount));
+            }
+        }
+
+        SystemPrompt = builder.ToString();
+    }
+
+    public string SystemPrompt { get; }
+
+    public string UserPrompt(LanguageInfo language, MonetaryAmount amount) =>
+        $"""
+        Language: {language.Code} ({language.EnglishName})
+        Dollars: {amount.Dollars}
+        Cents: {amount.Cents}
+        """;
+}

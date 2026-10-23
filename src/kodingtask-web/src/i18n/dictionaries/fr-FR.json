@@ -64,5 +64,19 @@
   "The maximum is 999 999 999 dollars.": "Le maximum est de 999 999 999 dollars.",
   "This language is not supported.": "Cette langue n’est pas prise en charge.",
   "Too many conversions in a short time. Wait a minute and try again.": "Trop de conversions en peu de temps. Attendez une minute et réessayez.",
-  "The conversion service is not reachable right now. Try again in a moment.": "Le service de conversion est momentanément inaccessible. Réessayez dans un instant."
+  "The conversion service is not reachable right now. Try again in a moment.": "Le service de conversion est momentanément inaccessible. Réessayez dans un instant.",
+  "Conversion engine": "Moteur de conversion",
+  "Rules": "Règles",
+  "AI": "IA",
+  "Asking the AI engine…": "Interrogation de l’IA…",
+  "AI answer": "Réponse de l’IA",
+  "Same answer as the rules engine": "Même réponse que le moteur de règles",
+  "Different from the rules engine": "Différente du moteur de règles",
+  "Answered by {{model}} in {{seconds}} s": "Réponse de {{model}} en {{seconds}} s",
+  "The AI engine is paused right now. The words above come from the rules engine.": "L’IA est en pause pour le moment. Le texte ci-dessus vient du moteur de règles.",
+  "The AI engine has used its budget for this month. The words above come from the rules engine.": "L’IA a épuisé son budget pour ce mois-ci. Le texte ci-dessus vient du moteur de règles.",
+  "The AI engine has reached today's limit. The words above come from the rules engine.": "L’IA a atteint la limite du jour. Le texte ci-dessus vient du moteur de règles.",
+  "You have reached today's limit of AI conversions. The words above come from the rules engine.": "Vous avez atteint votre limite de conversions par IA pour aujourd’hui. Le texte ci-dessus vient du moteur de règles.",
+  "The AI engine is busy. Try again in a few seconds.": "L’IA est occupée. Réessayez dans quelques secondes.",
+  "The AI engine could not answer this time. The words above come from the rules engine.": "L’IA n’a pas pu répondre cette fois-ci. Le texte ci-dessus vient du moteur de règles."
 }

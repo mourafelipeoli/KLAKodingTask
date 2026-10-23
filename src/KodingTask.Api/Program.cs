@@ -1,7 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using KodingTask.Api.Ai;
 using KodingTask.Api.Contracts;
 using KodingTask.Api.Features;
 using KodingTask.Api.Hosting;
+using KodingTask.Api.Limits;
 using KodingTask.Conversion;
 using KodingTask.Data;
 using Microsoft.AspNetCore.DataProtection;
@@ -10,17 +12,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddApplicationVersion(AppContext.BaseDirectory);
 
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddKodingTaskDatabase(builder.Configuration, builder.Environment);
 builder.Services.AddDataProtection()
     .PersistKeysToDbContext<KodingTaskDbContext>()
     .SetApplicationName("KodingTask");
 builder.Services.AddLoadBalancerForwardedHeaders();
 builder.Services.AddRequestRateLimits(builder.Configuration);
+builder.Services.AddSingleton<ClientFingerprint>();
+builder.Services.AddUsageLimits(builder.Configuration);
 
 builder.Services.AddSingleton(SpellerCatalog.Default);
 builder.Services.AddSingleton<CurrencyConverter>();
 builder.Services.Configure<PublicSiteOptions>(builder.Configuration.GetSection(PublicSiteOptions.SectionName));
-builder.Services.AddSingleton(FeatureAvailability.None);
+
+var aiConfigured = builder.Services.AddAiConversion(builder.Configuration);
+builder.Services.AddSingleton(new FeatureAvailability(
+    Email: false,
+    WhatsApp: false,
+    Ai: aiConfigured,
+    MachineTranslation: false,
+    ExternalLogin: false));
 
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers()

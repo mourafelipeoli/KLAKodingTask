@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useAppInfo } from "../app/useAppInfo";
+import AiAnswerPanel from "../components/converter/AiAnswerPanel";
 import ConverterForm from "../components/converter/ConverterForm";
 import HowItWorks from "../components/converter/HowItWorks";
 import LanguageComparison from "../components/converter/LanguageComparison";
@@ -11,7 +13,8 @@ import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useText } from "../i18n/useText";
 import { conversionService } from "../services/conversionService";
 import { ApiError, NETWORK_ERROR, isAbortError } from "../services/httpClient";
-import type { ConversionResult, OutputLanguage } from "../types/conversion";
+import type { AiAnswer, ConversionResult, OutputLanguage } from "../types/conversion";
+import { Engine } from "../types/conversion";
 import { conversionErrorKey } from "../utils/conversionErrors";
 import "./ConvertPage.css";
 
@@ -26,8 +29,15 @@ function errorKeyOf(error: unknown): string {
   return conversionErrorKey(error instanceof ApiError ? error.code : NETWORK_ERROR);
 }
 
+function aiErrorOf(error: unknown): string {
+  return error instanceof ApiError && error.code === "TooManyRequests"
+    ? "AiBusy"
+    : "AiFailed";
+}
+
 export default function ConvertPage() {
   const { t, locale } = useText();
+  const { features } = useAppInfo();
   useDocumentTitle(t("Dollars in words"));
 
   const [searchParams] = useSearchParams();
@@ -37,20 +47,28 @@ export default function ConvertPage() {
     searchParams.get("language"),
   );
   const outputLanguage = chosenLanguage ?? locale;
+  const [engine, setEngine] = useState<Engine>(() =>
+    searchParams.get("engine") === Engine.Ai ? Engine.Ai : Engine.Rules,
+  );
 
   const [languages, setLanguages] =
     useState<readonly OutputLanguage[]>(FALLBACK_LANGUAGES);
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [errorKey, setErrorKey] = useState<string | null>(null);
+  const [aiAnswer, setAiAnswer] = useState<AiAnswer | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
   const [comparison, setComparison] = useState<readonly ConversionResult[] | null>(null);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isConverting, startConversion] = useTransition();
+  const [isAsking, startAsking] = useTransition();
   const [isComparing, startComparison] = useTransition();
 
   // The amount the visitor last asked for. Re-converted when the output language changes.
   const requestedAmount = useRef<string | null>(searchParams.get("amount"));
+  const engineChoice = useRef(engine);
   const comparisonWanted = useRef(false);
   const conversionAbort = useRef<AbortController | null>(null);
+  const aiAbort = useRef<AbortController | null>(null);
   const comparisonAbort = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -82,10 +100,35 @@ export default function ConvertPage() {
     });
   }, []);
 
+  // Always asks the server, even before /api/app-info has answered: an instance without
+  // AI answers "AiUnavailable", so there is no race between the two first requests.
+  const askAi = useCallback((value: string, language: string) => {
+    aiAbort.current?.abort();
+    const controller = new AbortController();
+    aiAbort.current = controller;
+    startAsking(async () => {
+      try {
+        const answer = await conversionService.convertWithAi(
+          value,
+          language,
+          controller.signal,
+        );
+        setAiAnswer(answer.ai);
+        setAiError(answer.aiError);
+      } catch (error) {
+        if (!isAbortError(error)) {
+          setAiAnswer(null);
+          setAiError(aiErrorOf(error));
+        }
+      }
+    });
+  }, []);
+
   const convert = useCallback(
     (value: string, language: string) => {
       requestedAmount.current = value;
       conversionAbort.current?.abort();
+      aiAbort.current?.abort();
       const controller = new AbortController();
       conversionAbort.current = controller;
       startConversion(async () => {
@@ -97,6 +140,11 @@ export default function ConvertPage() {
           );
           setResult(converted);
           setErrorKey(null);
+          setAiAnswer(null);
+          setAiError(null);
+          if (engineChoice.current === Engine.Ai) {
+            askAi(value, language);
+          }
           if (comparisonWanted.current) {
             compare(value);
           }
@@ -108,7 +156,7 @@ export default function ConvertPage() {
         }
       });
     },
-    [compare],
+    [askAi, compare],
   );
 
   // Converts the amount from a shared link on arrival, and converts again whenever the
@@ -118,6 +166,16 @@ export default function ConvertPage() {
       convert(requestedAmount.current, outputLanguage);
     }
   }, [outputLanguage, convert]);
+
+  function handleEngineChange(next: Engine) {
+    engineChoice.current = next;
+    setEngine(next);
+    setAiAnswer(null);
+    setAiError(null);
+    if (next === Engine.Ai && result) {
+      askAi(result.amount, result.language);
+    }
+  }
 
   function handleToggleComparison() {
     const next = !isComparisonOpen;
@@ -157,20 +215,33 @@ export default function ConvertPage() {
             amount={amount}
             language={outputLanguage}
             languages={languages}
+            engine={engine}
+            isAiAvailable={features.ai}
             isConverting={isConverting}
             errorKey={errorKey}
             onAmountChange={setAmount}
             onLanguageChange={setChosenLanguage}
+            onEngineChange={handleEngineChange}
             onSubmit={() => convert(amount, outputLanguage)}
             onExample={handleExample}
           />
           {result && (
             <ResultCard
               result={result}
+              engine={engine}
               languageName={nameOf(result.language)}
               isComparisonOpen={isComparisonOpen}
               onToggleComparison={handleToggleComparison}
-            />
+            >
+              {engine === Engine.Ai && (
+                <AiAnswerPanel
+                  answer={aiAnswer}
+                  errorCode={aiError}
+                  language={result.language}
+                  isLoading={isAsking}
+                />
+              )}
+            </ResultCard>
           )}
         </div>
 

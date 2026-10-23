@@ -64,5 +64,19 @@
   "The maximum is 999 999 999 dollars.": "The maximum is 999 999 999 dollars.",
   "This language is not supported.": "This language is not supported.",
   "Too many conversions in a short time. Wait a minute and try again.": "Too many conversions in a short time. Wait a minute and try again.",
-  "The conversion service is not reachable right now. Try again in a moment.": "The conversion service is not reachable right now. Try again in a moment."
+  "The conversion service is not reachable right now. Try again in a moment.": "The conversion service is not reachable right now. Try again in a moment.",
+  "Conversion engine": "Conversion engine",
+  "Rules": "Rules",
+  "AI": "AI",
+  "Asking the AI engine…": "Asking the AI engine…",
+  "AI answer": "AI answer",
+  "Same answer as the rules engine": "Same answer as the rules engine",
+  "Different from the rules engine": "Different from the rules engine",
+  "Answered by {{model}} in {{seconds}} s": "Answered by {{model}} in {{seconds}} s",
+  "The AI engine is paused right now. The words above come from the rules engine.": "The AI engine is paused right now. The words above come from the rules engine.",
+  "The AI engine has used its budget for this month. The words above come from the rules engine.": "The AI engine has used its budget for this month. The words above come from the rules engine.",
+  "The AI engine has reached today's limit. The words above come from the rules engine.": "The AI engine has reached today's limit. The words above come from the rules engine.",
+  "You have reached today's limit of AI conversions. The words above come from the rules engine.": "You have reached today's limit of AI conversions. The words above come from the rules engine.",
+  "The AI engine is busy. Try again in a few seconds.": "The AI engine is busy. Try again in a few seconds.",
+  "The AI engine could not answer this time. The words above come from the rules engine.": "The AI engine could not answer this time. The words above come from the rules engine."
 }

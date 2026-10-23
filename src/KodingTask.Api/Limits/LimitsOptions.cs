@@ -1,0 +1,20 @@
+﻿namespace KodingTask.Api.Limits;
+
+public sealed class LimitsOptions
+{
+    public const string SectionName = "Limits";
+
+    public string? SsmPath { get; set; }
+
+    public string? SsmRegion { get; set; }
+
+    public int CacheSeconds { get; set; } = 60;
+
+    public bool KillSwitch { get; set; }
+
+    public int AiCallsPerDay { get; set; } = 200;
+
+    public int AiCallsPerClientPerDay { get; set; } = 20;
+
+    public decimal AiMonthlyBudgetUsd { get; set; } = 2m;
+}

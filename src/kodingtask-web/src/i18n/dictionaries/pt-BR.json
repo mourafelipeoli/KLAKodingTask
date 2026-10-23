@@ -64,5 +64,19 @@
   "The maximum is 999 999 999 dollars.": "O máximo é 999 999 999 dólares.",
   "This language is not supported.": "Este idioma não é suportado.",
   "Too many conversions in a short time. Wait a minute and try again.": "Muitas conversões em pouco tempo. Aguarde um minuto e tente de novo.",
-  "The conversion service is not reachable right now. Try again in a moment.": "O serviço de conversão não está acessível agora. Tente novamente em instantes."
+  "The conversion service is not reachable right now. Try again in a moment.": "O serviço de conversão não está acessível agora. Tente novamente em instantes.",
+  "Conversion engine": "Motor de conversão",
+  "Rules": "Regras",
+  "AI": "IA",
+  "Asking the AI engine…": "Consultando a IA…",
+  "AI answer": "Resposta da IA",
+  "Same answer as the rules engine": "Mesma resposta do motor de regras",
+  "Different from the rules engine": "Diferente do motor de regras",
+  "Answered by {{model}} in {{seconds}} s": "Respondido por {{model}} em {{seconds}} s",
+  "The AI engine is paused right now. The words above come from the rules engine.": "A IA está pausada no momento. O texto acima vem do motor de regras.",
+  "The AI engine has used its budget for this month. The words above come from the rules engine.": "A IA usou todo o orçamento deste mês. O texto acima vem do motor de regras.",
+  "The AI engine has reached today's limit. The words above come from the rules engine.": "A IA atingiu o limite de hoje. O texto acima vem do motor de regras.",
+  "You have reached today's limit of AI conversions. The words above come from the rules engine.": "Você atingiu o limite de conversões por IA de hoje. O texto acima vem do motor de regras.",
+  "The AI engine is busy. Try again in a few seconds.": "A IA está ocupada. Tente novamente em alguns segundos.",
+  "The AI engine could not answer this time. The words above come from the rules engine.": "A IA não conseguiu responder desta vez. O texto acima vem do motor de regras."
 }

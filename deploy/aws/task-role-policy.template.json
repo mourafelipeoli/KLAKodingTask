@@ -1,0 +1,32 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "InvokeOwnInferenceProfile",
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Resource": "<APPLICATION_INFERENCE_PROFILE_ARN>"
+    },
+    {
+      "Sid": "InvokeModelOnlyThroughOwnProfile",
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Resource": [
+        "arn:aws:bedrock:<REGION>:<ACCOUNT_ID>:inference-profile/<SOURCE_INFERENCE_PROFILE_ID>",
+        "arn:aws:bedrock:*::foundation-model/<FOUNDATION_MODEL_ID>"
+      ],
+      "Condition": {
+        "StringEquals": { "bedrock:InferenceProfileArn": "<APPLICATION_INFERENCE_PROFILE_ARN>" }
+      }
+    },
+    {
+      "Sid": "ReadOwnLimits",
+      "Effect": "Allow",
+      "Action": ["ssm:GetParametersByPath", "ssm:GetParameters", "ssm:GetParameter"],
+      "Resource": [
+        "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/<APP>/limits",
+        "arn:aws:ssm:<REGION>:<ACCOUNT_ID>:parameter/<APP>/limits/*"
+      ]
+    }
+  ]
+}

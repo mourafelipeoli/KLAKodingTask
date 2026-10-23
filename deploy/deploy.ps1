@@ -11,8 +11,10 @@
     1. refuses to run with uncommitted changes (the deployed commit must be reproducible);
     2. builds the image from src/KodingTask.Api/Dockerfile, tagged <version>-<commit>;
     3. logs in to ECR and pushes the image;
-    4. clones the service's current task definition, changing only the image and the
-       BUILD_VERSION, BUILD_COMMIT and BUILD_DATE variables;
+    4. clones the service's current task definition, changing only the image, the
+       BUILD_VERSION, BUILD_COMMIT and BUILD_DATE variables, and the variables and secrets
+       given in -EnvironmentFile / -SecretsFile (JSON objects: { "NAME": "value" } and
+       { "NAME": "arn-of-secret-or-parameter" }), which are added or replaced;
     5. updates the service and waits until the deployment completes (the ECS circuit
        breaker rolls back automatically if the new tasks never become healthy);
     6. polls the health URL until it reports the expected version and commit.
@@ -28,8 +30,10 @@ param(
     [Parameter(Mandatory)] [string] $Service,
     [Parameter(Mandatory)] [string] $Repository,
     [Parameter(Mandatory)] [string] $HealthUrl,
-    [string] $Profile,
+    [string] $AwsProfile,
     [string] $Container,
+    [string] $EnvironmentFile,
+    [string] $SecretsFile,
     [switch] $AllowDirty,
     [int] $TimeoutMinutes = 15
 )
@@ -41,7 +45,7 @@ Set-Location $root
 
 function Invoke-Aws {
     $arguments = @($args) + @('--region', $Region, '--output', 'json')
-    if ($Profile) { $arguments += @('--profile', $Profile) }
+    if ($AwsProfile) { $arguments += @('--profile', $AwsProfile) }
     $result = & aws @arguments
     if ($LASTEXITCODE -ne 0) { throw "aws $($args -join ' ') failed with exit code $LASTEXITCODE." }
     if ($result) { return ($result | Out-String | ConvertFrom-Json -Depth 50) }
@@ -78,7 +82,7 @@ docker build -f src/KodingTask.Api/Dockerfile -t $image .
 
 Write-Step 'Pushing the image'
 $loginArguments = @('ecr', 'get-login-password', '--region', $Region)
-if ($Profile) { $loginArguments += @('--profile', $Profile) }
+if ($AwsProfile) { $loginArguments += @('--profile', $AwsProfile) }
 & aws @loginArguments | docker login --username AWS --password-stdin $registry
 docker push $image
 
@@ -95,13 +99,35 @@ $containerDefinition = if ($Container) {
 if (-not $containerDefinition) { throw "Container '$Container' not found in the task definition." }
 $containerDefinition.image = $image
 
-$build = @{ BUILD_VERSION = $version; BUILD_COMMIT = $commit; BUILD_DATE = $buildDate }
+function Read-Pairs([string] $path) {
+    $pairs = [ordered]@{}
+    if ($path) {
+        $json = Get-Content -Raw -Path $path | ConvertFrom-Json -AsHashtable
+        foreach ($key in $json.Keys) { $pairs[$key] = [string] $json[$key] }
+    }
+    return $pairs
+}
+
+$variables = Read-Pairs $EnvironmentFile
+foreach ($entry in @{ BUILD_VERSION = $version; BUILD_COMMIT = $commit; BUILD_DATE = $buildDate }.GetEnumerator()) {
+    $variables[$entry.Key] = $entry.Value
+}
 $environment = [System.Collections.Generic.List[object]]::new()
 foreach ($variable in @($containerDefinition.environment)) {
-    if ($variable -and -not $build.ContainsKey($variable.name)) { $environment.Add($variable) }
+    if ($variable -and -not $variables.Contains($variable.name)) { $environment.Add($variable) }
 }
-foreach ($entry in $build.GetEnumerator()) { $environment.Add([pscustomobject]@{ name = $entry.Key; value = $entry.Value }) }
+foreach ($entry in $variables.GetEnumerator()) { $environment.Add([pscustomobject]@{ name = $entry.Key; value = $entry.Value }) }
 $containerDefinition.environment = $environment.ToArray()
+
+$secretReferences = Read-Pairs $SecretsFile
+if ($secretReferences.Count -gt 0) {
+    $secrets = [System.Collections.Generic.List[object]]::new()
+    foreach ($secret in @($containerDefinition.secrets)) {
+        if ($secret -and -not $secretReferences.Contains($secret.name)) { $secrets.Add($secret) }
+    }
+    foreach ($entry in $secretReferences.GetEnumerator()) { $secrets.Add([pscustomobject]@{ name = $entry.Key; valueFrom = $entry.Value }) }
+    $containerDefinition | Add-Member -NotePropertyName secrets -NotePropertyValue $secrets.ToArray() -Force
+}
 
 foreach ($readOnly in 'taskDefinitionArn', 'revision', 'status', 'requiresAttributes', 'compatibilities',
                      'registeredAt', 'registeredBy', 'deregisteredAt') {

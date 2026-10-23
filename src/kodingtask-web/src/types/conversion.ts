@@ -13,3 +13,23 @@ export interface OutputLanguage {
   englishName: string;
   nativeName: string;
 }
+
+export interface AiAnswer {
+  words: string;
+  agrees: boolean;
+  model: string;
+  latencyMs: number;
+}
+
+export interface AiConversionResult {
+  deterministic: ConversionResult;
+  ai: AiAnswer | null;
+  aiError: string | null;
+}
+
+export const Engine = {
+  Rules: "rules",
+  Ai: "ai",
+} as const;
+
+export type Engine = (typeof Engine)[keyof typeof Engine];

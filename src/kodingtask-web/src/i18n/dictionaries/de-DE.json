@@ -64,5 +64,19 @@
   "The maximum is 999 999 999 dollars.": "Der Höchstbetrag ist 999 999 999 Dollar.",
   "This language is not supported.": "Diese Sprache wird nicht unterstützt.",
   "Too many conversions in a short time. Wait a minute and try again.": "Zu viele Umwandlungen in kurzer Zeit. Warten Sie eine Minute und versuchen Sie es erneut.",
-  "The conversion service is not reachable right now. Try again in a moment.": "Der Umrechnungsdienst ist gerade nicht erreichbar. Versuchen Sie es gleich noch einmal."
+  "The conversion service is not reachable right now. Try again in a moment.": "Der Umrechnungsdienst ist gerade nicht erreichbar. Versuchen Sie es gleich noch einmal.",
+  "Conversion engine": "Umwandlungsmethode",
+  "Rules": "Regeln",
+  "AI": "KI",
+  "Asking the AI engine…": "KI wird gefragt…",
+  "AI answer": "Antwort der KI",
+  "Same answer as the rules engine": "Gleiche Antwort wie das Regelwerk",
+  "Different from the rules engine": "Anders als das Regelwerk",
+  "Answered by {{model}} in {{seconds}} s": "Beantwortet von {{model}} in {{seconds}} s",
+  "The AI engine is paused right now. The words above come from the rules engine.": "Die KI ist gerade pausiert. Der Text oben stammt vom Regelwerk.",
+  "The AI engine has used its budget for this month. The words above come from the rules engine.": "Die KI hat ihr Budget für diesen Monat aufgebraucht. Der Text oben stammt vom Regelwerk.",
+  "The AI engine has reached today's limit. The words above come from the rules engine.": "Die KI hat das heutige Limit erreicht. Der Text oben stammt vom Regelwerk.",
+  "You have reached today's limit of AI conversions. The words above come from the rules engine.": "Sie haben Ihr heutiges Limit an KI-Umwandlungen erreicht. Der Text oben stammt vom Regelwerk.",
+  "The AI engine is busy. Try again in a few seconds.": "Die KI ist gerade ausgelastet. Versuchen Sie es in ein paar Sekunden erneut.",
+  "The AI engine could not answer this time. The words above come from the rules engine.": "Die KI konnte diesmal nicht antworten. Der Text oben stammt vom Regelwerk."
 }

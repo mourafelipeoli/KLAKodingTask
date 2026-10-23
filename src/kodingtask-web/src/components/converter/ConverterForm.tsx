@@ -1,6 +1,9 @@
 import { useId } from "react";
 import { useText } from "../../i18n/useText";
 import type { OutputLanguage } from "../../types/conversion";
+import { Engine } from "../../types/conversion";
+import FeatureUnavailable from "../FeatureUnavailable";
+import EngineSelector from "./EngineSelector";
 
 // The six inputs of the task statement, one click away.
 const EXAMPLES = ["0", "1", "25,1", "0,01", "45 100", "999 999 999,99"] as const;
@@ -9,10 +12,13 @@ interface ConverterFormProps {
   amount: string;
   language: string;
   languages: readonly OutputLanguage[];
+  engine: Engine;
+  isAiAvailable: boolean;
   isConverting: boolean;
   errorKey: string | null;
   onAmountChange: (amount: string) => void;
   onLanguageChange: (language: string) => void;
+  onEngineChange: (engine: Engine) => void;
   onSubmit: () => void;
   onExample: (amount: string) => void;
 }
@@ -21,10 +27,13 @@ export default function ConverterForm({
   amount,
   language,
   languages,
+  engine,
+  isAiAvailable,
   isConverting,
   errorKey,
   onAmountChange,
   onLanguageChange,
+  onEngineChange,
   onSubmit,
   onExample,
 }: ConverterFormProps) {
@@ -118,6 +127,9 @@ export default function ConverterForm({
           {t(errorKey)}
         </p>
       )}
+
+      <EngineSelector engine={engine} onChange={onEngineChange} />
+      {engine === Engine.Ai && !isAiAvailable && <FeatureUnavailable />}
 
       <div className="converter__examples">
         <span className="converter__examples-label">{t("Try an example:")}</span>

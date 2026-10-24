@@ -4,6 +4,8 @@ export interface Account {
   /** Masked, e.g. "+49*******5678"; the full number never comes back from the server. */
   whatsAppNumber: string | null;
   deliveriesLeftToday: number | null;
+  /** May review the translations (the server's Admin:Emails list). */
+  isAdmin: boolean;
 }
 
 export interface DeliveryResult {
@@ -16,4 +18,5 @@ export const SIGNED_OUT: Account = {
   email: null,
   whatsAppNumber: null,
   deliveriesLeftToday: null,
+  isAdmin: false,
 };

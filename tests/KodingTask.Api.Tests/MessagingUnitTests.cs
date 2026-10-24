@@ -1,6 +1,8 @@
 ﻿using KodingTask.Api.Accounts;
 using KodingTask.Api.Messaging;
+using KodingTask.Api.Translations;
 using KodingTask.Conversion;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KodingTask.Api.Tests;
 
@@ -12,39 +14,41 @@ public sealed class MessagingUnitTests
     [Fact]
     public void Email_texts_are_complete_in_every_language_with_the_same_placeholders()
     {
-        var texts = new MessageTexts();
-        var source = texts.Dictionaries[MessageTexts.SourceLocale];
+        var server = BakedDictionaries.Load().Server;
+        var source = server[TranslationLocales.Source].ToDictionary();
         Assert.All(source, entry => Assert.Equal(entry.Key, entry.Value));
 
         foreach (var locale in CompleteLocales)
         {
-            var dictionary = texts.Dictionaries[locale];
+            var dictionary = server[locale].ToDictionary();
             Assert.Equal(source.Keys.Order(), dictionary.Keys.Order());
             foreach (var (key, value) in dictionary)
             {
                 Assert.False(string.IsNullOrWhiteSpace(value), $"{locale}: {key}");
-                Assert.Equal(MessageTexts.PlaceholdersOf(key), MessageTexts.PlaceholdersOf(value));
+                Assert.Equal(BakedDictionaries.PlaceholdersOf(key), BakedDictionaries.PlaceholdersOf(value));
             }
         }
 
-        Assert.All(texts.Dictionaries["fr-CA"].Keys, key => Assert.Contains(key, source.Keys));
+        Assert.All(server["fr-CA"].Select(entry => entry.Key), key => Assert.Contains(key, source.Keys));
     }
 
     [Fact]
     public void Regional_french_falls_back_to_france_and_unknown_locales_to_english()
     {
-        var texts = new MessageTexts();
+        using var factory = new ApiFactory();
+        var texts = factory.Services.GetRequiredService<ServerTexts>();
 
         const string Key = "You received this email because you asked Koding Task to send you this result.";
-        Assert.Equal("Vous recevez ce courriel parce que vous avez demandé à Koding Task de vous envoyer ce résultat.", texts.Translate("fr-CA", Key));
-        Assert.Equal("Vous recevez cet e-mail parce que vous avez demandé à Koding Task de vous envoyer ce résultat.", texts.Translate("fr-CH", Key));
-        Assert.Equal(Key, texts.Translate("sv-SE", Key));
+        Assert.Equal("Vous recevez ce courriel parce que vous avez demandé à Koding Task de vous envoyer ce résultat.", texts.Translate(Key, "fr-CA"));
+        Assert.Equal("Vous recevez cet e-mail parce que vous avez demandé à Koding Task de vous envoyer ce résultat.", texts.Translate(Key, "fr-CH"));
+        Assert.Equal(Key, texts.Translate(Key, "sv-SE"));
     }
 
     [Fact]
     public void The_email_encodes_everything_it_did_not_write_itself()
     {
-        var composer = new EmailComposer(new MessageTexts());
+        using var factory = new ApiFactory();
+        var composer = new EmailComposer(factory.Services.GetRequiredService<ServerTexts>());
 
         var email = composer.Result("en-US", "US$ 1.00", "<script>alert(1)</script>", "en-US", "English (US)", "https://example.com/?a=1&b=2");
 

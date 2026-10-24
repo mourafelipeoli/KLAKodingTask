@@ -6,9 +6,10 @@ public sealed record AccountResponse(
     bool IsSignedIn,
     string? Email,
     string? WhatsAppNumber,
-    int? DeliveriesLeftToday)
+    int? DeliveriesLeftToday,
+    bool IsAdmin)
 {
-    public static AccountResponse SignedOut { get; } = new(false, null, null, null);
+    public static AccountResponse SignedOut { get; } = new(false, null, null, null, false);
 }
 
 public sealed record FmIdForm(string? ReturnUrl, string? UiLocale);

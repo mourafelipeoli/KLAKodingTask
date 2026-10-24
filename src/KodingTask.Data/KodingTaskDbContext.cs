@@ -23,6 +23,10 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
 
     public DbSet<ConversionRecord> ConversionRecords => Set<ConversionRecord>();
 
+    public DbSet<Term> Terms => Set<Term>();
+
+    public DbSet<Translation> Translations => Set<Translation>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<Enum>().HaveConversion<string>().HaveMaxLength(64);
@@ -87,6 +91,25 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
             entity.HasIndex(record => new { record.UserId, record.Amount, record.LanguageCode }).IsUnique();
             entity.HasIndex(record => new { record.UserId, record.ConvertedAtUtc });
             entity.HasIndex(record => record.ConvertedAtUtc);
+        });
+
+        modelBuilder.Entity<Term>(entity =>
+        {
+            entity.ToTable("Terms");
+            entity.Property(term => term.Text).HasMaxLength(1000);
+            entity.Property(term => term.TextHash).HasMaxLength(64);
+            entity.HasIndex(term => term.TextHash).IsUnique();
+            entity.HasMany(term => term.Translations).WithOne(translation => translation.Term)
+                .HasForeignKey(translation => translation.TermId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Translation>(entity =>
+        {
+            entity.ToTable("Translations");
+            entity.Property(translation => translation.Locale).HasMaxLength(16);
+            entity.Property(translation => translation.Text).HasMaxLength(2000);
+            entity.HasIndex(translation => new { translation.TermId, translation.Locale }).IsUnique();
+            entity.HasIndex(translation => translation.Locale);
         });
     }
 }

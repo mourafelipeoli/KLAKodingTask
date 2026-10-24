@@ -16,9 +16,13 @@ load balancer).
 - **Accounts and deliveries**: 20 per minute per address (`RateLimits:AccountPerMinute`), on
   every account, sign-in, phone-code and delivery call. It slows code guessing, and the daily
   caps sit behind it.
+- **Translations**: 30 per minute per address (`RateLimits:TranslationsPerMinute`) on the
+  term registration endpoint. A page reports a few texts once; the daily caps in
+  `TermRegistry` sit behind it.
 - **No queueing**: a rejected request gets 429 immediately with `Retry-After` and the same
   JSON error shape as every other refusal (`{ "error": "TooManyRequests", "message": … }`),
-  so the client shows a translated message instead of hanging.
+  with the message in the request's language, so the client shows a translated message
+  instead of hanging.
 
 This is application hygiene, not the cost guardrail. Limits that protect money (emails,
 WhatsApp messages, AI calls) live outside the code, where whoever holds the code cannot

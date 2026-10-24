@@ -1,62 +1,76 @@
-// The UI locales. They are the same codes as the server's output languages, so one code
-// means one thing everywhere: "fr-BE" is Belgian French in the menu and in the words.
-export const LOCALES = [
-  { code: "en-US", nativeName: "English (US)" },
-  { code: "pt-BR", nativeName: "Português (Brasil)" },
-  { code: "de-DE", nativeName: "Deutsch (Deutschland)" },
-  { code: "fr-FR", nativeName: "Français (France)" },
-  { code: "fr-CA", nativeName: "Français (Canada)" },
-  { code: "fr-CH", nativeName: "Français (Suisse)" },
-  { code: "fr-BE", nativeName: "Français (Belgique)" },
-  { code: "it-IT", nativeName: "Italiano (Italia)" },
-  { code: "es-ES", nativeName: "Español (España)" },
-  { code: "pl-PL", nativeName: "Polski (Polska)" },
-  { code: "zh-CN", nativeName: "简体中文" },
-  { code: "zh-TW", nativeName: "繁體中文" },
-  { code: "ja-JP", nativeName: "日本語" },
-  { code: "ko-KR", nativeName: "한국어" },
-] as const;
+import type { InterfaceLanguage } from "../types/translation";
 
-export type LocaleCode = (typeof LOCALES)[number]["code"];
+// The interface languages. The server's InterfaceLanguage enum is the list: a language added
+// there appears in the menu and gets its texts without any change here. This copy matches
+// the dictionaries bundled with the app and is used until the server's list arrives (and if
+// it never does). The codes are also the converter's output languages, so one code means one
+// thing everywhere: "fr-BE" is Belgian French in the menu and in the words.
+export const LOCALES: readonly InterfaceLanguage[] = [
+  { code: "en-US", nativeName: "English (US)", variantOf: null },
+  { code: "pt-BR", nativeName: "Português (Brasil)", variantOf: null },
+  { code: "de-DE", nativeName: "Deutsch (Deutschland)", variantOf: null },
+  { code: "fr-FR", nativeName: "Français (France)", variantOf: null },
+  { code: "fr-CA", nativeName: "Français (Canada)", variantOf: "fr-FR" },
+  { code: "fr-CH", nativeName: "Français (Suisse)", variantOf: "fr-FR" },
+  { code: "fr-BE", nativeName: "Français (Belgique)", variantOf: "fr-FR" },
+  { code: "it-IT", nativeName: "Italiano (Italia)", variantOf: null },
+  { code: "es-ES", nativeName: "Español (España)", variantOf: null },
+  { code: "pl-PL", nativeName: "Polski (Polska)", variantOf: null },
+  { code: "zh-CN", nativeName: "简体中文", variantOf: null },
+  { code: "zh-TW", nativeName: "繁體中文", variantOf: null },
+  { code: "ja-JP", nativeName: "日本語", variantOf: null },
+  { code: "ko-KR", nativeName: "한국어", variantOf: null },
+];
+
+/** A language code such as "de-DE"; any code the server declares. */
+export type LocaleCode = string;
 
 export const DEFAULT_LOCALE: LocaleCode = "en-US";
 
-// A regional French dictionary only holds what differs from France; the rest falls back.
-export const PARENT_LOCALE: Partial<Record<LocaleCode, LocaleCode>> = {
-  "fr-CA": "fr-FR",
-  "fr-CH": "fr-FR",
-  "fr-BE": "fr-FR",
-};
-
-// Closest supported locale for a language without an exact match (de-AT, pt-PT, en-GB, zh-SG…).
-const BY_LANGUAGE: Record<string, LocaleCode> = {
-  en: "en-US",
-  pt: "pt-BR",
-  de: "de-DE",
-  fr: "fr-FR",
-  it: "it-IT",
-  es: "es-ES",
-  pl: "pl-PL",
-  zh: "zh-CN",
-  ja: "ja-JP",
-  ko: "ko-KR",
-};
+interface LanguageCode {
+  code: string;
+  variantOf?: string | null;
+}
 
 // Chinese written in traditional characters: Taiwan, Hong Kong, Macau, or an explicit script.
 const TRADITIONAL_CHINESE = /^zh-(tw|hk|mo|hant)(-|$)/;
 
-export function matchLocale(candidate: string | null | undefined): LocaleCode | null {
+/**
+ * The language of the list closest to a browser or address tag, the same way the server
+ * matches it: exact code, then traditional Chinese, then the first language with the same
+ * prefix that is not a regional variant (de-AT → de-DE, pt-PT → pt-BR, zh-SG → zh-CN).
+ */
+export function matchLocale(
+  candidate: string | null | undefined,
+  languages: readonly LanguageCode[] = LOCALES,
+): LocaleCode | null {
   if (!candidate) {
     return null;
   }
-  const normalized = candidate.replace("_", "-").toLowerCase();
-  const exact = LOCALES.find((locale) => locale.code.toLowerCase() === normalized);
+  const normalized = candidate.trim().replace("_", "-").toLowerCase();
+  const byCode = (code: string) =>
+    languages.find((language) => language.code.toLowerCase() === code);
+  const exact = byCode(normalized);
   if (exact) {
     return exact.code;
   }
   if (TRADITIONAL_CHINESE.test(normalized)) {
-    return "zh-TW";
+    const traditional = byCode("zh-tw");
+    if (traditional) {
+      return traditional.code;
+    }
   }
-  const language = normalized.split("-")[0] ?? "";
-  return BY_LANGUAGE[language] ?? null;
+  const prefix = `${normalized.split("-")[0] ?? ""}-`;
+  const sameLanguage = languages.find(
+    (language) => !language.variantOf && language.code.toLowerCase().startsWith(prefix),
+  );
+  return sameLanguage?.code ?? null;
+}
+
+/** The language a regional variant inherits its texts from, or null. */
+export function parentOf(
+  locale: LocaleCode,
+  languages: readonly InterfaceLanguage[],
+): LocaleCode | null {
+  return languages.find((language) => language.code === locale)?.variantOf ?? null;
 }

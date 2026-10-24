@@ -11,10 +11,13 @@ public static class AccountServiceCollectionExtensions
     public const string AntiforgeryCookie = "__Host-kodingtask-xsrf";
     public const string AntiforgeryHeader = "X-XSRF-TOKEN";
 
-    public static IServiceCollection AddAccounts(this IServiceCollection services)
+    public static IServiceCollection AddAccounts(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.SectionName));
+        services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, AdminHandler>();
         services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+            options.AddPolicy(AdminOptions.Policy, policy => policy.RequireAuthenticatedUser().AddRequirements(new AdminRequirement())));
         services.AddIdentityCore<IdentityUser>(options => options.User.RequireUniqueEmail = true)
             .AddEntityFrameworkStores<KodingTaskDbContext>()
             .AddSignInManager();

@@ -9,7 +9,7 @@ import RecentConversions from "../components/converter/RecentConversions";
 import ResultCard from "../components/converter/ResultCard";
 import SendResultPanel from "../components/converter/SendResultPanel";
 import StatsStrip from "../components/converter/StatsStrip";
-import { LOCALES } from "../config/locales";
+import { DEFAULT_LOCALE, LOCALES, matchLocale } from "../config/locales";
 import { useDeployedVersion } from "../hooks/useDeployedVersion";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useText } from "../i18n/useText";
@@ -52,17 +52,20 @@ export default function ConvertPage() {
 
   const [searchParams] = useSearchParams();
   const [amount, setAmount] = useState(() => searchParams.get("amount") ?? "");
-  // Null means "follow the interface language"; a choice in the form overrides it.
+  const [languages, setLanguages] =
+    useState<readonly OutputLanguage[]>(FALLBACK_LANGUAGES);
+  // Null means "follow the interface language" (or the closest one the converter writes,
+  // since an interface language can exist without a conversion engine); a choice in the
+  // form overrides it.
   const [chosenLanguage, setChosenLanguage] = useState(() =>
     searchParams.get("language"),
   );
-  const outputLanguage = chosenLanguage ?? locale;
+  const outputLanguage =
+    chosenLanguage ?? matchLocale(locale, languages) ?? DEFAULT_LOCALE;
   const [engine, setEngine] = useState<Engine>(() =>
     searchParams.get("engine") === Engine.Ai ? Engine.Ai : Engine.Rules,
   );
 
-  const [languages, setLanguages] =
-    useState<readonly OutputLanguage[]>(FALLBACK_LANGUAGES);
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const [aiAnswer, setAiAnswer] = useState<AiAnswer | null>(null);

@@ -9,6 +9,7 @@ using KodingTask.Api.Hosting;
 using KodingTask.Api.Infrastructure;
 using KodingTask.Api.Limits;
 using KodingTask.Api.Messaging;
+using KodingTask.Api.Translations;
 using KodingTask.Conversion;
 using KodingTask.Data;
 using Microsoft.AspNetCore.DataProtection;
@@ -33,7 +34,8 @@ builder.Services.Configure<PublicSiteOptions>(builder.Configuration.GetSection(P
 
 var aiConfigured = builder.Services.AddAiConversion(builder.Configuration);
 var (emailConfigured, whatsAppConfigured) = builder.Services.AddMessaging(builder.Configuration, builder.Environment);
-builder.Services.AddAccounts();
+var machineTranslationConfigured = builder.Services.AddTranslations(builder.Configuration);
+builder.Services.AddAccounts(builder.Configuration);
 var fmId = builder.Services.AddFmIdSignIn(builder.Configuration);
 builder.Services.AddScoped<DeliveryService>();
 builder.Services.AddScoped<ConversionHistory>();
@@ -42,12 +44,12 @@ builder.Services.AddSingleton(new FeatureAvailability(
     Email: emailConfigured,
     WhatsApp: whatsAppConfigured,
     Ai: aiConfigured,
-    MachineTranslation: false,
+    MachineTranslation: machineTranslationConfigured,
     ExternalLogin: fmId.IsConfigured));
 builder.Services.AddInfrastructureReport(builder.Configuration);
 
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers()
+builder.Services.AddControllers(options => options.Filters.Add<TranslateErrorMessages>())
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi();
 

@@ -14,3 +14,6 @@ and the session; signing in is fmID's (`FmIdServiceCollectionExtensions`).
 - **Antiforgery** for every state-changing call: the client fetches a token from
   `GET /api/account/antiforgery` and sends it in `X-XSRF-TOKEN` (JSON calls) or as a form
   field (the fmID form posts); its cookie is Strict.
+
+- **Admin policy**: `Admin` requires a signed-in account whose address is in
+  `Admin:Emails` (`AdminOptions`). Only the translation review uses it.

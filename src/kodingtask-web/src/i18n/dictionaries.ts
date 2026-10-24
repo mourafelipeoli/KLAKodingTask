@@ -1,5 +1,5 @@
 import type { LocaleCode } from "../config/locales";
-import { PARENT_LOCALE } from "../config/locales";
+import { DEFAULT_LOCALE } from "../config/locales";
 import deDE from "./dictionaries/de-DE.json";
 import enUS from "./dictionaries/en-US.json";
 import esES from "./dictionaries/es-ES.json";
@@ -20,8 +20,9 @@ export type Dictionary = Readonly<Record<string, string>>;
 export type TextParameters = Readonly<Record<string, string | number>>;
 
 // The dictionaries ship with the app, so the interface is fully translated even when the
-// server-side translation service is not configured (a fresh clone, for instance).
-const BUNDLED: Record<LocaleCode, Dictionary> = {
+// server cannot be reached. The server imports the same files as reviewed translations,
+// and its dictionary (with machine translations and edits) takes precedence once loaded.
+const BUNDLED: Readonly<Record<LocaleCode, Dictionary>> = {
   "en-US": enUS,
   "pt-BR": ptBR,
   "de-DE": deDE,
@@ -38,13 +39,34 @@ const BUNDLED: Record<LocaleCode, Dictionary> = {
   "ko-KR": koKR,
 };
 
-export function translate(
-  locale: LocaleCode,
+function lookup(
+  dictionary: Dictionary | null | undefined,
   key: string,
+): string | undefined {
+  return dictionary && Object.hasOwn(dictionary, key) ? dictionary[key] : undefined;
+}
+
+/** Whether the bundled English dictionary, the list of the code's own texts, has this key. */
+export function isBundledText(key: string): boolean {
+  return lookup(BUNDLED[DEFAULT_LOCALE], key) !== undefined;
+}
+
+/**
+ * The server's dictionary first, then the bundled one, then the bundled one of the language
+ * a regional variant inherits from, then the English key itself.
+ */
+export function translate(
+  key: string,
+  locale: LocaleCode,
+  served: Dictionary | null,
+  parent: LocaleCode | null,
   parameters?: TextParameters,
 ): string {
-  const parent = PARENT_LOCALE[locale];
-  const text = BUNDLED[locale][key] ?? (parent ? BUNDLED[parent][key] : undefined) ?? key;
+  const text =
+    lookup(served, key) ??
+    lookup(BUNDLED[locale], key) ??
+    (parent ? lookup(BUNDLED[parent], key) : undefined) ??
+    key;
   return parameters ? interpolate(text, parameters) : text;
 }
 

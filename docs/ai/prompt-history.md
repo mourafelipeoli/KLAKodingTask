@@ -15,11 +15,11 @@ I (Felipe Moura) gave to the AI assistant while building this project.
 - **What I did:** set the scope and the constraints, chose between the options it proposed,
   reviewed the plan and the results, and deployed.
 - **How the prompts are reproduced:** as I typed them, typos included, with one kind of
-  change: where I named my private projects or other private names, the name is replaced by
-  a description in brackets. One message I typed in Portuguese by mistake is translated.
-  Text in brackets and italics describes screenshots, my answers to the assistant's
-  questions and what happened next; the short sections without prompts summarise what the
-  assistant sessions agreed between themselves.
+  change: where I named my private projects or other private names, the name is replaced
+  by a description in brackets. The few messages I typed in Portuguese by
+  mistake are translated. Text in brackets and italics describes screenshots, my answers to
+  the assistant's questions and what happened next; the short sections without prompts
+  summarise what the assistant sessions agreed between themselves.
 
 ---
 
@@ -248,3 +248,62 @@ You can check via [my personal Gmail address], the messages arrive there.
 *[Screenshot of Gmail's "Show original" summary: SPF and DKIM pass for my domain.]*
 
 The tabs are opened in my EDGE browser.
+
+Ok, now it's opened on Chrome
+
+I put all of the tabs on your group
+
+*[The assistant had read Gmail's verdict, a content match with known spam, and proposed: 1. deploy the subject fix, 2. mark the message "Not spam", 3. optionally, a bounce subdomain of mine so that SPF also passes for my own domain.]*
+
+1 . Updating the service
+2 . Done
+3 . Yes
+
+Changed the mode to edit automatically, try again
+
+Please update the [temporary access policy]'s json, I'll copy paste in the AWS console.
+
+*[Pasted the terminal output: the SES command was refused for my default AWS profile, which belongs to another account.]*
+
+Sorry, forgot to send the previous error
+
+Done
+
+*[Pasted the terminal output: the same command, run with the right profile, succeeded.]*
+
+New message, still in the spam folder, all the tabs opened, Chrome extension
+
+## 10. The WhatsApp template and its permanent token
+
+The provider session relayed my request that both sessions create the WhatsApp templates
+on Meta right away, each in its own browser: fmID's authentication template there, the
+result template here. This session asked me where and what to do when Meta reclassified a
+language.
+
+*[Answer to the question on which WhatsApp Business account to create the result template: the account of my real business number (the recommended option), not Meta's test account.]*
+
+*[Answer when Meta moved the Spanish version to the Marketing category and refused Korean under the same name: "Delete Spanish, retry".]*
+
+*[Answer after the warning that a deleted template name cannot be reused for up to 30 days: "Delete, Korean now".]*
+
+Let's create the permanent token, no problem with the name [of my other application].
+
+Done
+
+It's rolling out...
+
+## 11. Translations: a new language is one enum value
+
+Let's proceed now to the DeepL service...
+
+*[Answer to the question of where the English texts that DeepL translates should come from, given that the code is public and a registration endpoint would be anonymous: "UI registers, auto-translate".]*
+
+The main goal here is the proof of concept of a system I thought and developed by myself, to easily support a new language in a multi-language app. Put a value in an enum, the app is translated for the language of this new enum value, got it?
+
+js, ts and backend messages, as I did in [my other application]...
+
+Remembering I did this without AI, if you have suggestions of improvements, without changing the idea, they'll be welcome...
+
+I hit the session limit; I have credit again. *(Typed in Portuguese.)*
+
+Continue from where you stopped. *(Typed in Portuguese.)*

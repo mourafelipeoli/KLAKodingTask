@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import logoWhite from "../assets/brand/koding-task-logo-tagline-white.svg";
 import logo from "../assets/brand/koding-task-logo-tagline.svg";
+import { useAccount } from "../app/useAccount";
 import { useText } from "../i18n/useText";
 import { ROUTES } from "../routes/routePaths";
 import LanguageMenu from "./LanguageMenu";
@@ -10,6 +11,7 @@ import "./SiteHeader.css";
 
 export default function SiteHeader() {
   const { t } = useText();
+  const { account } = useAccount();
 
   return (
     <header className="site-header">
@@ -45,6 +47,17 @@ export default function SiteHeader() {
             <i className="bi bi-hdd-network" aria-hidden="true" />
             <span className="site-header__nav-text">{t("Where this runs")}</span>
           </NavLink>
+          {account.isAdmin && (
+            <NavLink
+              to={ROUTES.translations}
+              className="site-header__nav-link"
+              aria-label={t("Translations")}
+              title={t("Translations")}
+            >
+              <i className="bi bi-translate" aria-hidden="true" />
+              <span className="site-header__nav-text">{t("Translations")}</span>
+            </NavLink>
+          )}
           <AccountMenu />
           <LanguageMenu />
           <ThemeToggle />

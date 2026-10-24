@@ -14,3 +14,7 @@ its change tracker and retries the conditional update, which then sees the winne
 
 Days are UTC, so the reset happens at the same moment for every visitor and every server.
 A limit of zero or less never grants anything (that is how a closed limit is expressed).
+
+`TryConsumeAsync(counter, limit, amount)` takes several units at once (the characters of a
+DeepL request) with the same single statement (`Count + @amount <= @limit`); a request
+larger than the whole limit is refused without touching the counter.

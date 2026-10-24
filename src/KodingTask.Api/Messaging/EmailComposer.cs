@@ -1,19 +1,20 @@
 ﻿using System.Net;
+using KodingTask.Api.Translations;
 
 namespace KodingTask.Api.Messaging;
 
 public sealed record ComposedEmail(string Subject, string Html, string Text);
 
-public sealed class EmailComposer(MessageTexts texts)
+public sealed class EmailComposer(ServerTexts texts)
 {
     private const string Brand = "KODING TASK";
     private const string Tagline = "Keep Coding Ahead";
 
     public ComposedEmail Result(string locale, string amountText, string words, string wordsLocale, string languageName, string link)
     {
-        string T(string key) => texts.Translate(locale, key);
+        string T(string key) => texts.Translate(key, locale);
         var subject = T("Your Koding Task result");
-        var heading = texts.Translate(locale, "{{amount}} in words", new Dictionary<string, string> { ["amount"] = amountText });
+        var heading = texts.Translate("{{amount}} in words", locale, new Dictionary<string, string> { ["amount"] = amountText });
         var html = Page(locale, heading, $"""
             <p style="margin:0 0 20px;color:#5a5a64;font-size:16px;line-height:1.5;">{Encode(T("Here is the amount you converted on Koding Task."))}</p>
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0 0 24px;">

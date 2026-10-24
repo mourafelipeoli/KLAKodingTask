@@ -1,23 +1,29 @@
 import type { LocaleCode } from "../config/locales";
 import { DEFAULT_LOCALE, matchLocale } from "../config/locales";
+import type { InterfaceLanguage } from "../types/translation";
 
-const STORAGE_KEY = "kodingtask.locale";
+// The server reads the same cookie, so its error messages and emails follow the page.
+const COOKIE = "kodingtask-lang";
+const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
 
-// Order: an explicit ?lang= in the address, the visitor's last choice, the browser's
+// Order (the server's too): an explicit ?lang= in the address, the cookie, the browser's
 // preferred languages, then English.
-export function resolveInitialLocale(): LocaleCode {
+export function resolveInitialLocale(
+  languages: readonly InterfaceLanguage[],
+): LocaleCode {
   const fromAddress = matchLocale(
     new URLSearchParams(window.location.search).get("lang"),
+    languages,
   );
   if (fromAddress) {
     return fromAddress;
   }
-  const fromStorage = matchLocale(readStoredLocale());
-  if (fromStorage) {
-    return fromStorage;
+  const fromCookie = matchLocale(readLocaleCookie(), languages);
+  if (fromCookie) {
+    return fromCookie;
   }
   for (const language of navigator.languages) {
-    const match = matchLocale(language);
+    const match = matchLocale(language, languages);
     if (match) {
       return match;
     }
@@ -25,18 +31,17 @@ export function resolveInitialLocale(): LocaleCode {
   return DEFAULT_LOCALE;
 }
 
-export function storeLocale(locale: LocaleCode): void {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, locale);
-  } catch {
-    // Private windows and blocked storage: the choice simply lasts until the tab closes.
-  }
+export function readLocaleCookie(): string | null {
+  const entry = document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${COOKIE}=`));
+  return entry ? decodeURIComponent(entry.slice(COOKIE.length + 1)) : null;
 }
 
-function readStoredLocale(): string | null {
-  try {
-    return window.localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
+/** A choice made in the menu lasts a year; a detected language only this browser session. */
+export function storeLocale(locale: LocaleCode, isChoice: boolean): void {
+  const lifetime = isChoice ? `; max-age=${ONE_YEAR_SECONDS}` : "";
+  const secure = window.location.protocol === "https:" ? "; secure" : "";
+  document.cookie = `${COOKIE}=${encodeURIComponent(locale)}; path=/; samesite=lax${lifetime}${secure}`;
 }

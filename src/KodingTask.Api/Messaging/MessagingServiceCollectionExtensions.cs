@@ -11,7 +11,6 @@ public static class MessagingServiceCollectionExtensions
         var whatsAppSection = configuration.GetSection(WhatsAppOptions.SectionName);
         services.Configure<EmailOptions>(emailSection);
         services.Configure<WhatsAppOptions>(whatsAppSection);
-        services.AddSingleton<MessageTexts>();
         services.AddSingleton<EmailComposer>();
         services.AddScoped<MessageLog>();
 

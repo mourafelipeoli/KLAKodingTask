@@ -6,5 +6,11 @@ public static class Counters
 
     public const string WhatsAppMessages = "whatsapp:sent";
 
+    public const string TranslationCharacters = "translation:characters";
+
+    public const string TermRegistrations = "terms:registered";
+
     public static string Deliveries(string userId) => $"deliveries:user:{userId}";
+
+    public static string TermRegistrationsByClient(string clientHash) => $"terms:client:{clientHash}";
 }

@@ -24,4 +24,9 @@ public sealed class LimitsOptions
 
     public int DeliveriesPerUserPerDay { get; set; } = 10;
 
+    public int TranslationCharactersPerDay { get; set; } = 50_000;
+
+    public int TermRegistrationsPerDay { get; set; } = 200;
+
+    public int TermRegistrationsPerClientPerDay { get; set; } = 20;
 }

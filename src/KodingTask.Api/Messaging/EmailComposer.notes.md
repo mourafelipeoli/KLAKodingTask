@@ -4,7 +4,8 @@ Builds the one email the application sends: a conversion result, with a subject,
 part and a plain-text part with the same content (mail clients that block HTML, and spam
 filters, both prefer that). Confirming addresses and resetting passwords are fmID's.
 
-- **Written in the visitor's interface language** through `MessageTexts`; the converted
+- **Written in the visitor's interface language** through `ServerTexts`, with the same
+  terms, review and machine translation as the web client; the converted
   words keep their own language (`lang` attribute), which may differ: a German interface
   can send the French words.
 - **Table layout with inline styles**, the only thing every mail client renders the same,

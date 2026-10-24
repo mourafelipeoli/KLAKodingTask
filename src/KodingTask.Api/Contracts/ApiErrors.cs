@@ -20,9 +20,23 @@ public static class ApiErrors
 
     public static ErrorResponse InvalidChannel { get; } = new("InvalidChannel", "Choose email or WhatsApp.");
 
+    public static ErrorResponse InvalidTerms { get; } = new("InvalidTerms", "Send between 1 and 20 texts of up to 300 characters each.");
+
+    public static ErrorResponse TermLimitReached { get; } = new("TermLimitReached", "Too many new texts today. Try again tomorrow.");
+
+    public static ErrorResponse MachineTranslationUnavailable { get; } = new("MachineTranslationUnavailable", "Machine translation is not configured on this instance.");
+
+    public static ErrorResponse UnknownLocale { get; } = new("UnknownLocale", "This language is not supported.");
+
+    public static ErrorResponse UnknownTerm { get; } = new("UnknownTerm", "This text does not exist.");
+
+    public static ErrorResponse InvalidTranslation { get; } = new("InvalidTranslation", "Type a translation of up to 2000 characters.");
+
     public static int StatusOf(ErrorResponse error) => error.Error switch
     {
-        "MessagingUnavailable" => StatusCodes.Status503ServiceUnavailable,
+        "MessagingUnavailable" or "MachineTranslationUnavailable" => StatusCodes.Status503ServiceUnavailable,
+        "TermLimitReached" => StatusCodes.Status429TooManyRequests,
+        "UnknownLocale" or "UnknownTerm" => StatusCodes.Status404NotFound,
         "Paused" or "DailyLimitReached" or "UserLimitReached" => StatusCodes.Status429TooManyRequests,
         "SendFailed" => StatusCodes.Status502BadGateway,
         "EmailNotConfirmed" or "PhoneNotVerified" => StatusCodes.Status403Forbidden,

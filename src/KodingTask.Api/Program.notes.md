@@ -28,5 +28,11 @@ answers, so one `dotnet run` serves the whole application at `https://localhost:
 The first build also installs the web client's packages (see the
 `EnsureWebClientDependencies` target in the project file).
 
+## Translations
+
+`AddTranslations` registers the translation system before the accounts and reports whether
+DeepL is configured (`FeatureAvailability.MachineTranslation`). Every controller result
+passes through `TranslateErrorMessages`, so API refusals speak the request's language.
+
 `public partial class Program` exposes the entry point to `WebApplicationFactory` in the
 API tests.

@@ -16,8 +16,11 @@ public sealed record UsageLimits
 
     public int DeliveriesPerUserPerDay { get; init; }
 
+    public int TranslationCharactersPerDay { get; init; }
 
+    public int TermRegistrationsPerDay { get; init; }
 
+    public int TermRegistrationsPerClientPerDay { get; init; }
 
     public static UsageLimits Closed { get; } = new() { KillSwitch = true };
 }

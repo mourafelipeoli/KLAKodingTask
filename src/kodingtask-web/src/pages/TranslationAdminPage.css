@@ -1,0 +1,129 @@
+/* ==========================================================================
+   Translation review page: a toolbar card (language, filter, search, actions)
+   and one row per term, the English original beside its editable translation.
+   ========================================================================== */
+
+.translation-admin__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-bottom: var(--space-12);
+}
+
+.translation-admin__toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+.translation-admin__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.translation-admin__summary,
+.translation-admin__empty,
+.translation-admin__loading {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.translation-admin__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.translation-admin__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.translation-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.translation-row:first-child {
+  border-top: 0;
+}
+
+.translation-row__original {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.translation-row__english {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.translation-row__text {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.translation-row__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.translation-row__reviewed {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.translation-row__status {
+  font-size: var(--text-sm);
+  color: var(--color-success-text);
+}
+
+.translation-row__error {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .translation-admin__toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 2fr);
+    align-items: end;
+  }
+
+  .translation-admin__actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .translation-row {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto;
+    align-items: start;
+  }
+
+  .translation-row__actions {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 8rem;
+  }
+
+  .translation-row__error {
+    grid-column: 2 / -1;
+  }
+}

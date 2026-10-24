@@ -42,3 +42,9 @@ user id string and never reference Identity columns beyond it, so the user store
 replaced (an external identity provider) without migrating them. `base.OnModelCreating`
 must run first: it maps the Identity tables.
 
+## Translations
+
+`Terms` holds every English text the application shows, keyed by the SHA-256 of the text
+(unique), and `Translations` one row per term and language (unique on both). Deleting a term
+deletes its translations. Locales are plain codes, not foreign keys: the list of languages
+lives in the code (`InterfaceLanguage`), so adding one needs no data change.

@@ -39,6 +39,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Messaging\Texts\*.json" LogicalName="KodingTask.Api.Messaging.Texts.%(Filename)%(Extension)" />
     <Content Remove="Messaging\Texts\*.json" />
+    <EmbeddedResource Include="..\kodingtask-web\src\i18n\dictionaries\*.json" LogicalName="KodingTask.Api.Translations.Baked.%(Filename)%(Extension)" Link="Translations\Baked\%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>

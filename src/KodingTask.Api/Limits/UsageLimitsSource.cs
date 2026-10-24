@@ -61,6 +61,9 @@ public sealed class UsageLimitsSource(
         EmailsPerDay = settings.EmailsPerDay,
         WhatsAppPerDay = settings.WhatsAppPerDay,
         DeliveriesPerUserPerDay = settings.DeliveriesPerUserPerDay,
+        TranslationCharactersPerDay = settings.TranslationCharactersPerDay,
+        TermRegistrationsPerDay = settings.TermRegistrationsPerDay,
+        TermRegistrationsPerClientPerDay = settings.TermRegistrationsPerClientPerDay,
     };
 
     private async Task<UsageLimits> ReadParameterStoreAsync(string path, CancellationToken cancellationToken)
@@ -92,6 +95,9 @@ public sealed class UsageLimitsSource(
             EmailsPerDay = Read(values, nameof(UsageLimits.EmailsPerDay), ParseInt, 0),
             WhatsAppPerDay = Read(values, nameof(UsageLimits.WhatsAppPerDay), ParseInt, 0),
             DeliveriesPerUserPerDay = Read(values, nameof(UsageLimits.DeliveriesPerUserPerDay), ParseInt, 0),
+            TranslationCharactersPerDay = Read(values, nameof(UsageLimits.TranslationCharactersPerDay), ParseInt, 0),
+            TermRegistrationsPerDay = Read(values, nameof(UsageLimits.TermRegistrationsPerDay), ParseInt, 0),
+            TermRegistrationsPerClientPerDay = Read(values, nameof(UsageLimits.TermRegistrationsPerClientPerDay), ParseInt, 0),
         };
     }
 

@@ -21,3 +21,13 @@ global daily cap for its channel, whatever caused it. On top of that:
 A parameter missing from the parameter store reads as zero: the feature it guards is off
 until someone who controls the store sets it.
 
+## Translation caps
+
+| Cap | Default | Counter |
+|---|---|---|
+| `TranslationCharactersPerDay` | 50000 | Characters sent to DeepL per UTC day; a whole new language takes about 7,200. |
+| `TermRegistrationsPerDay` | 200 | New texts pages may report per UTC day, all visitors together. |
+| `TermRegistrationsPerClientPerDay` | 20 | New texts one client may report per UTC day. |
+
+Reporting texts is free for the visitor but creates rows and, later, paid characters, so
+it is capped like the paid features; texts that are terms already cost nothing.

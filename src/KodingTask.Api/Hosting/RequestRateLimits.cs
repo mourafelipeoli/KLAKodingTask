@@ -11,6 +11,7 @@ public static class RequestRateLimits
     public const string Ai = "ai";
     public const string Infrastructure = "infrastructure";
     public const string Account = "account";
+    public const string Translations = "translations";
 
     public static IServiceCollection AddRequestRateLimits(this IServiceCollection services, IConfiguration configuration)
     {
@@ -18,6 +19,7 @@ public static class RequestRateLimits
         var aiPerMinute = configuration.GetValue("RateLimits:AiPerMinute", 10);
         var infrastructurePerMinute = configuration.GetValue("RateLimits:InfrastructurePerMinute", 30);
         var accountPerMinute = configuration.GetValue("RateLimits:AccountPerMinute", 20);
+        var translationsPerMinute = configuration.GetValue("RateLimits:TranslationsPerMinute", 30);
 
         return services.AddRateLimiter(options =>
         {
@@ -30,13 +32,16 @@ public static class RequestRateLimits
                         ((int)Math.Ceiling(retryAfter.TotalSeconds)).ToString(CultureInfo.InvariantCulture);
                 }
 
-                await context.HttpContext.Response.WriteAsJsonAsync(ErrorResponse.TooManyRequests, cancellationToken);
+                var texts = context.HttpContext.RequestServices.GetService<Translations.ServerTexts>();
+                var error = texts is null ? ErrorResponse.TooManyRequests : TranslateErrorMessages.Translate(ErrorResponse.TooManyRequests, context.HttpContext, texts);
+                await context.HttpContext.Response.WriteAsJsonAsync(error, cancellationToken);
             };
 
             options.AddPolicy(Conversion, context => PerClientPerMinute(context, conversionsPerMinute));
             options.AddPolicy(Ai, context => PerClientPerMinute(context, aiPerMinute));
             options.AddPolicy(Infrastructure, context => PerClientPerMinute(context, infrastructurePerMinute));
             options.AddPolicy(Account, context => PerClientPerMinute(context, accountPerMinute));
+            options.AddPolicy(Translations, context => PerClientPerMinute(context, translationsPerMinute));
         });
     }
 

@@ -3,6 +3,7 @@ import ConvertPage from "../pages/ConvertPage";
 import InfrastructurePage from "../pages/InfrastructurePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import SignInPage from "../pages/SignInPage";
+import TranslationAdminPage from "../pages/TranslationAdminPage";
 import { ROUTES } from "./routePaths";
 
 export default function AppRoutes() {
@@ -11,6 +12,7 @@ export default function AppRoutes() {
       <Route path={ROUTES.home} element={<ConvertPage />} />
       <Route path={ROUTES.infrastructure} element={<InfrastructurePage />} />
       <Route path={ROUTES.signIn} element={<SignInPage />} />
+      <Route path={ROUTES.translations} element={<TranslationAdminPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

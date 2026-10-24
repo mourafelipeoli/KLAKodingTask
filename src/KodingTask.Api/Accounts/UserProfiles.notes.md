@@ -1,5 +1,7 @@
 # UserProfiles
 
-Remembers the interface language each account last used, and answers it. The interface
-locales are the same codes as the output languages, so `SpellerCatalog` validates them
-(and turns `fr_be` into `fr-BE`); anything unknown keeps the previous choice, or English.
+Remembers the interface language each account last used, and answers it. The language
+must be one `InterfaceLanguage` declares (`TranslationLocales.Canonical`, which also fixes
+its case); anything unknown keeps the previous choice, or English. Interface languages are
+not tied to conversion engines any more: a language added for the interface may have no
+speller, and its emails are still written in it.

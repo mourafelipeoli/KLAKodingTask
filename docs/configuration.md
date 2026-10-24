@@ -30,6 +30,7 @@ dotnet user-secrets set "ConnectionStrings:KodingTask" "Server=…;Database=…;
 | `RateLimits:AiPerMinute` | `10` | Per client address, for the AI engine. |
 | `RateLimits:InfrastructurePerMinute` | `30` | Per client address, for the infrastructure page. |
 | `RateLimits:AccountPerMinute` | `20` | Per client address, for every account, sign-in and delivery call. |
+| `RateLimits:TranslationsPerMinute` | `30` | Per client address, for the texts pages report to the translation system. |
 | `Privacy:ClientHashKey` | empty (random per process) | Secret key of the anonymised client fingerprints used by per-client limits. Store it as a secret. |
 | `App:Version` | from `versions.json` | Override of the version reported by `/health`. |
 | `BUILD_COMMIT` | empty | Commit reported by `/health`; set by the deployment. |
@@ -77,6 +78,9 @@ store cannot be read, every paid feature is closed until it can.
 | `EmailsPerDay` | `100` | Every email of the instance per UTC day (results). |
 | `WhatsAppPerDay` | `50` | Every WhatsApp message per UTC day (results). |
 | `DeliveriesPerUserPerDay` | `10` | Results one account may send to itself per UTC day, both channels together. |
+| `TranslationCharactersPerDay` | `50000` | Characters sent to DeepL per UTC day. A whole new language takes about 7,200. |
+| `TermRegistrationsPerDay` | `200` | New texts pages may report per UTC day, all visitors together. |
+| `TermRegistrationsPerClientPerDay` | `20` | New texts one client address may report per UTC day. |
 
 A cap missing from the parameter store reads as zero, which switches its feature off.
 
@@ -132,6 +136,28 @@ dotnet user-secrets set "WhatsApp:Mode" "Log"
 
 Sign in and send results. Without a provider,
 the converter works as always and the send buttons continue on the deployed version.
+
+## Translations (DeepL)
+
+The interface languages are the members of `InterfaceLanguage`
+(`src/KodingTask.Api/Translations/InterfaceLanguage.cs`); see
+[decision 11](decisions/0011-a-new-language-is-one-enum-value.md). Everything works without
+a key: the bundled dictionaries are imported on start, pages report texts they do not know,
+and the review page lists them. With a key, a background batch machine-translates every
+text missing in a language.
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `DeepL:ApiKey` | empty | DeepL API key. A secret. Free keys end in `:fx` and use the free endpoint. |
+| `DeepL:BaseUrl` | from the key | Only to force an endpoint. |
+| `DeepL:BatchSize` | `50` | Texts per request (DeepL's maximum). |
+| `DeepL:IntervalSeconds` | `120` | How often the batch looks for missing texts when nothing wakes it. |
+| `DeepL:TimeoutSeconds` | `20` | Per request. |
+| `DeepL:RetryDelaysSeconds` | `[1, 3, 8, 20]` | Waits after 429 or 5xx when DeepL sends no `Retry-After`. |
+| `Translations:SeedOnStartup` | `true` | Imports the bundled dictionaries on start. |
+| `Admin:Emails` | `[]` | Addresses (verified by the identity provider) that may open `/admin/translations`. Locally: `dotnet user-secrets set "Admin:Emails:0" "you@example.com"`. |
+
+The daily character cap and the registration caps are in [Limits](#limits).
 
 ## Sign-in with fmID (OpenID Connect)
 

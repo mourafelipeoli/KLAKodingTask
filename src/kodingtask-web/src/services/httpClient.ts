@@ -81,6 +81,7 @@ async function request<T>(
   path: string,
   body?: unknown,
   signal?: AbortSignal,
+  keepalive = false,
 ): Promise<T> {
   const headers: Record<string, string> = { Accept: "application/json" };
   if (body !== undefined) {
@@ -101,6 +102,7 @@ async function request<T>(
       body: body === undefined ? undefined : JSON.stringify(body),
       credentials: "same-origin",
       signal,
+      keepalive,
     });
   } catch (error) {
     if (isAbortError(error)) {
@@ -112,10 +114,17 @@ async function request<T>(
   if (!response.ok) {
     throw await toApiError(response);
   }
-  if (response.status === 204) {
-    return undefined as T;
-  }
-  return (await response.json()) as T;
+  // 202 and 204 may come without a body.
+  const text = await response.text();
+  return (text ? JSON.parse(text) : undefined) as T;
+}
+
+// A POST nobody waits for: it outlives the page (keepalive), so it can leave as the visitor
+// closes the tab, and a failure is only lost, never shown.
+function sendInBackground(path: string, body: unknown): void {
+  request<unknown>("POST", path, body, undefined, true).catch(() => {
+    // Best effort by design.
+  });
 }
 
 // Sign-in and sign-out with fmID leave the site, so they are form posts the browser follows
@@ -145,7 +154,10 @@ export const httpClient = {
     request<T>("GET", path, undefined, signal),
   post: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("POST", path, body, signal),
+  put: <T>(path: string, body: unknown, signal?: AbortSignal) =>
+    request<T>("PUT", path, body, signal),
   delete: <T>(path: string, signal?: AbortSignal) =>
     request<T>("DELETE", path, undefined, signal),
+  sendInBackground,
   navigateWithPost,
 };

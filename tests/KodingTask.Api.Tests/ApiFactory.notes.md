@@ -14,3 +14,6 @@ fallback.
   applied.
 - `ServiceOverrides` replaces services after `Program` registered them (the infrastructure
   tests swap the ECS task metadata and the AWS probe for fakes to pretend to run on AWS).
+
+- `Translations:SeedOnStartup` is off: importing the bundled dictionaries on start would
+  race with the tests' own database changes. Tests that need them import explicitly.

@@ -1,4 +1,5 @@
-﻿using KodingTask.Api.Contracts;
+﻿using KodingTask.Api.Accounts;
+using KodingTask.Api.Contracts;
 using KodingTask.Api.Hosting;
 using KodingTask.Api.Limits;
 using KodingTask.Api.Messaging;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 
 namespace KodingTask.Api.Controllers;
 
@@ -20,6 +22,7 @@ public sealed class AccountController(
     IAntiforgery antiforgery,
     UsageLimitsSource limitsSource,
     UsageLimiter limiter,
+    IOptions<AdminOptions> admins,
     KodingTaskDbContext database) : ControllerBase
 {
     [HttpGet("antiforgery")]
@@ -42,6 +45,7 @@ public sealed class AccountController(
             true,
             user.Email,
             phone is null ? null : DestinationMask.Phone(phone.PhoneE164),
-            Math.Max(0, limits.DeliveriesPerUserPerDay - used));
+            Math.Max(0, limits.DeliveriesPerUserPerDay - used),
+            admins.Value.IsAdmin(user.Email));
     }
 }

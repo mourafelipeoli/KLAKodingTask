@@ -20,6 +20,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:KodingTask", $"Data Source={DatabaseFile}");
+        builder.UseSetting("Translations:SeedOnStartup", "false");
         foreach (var (key, value) in Settings)
             builder.UseSetting(key, value);
         builder.ConfigureTestServices(services =>

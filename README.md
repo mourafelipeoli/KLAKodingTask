@@ -108,7 +108,7 @@ ready-made requests.
 | Client-server, conversion on the server | The browser only sends text and shows the answer; see [`ConversionsController`](src/KodingTask.Api/Controllers/ConversionsController.cs) |
 | Modern frontend framework | React 19 + TypeScript + Vite |
 | README, design decisions, assumptions, limitations | This file, [docs/](docs) and the `.notes.md` files next to the code |
-| Prompt history of AI use | [docs/ai/prompt-history.md](docs/ai/prompt-history.md) |
+| Prompt history of AI use | [docs/ai/prompt-history.md](docs/ai/prompt-history.md), and the same instructions as one prompt in [docs/ai/consolidated-prompt.md](docs/ai/consolidated-prompt.md) |
 
 ## Architecture
 

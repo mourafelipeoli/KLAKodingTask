@@ -1,7 +1,9 @@
 # AI prompt history
 
 The task asks for transparency about AI use. This file lists, in order, every instruction
-I (Felipe Moura) gave to the AI assistant while building this project.
+I (Felipe Moura) gave to the AI assistant while building this project. The same instructions
+merged into a single prompt, the "honest prompt" my messages below ask for, are in
+[consolidated-prompt.md](consolidated-prompt.md).
 
 ## How AI was used
 
@@ -337,3 +339,9 @@ Does our project respects the rules of the Coding_Task_Senior_Software_Engineer.
 What about the version of the .NET SDK?
 
 Yes, you should, let's implement your suggestions.
+
+A question: thers's no relation between this deploy and the AWS, right? AWS deploy is just for me, right?
+
+## 14. Publishing
+
+Let's write the honest prompt to the final destination, create our public github repo for publishing and put our code there. The browser is connected with Chrome extension, logged in my account.

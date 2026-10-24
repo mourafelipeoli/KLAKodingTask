@@ -75,14 +75,20 @@ public static class FmIdServiceCollectionExtensions
                     var error = (context.Failure as OpenIdConnectProtocolException)?.Data["error"] as string;
                     var wasSilent = context.Properties?.Items.TryGetValue(PromptItem, out var prompt) == true && prompt == SilentPrompt;
                     var isOurs = error is null && context.Properties is not null;
-                    if (wasSilent && error is not null && SilentFailures.Contains(error))
-                        context.Response.Redirect(AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties)));
-                    else if (isOurs && (await context.HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme)).Succeeded)
-                        context.Response.Redirect(ReturnUrls.Sanitize(ReturnUrlOf(context.Properties)));
-                    else if (isOurs && !context.Properties!.Items.ContainsKey(RetryItem))
-                        context.Response.Redirect(AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties), isRetry: true));
-                    else
-                        context.Response.Redirect(SignInPage(error == "access_denied" ? FmIdErrors.RefusedByProvider : FmIdErrors.InvalidResponse, context.Properties));
+                    var (outcome, target) =
+                        wasSilent && error is not null && SilentFailures.Contains(error)
+                            ? ("normal sign-in", AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties)))
+                        : isOurs && (await context.HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme)).Succeeded
+                            ? ("already signed in", ReturnUrls.Sanitize(ReturnUrlOf(context.Properties)))
+                        : isOurs && !context.Properties!.Items.ContainsKey(RetryItem)
+                            ? ("restart", AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties), isRetry: true))
+                            : ("error page", SignInPage(error == "access_denied" ? FmIdErrors.RefusedByProvider : FmIdErrors.InvalidResponse, context.Properties));
+                    var headers = context.Request.Headers;
+                    context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(FmIdServiceCollectionExtensions)).LogWarning(
+                        "[fmID] Callback failed ({Failure}, provider error {Error}); went on with: {Outcome}. Sec-Fetch-Mode {Mode}, Sec-Fetch-Dest {Destination}, Sec-Purpose {Purpose}, Purpose {LegacyPurpose}, User-Agent {UserAgent}.",
+                        context.Failure?.Message, error ?? "none", outcome,
+                        headers["Sec-Fetch-Mode"].ToString(), headers["Sec-Fetch-Dest"].ToString(), headers["Sec-Purpose"].ToString(), headers["Purpose"].ToString(), headers.UserAgent.ToString());
+                    context.Response.Redirect(target);
                     context.HandleResponse();
                 },
             };

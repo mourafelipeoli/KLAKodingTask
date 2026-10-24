@@ -62,3 +62,8 @@ The window for the correlation cookie and the state is **one hour**
 (`RemoteAuthenticationTimeout`, 15 minutes by default): signing up at fmID with an email
 confirmation can take longer than a quarter of an hour. fmID keeps its own sign-up request
 for 30 minutes.
+
+Every failed callback is logged with what happened next and the browser's own description of
+the request (Sec-Fetch-Mode, Sec-Fetch-Dest, Sec-Purpose or Purpose, User-Agent), so
+the next repeated callback shows whether it was a prefetch, a reload or a second navigation.
+The code, the state and the cookies are never logged.

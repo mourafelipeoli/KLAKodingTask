@@ -6,8 +6,8 @@ export const accountService = {
   me: (signal?: AbortSignal) => httpClient.get<Account>("/api/account/me", signal),
   /**
    * Leaves for fmID; the browser comes back to returnUrl signed in. `isRetry` marks the
-   * automatic second attempt after a sign-in that finished in another browser, so the
-   * server never retries twice.
+   * server's automatic second attempt after a callback it could not match, so it never
+   * retries twice.
    */
   signIn: (returnUrl: string, uiLocale: string, isRetry = false) =>
     httpClient.navigateWithPost("/api/account/fmid/sign-in", {

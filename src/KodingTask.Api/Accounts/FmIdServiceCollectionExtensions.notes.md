@@ -38,21 +38,27 @@ without showing anything when its session is still open. When it is not (`login_
 `interaction_required` and the like), the browser goes to `/sign-in?…&with=fmid`, which
 starts a normal sign-in by itself, and comes back to the same place.
 
-## A sign-in that finishes in another browser
+## A callback this browser cannot match
 
-Creating an fmID account takes the visitor through a registration, an email confirmation
-and a WhatsApp confirmation, and the confirmation link may open in another browser (the
-phone's mail app, for instance). The provider then completes the authorization there, and
-our callback arrives with a valid state but without the correlation cookie, which lives in
-the browser that started. The first real sign-up ended exactly like that, on the error page.
+The callback is matched to the attempt that started it by the correlation and nonce cookies,
+which the first successful callback deletes. The first real sign-up showed how that can fail
+for someone who did nothing wrong: the same browser requested `/signin-fmid` a second time,
+half a second after the first one had redeemed the code, and the second request found no
+cookie and ended on the error page. Attempts older than the window, cleared cookies, or a
+provider that completed the authorization in another browser end the same way.
 
-- **One automatic restart.** When the callback fails locally (no `error` from the provider:
-  missing correlation or nonce cookie, an expired attempt) and the state is ours, the browser
-  goes to `/sign-in?…&with=fmid&retry=1`, which starts a sign-in by itself. That browser now
-  has an fmID session, so the provider answers at once and the visitor lands signed in where
-  they started. The retry carries the `retry` item; a second local failure shows
-  `invalid-response` instead, so it can never loop. A callback whose state cannot be decoded
-  (forged, or from another instance) is never retried.
-- **A one-hour window** (`RemoteAuthenticationTimeout`, 15 minutes by default) for the
-  correlation cookie and the state: a sign-up with two confirmations can take longer than a
-  quarter of an hour.
+When such a callback fails locally (no `error` from the provider) and its state is ours:
+
+- **Already signed in here**: the browser goes straight to the return path. That is the
+  repeated callback: the first one did its job.
+- **Not signed in**: one automatic restart. The browser goes to `/sign-in?…&with=fmid&retry=1`,
+  which starts a sign-in by itself; the provider usually still has a session and answers at
+  once, so the visitor lands signed in where they started. The restart carries the `retry`
+  item, and a second local failure shows `invalid-response`, so it can never loop.
+- A callback whose state cannot be decoded (forged, or from another instance) is neither
+  followed nor retried: it shows `invalid-response`.
+
+The window for the correlation cookie and the state is **one hour**
+(`RemoteAuthenticationTimeout`, 15 minutes by default): signing up at fmID with an email
+confirmation can take longer than a quarter of an hour. fmID keeps its own sign-up request
+for 30 minutes.

@@ -351,3 +351,15 @@ Let's write the honest prompt to the final destination, create our public github
 One last thing to implement. After my first test login, redirected to the deployed version, created my fmID on mourafelipe.com app, confirmed the e-mail and then the whatsapp, I got no redirected back to the original URL.
 
 There's an agent live on [my personal website's codebase], coordinate the implementation if needed. *(The original names that private project.)*
+
+## 15. The sign-up that did not come back
+
+The provider session traced my first real sign-up in its logs. Two things had gone wrong. On
+the provider, a failed password attempt before the account existed dropped the pending
+sign-in request from its "create an account" link, so after confirming the address I landed
+on the provider's account page; it fixed that, with an end-to-end test of the same path, and
+deployed. On this side, my second sign-in had succeeded, but the same browser requested the
+callback a second time half a second later, and that request ended on the error page. This
+session had first taken it for a sign-in finished in another browser and added a single
+automatic restart; with the provider's timeline it added the case that actually applied: a
+repeated callback from someone already signed in goes straight back to where they started.

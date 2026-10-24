@@ -9,7 +9,7 @@ import "./FmIdSignIn.css";
 /** `?with=fmid`: the page was opened to sign in with fmID, so it starts by itself. */
 const START_PARAM = "with";
 const START_VALUE = "fmid";
-/** `&retry=1`: the server's one automatic retry after a sign-in finished in another browser. */
+/** `&retry=1`: the server's one automatic retry after a callback it could not match. */
 const RETRY_PARAM = "retry";
 
 interface FmIdSignInProps {

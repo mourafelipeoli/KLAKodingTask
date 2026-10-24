@@ -140,6 +140,21 @@ public sealed class FmIdSignInTests
     }
 
     [Fact]
+    public async Task The_same_callback_twice_in_one_browser_lands_where_it_began()
+    {
+        using var host = MessagingTestHost.Create();
+        var browser = host.Browser();
+        var query = QueryHelpers.ParseQuery((await MessagingTestHost.StartFmIdAsync(browser, ReturnUrl)).Headers.Location!.Query);
+        Assert.Equal(ReturnUrl, await host.FinishFmIdAsync(browser, query));
+
+        var again = await browser.GetAsync($"/signin-fmid?code=test-code&state={Uri.EscapeDataString(query["state"]!)}");
+
+        Assert.Equal(HttpStatusCode.Redirect, again.StatusCode);
+        Assert.Equal(ReturnUrl, again.Headers.Location!.ToString());
+        Assert.True((await browser.GetFromJsonAsync<AccountResponse>("/api/account/me"))!.IsSignedIn);
+    }
+
+    [Fact]
     public async Task A_retry_that_fails_the_same_way_shows_the_error_instead_of_looping()
     {
         using var host = MessagingTestHost.Create();

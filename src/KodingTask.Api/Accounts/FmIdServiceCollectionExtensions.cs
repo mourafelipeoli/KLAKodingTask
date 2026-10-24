@@ -70,18 +70,20 @@ public static class FmIdServiceCollectionExtensions
                     context.HandleResponse();
                     return Task.CompletedTask;
                 },
-                OnRemoteFailure = context =>
+                OnRemoteFailure = async context =>
                 {
                     var error = (context.Failure as OpenIdConnectProtocolException)?.Data["error"] as string;
                     var wasSilent = context.Properties?.Items.TryGetValue(PromptItem, out var prompt) == true && prompt == SilentPrompt;
+                    var isOurs = error is null && context.Properties is not null;
                     if (wasSilent && error is not null && SilentFailures.Contains(error))
                         context.Response.Redirect(AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties)));
-                    else if (error is null && context.Properties is not null && !context.Properties.Items.ContainsKey(RetryItem))
+                    else if (isOurs && (await context.HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme)).Succeeded)
+                        context.Response.Redirect(ReturnUrls.Sanitize(ReturnUrlOf(context.Properties)));
+                    else if (isOurs && !context.Properties!.Items.ContainsKey(RetryItem))
                         context.Response.Redirect(AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties), isRetry: true));
                     else
                         context.Response.Redirect(SignInPage(error == "access_denied" ? FmIdErrors.RefusedByProvider : FmIdErrors.InvalidResponse, context.Properties));
                     context.HandleResponse();
-                    return Task.CompletedTask;
                 },
             };
         });

@@ -11,4 +11,6 @@ their own instance.
 
 The conversion link carries the interface language (`lang`) the visitor used, so the page it
 opens speaks the same language as the email. `SignInPath` is a path on this site with the
-error code and the sanitised return path.
+error code and the sanitised return path; `SignInAndStartPath` opens the sign-in page so
+that it starts a sign-in by itself, with `retry=1` for the one automatic retry after a
+sign-in that finished in another browser.

@@ -85,16 +85,18 @@ internal sealed class MessagingTestHost : IDisposable
     public static Task<HttpResponseMessage> StartFmIdAsync(HttpClient browser, string returnUrl, string? token = null) =>
         PostFormAsync(browser, "/api/account/fmid/sign-in", returnUrl, token);
 
-    public static async Task<HttpResponseMessage> PostFormAsync(HttpClient browser, string path, string returnUrl, string? token = null)
+    public static async Task<HttpResponseMessage> PostFormAsync(HttpClient browser, string path, string returnUrl, string? token = null, bool isRetry = false)
     {
         token ??= (await browser.GetFromJsonAsync<AntiforgeryResponse>("/api/account/antiforgery"))!.Token;
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        var fields = new Dictionary<string, string>
         {
             ["__RequestVerificationToken"] = token,
             ["returnUrl"] = returnUrl,
             ["uiLocale"] = "de-DE",
-        });
-        return await browser.PostAsync(path, form);
+        };
+        if (isRetry)
+            fields["retry"] = "1";
+        return await browser.PostAsync(path, new FormUrlEncodedContent(fields));
     }
 
     public async Task<string> FinishFmIdAsync(HttpClient browser, Dictionary<string, StringValues> authorize)

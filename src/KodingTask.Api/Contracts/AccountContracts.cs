@@ -12,7 +12,7 @@ public sealed record AccountResponse(
     public static AccountResponse SignedOut { get; } = new(false, null, null, null, false);
 }
 
-public sealed record FmIdForm(string? ReturnUrl, string? UiLocale);
+public sealed record FmIdForm(string? ReturnUrl, string? UiLocale, string? Retry = null);
 
 public sealed record DeliveryRequest(string? Channel, string? Amount, string? Language, string? UiLocale);
 

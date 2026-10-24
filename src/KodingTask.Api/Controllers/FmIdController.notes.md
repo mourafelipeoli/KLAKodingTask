@@ -6,7 +6,7 @@ Not part of the OpenAPI document: these are browser navigations, not JSON endpoi
 
 | Endpoint | What it does |
 |---|---|
-| `POST sign-in` | Form post from the sign-in page (antiforgery token as a form field, `returnUrl`, `uiLocale`). Challenges the `fmID` scheme, which answers with the redirect to the provider. |
+| `POST sign-in` | Form post from the sign-in page (antiforgery token as a form field, `returnUrl`, `uiLocale`, and `retry=1` on the one automatic retry). Challenges the `fmID` scheme, which answers with the redirect to the provider. |
 | `POST refresh` | Form post from the send panel before a WhatsApp send: the same challenge with `prompt=none` when signed in, so fmID answers without a page if its session is open (a normal sign-in otherwise). |
 | `GET complete` | Where the handler lands after `/signin-fmid` validated the answer. Reads and deletes the external cookie, resolves the local account (`FmIdAccounts`), remembers the interface language, signs in with authentication method `fmID` and returns to `returnUrl`. |
 | `POST sign-out` | Form post from the account menu: ends the local session, then the provider's (RP-initiated logout), which comes back through `/signout-fmid` to `returnUrl`. Without a session, or on an instance without fmID, it only returns. |

@@ -37,3 +37,22 @@ A sign-in started with the `prompt` item `none` (`FmIdController.Refresh`) asks 
 without showing anything when its session is still open. When it is not (`login_required`,
 `interaction_required` and the like), the browser goes to `/sign-in?…&with=fmid`, which
 starts a normal sign-in by itself, and comes back to the same place.
+
+## A sign-in that finishes in another browser
+
+Creating an fmID account takes the visitor through a registration, an email confirmation
+and a WhatsApp confirmation, and the confirmation link may open in another browser (the
+phone's mail app, for instance). The provider then completes the authorization there, and
+our callback arrives with a valid state but without the correlation cookie, which lives in
+the browser that started. The first real sign-up ended exactly like that, on the error page.
+
+- **One automatic restart.** When the callback fails locally (no `error` from the provider:
+  missing correlation or nonce cookie, an expired attempt) and the state is ours, the browser
+  goes to `/sign-in?…&with=fmid&retry=1`, which starts a sign-in by itself. That browser now
+  has an fmID session, so the provider answers at once and the visitor lands signed in where
+  they started. The retry carries the `retry` item; a second local failure shows
+  `invalid-response` instead, so it can never loop. A callback whose state cannot be decoded
+  (forged, or from another instance) is never retried.
+- **A one-hour window** (`RemoteAuthenticationTimeout`, 15 minutes by default) for the
+  correlation cookie and the state: a sign-up with two confirmations can take longer than a
+  quarter of an hour.

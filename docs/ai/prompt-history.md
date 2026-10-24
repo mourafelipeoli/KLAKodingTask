@@ -347,3 +347,7 @@ A question: thers's no relation between this deploy and the AWS, right? AWS depl
 Let's write the honest prompt to the final destination, create our public github repo for publishing and put our code there. The browser is connected with Chrome extension, logged in my account.
 
 *[Two screenshots of the dialog that hands over to the deployed version: the blue button's text disappears while the pointer is on it.]* The text inside this blue button disappears while hovering
+
+One last thing to implement. After my first test login, redirected to the deployed version, created my fmID on mourafelipe.com app, confirmed the e-mail and then the whatsapp, I got no redirected back to the original URL.
+
+There's an agent live on [my personal website's codebase], coordinate the implementation if needed. *(The original names that private project.)*

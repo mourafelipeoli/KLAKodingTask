@@ -9,6 +9,8 @@ import "./FmIdSignIn.css";
 /** `?with=fmid`: the page was opened to sign in with fmID, so it starts by itself. */
 const START_PARAM = "with";
 const START_VALUE = "fmid";
+/** `&retry=1`: the server's one automatic retry after a sign-in finished in another browser. */
+const RETRY_PARAM = "retry";
 
 interface FmIdSignInProps {
   /** Where to come back to after signing in: a path on this site. */
@@ -32,6 +34,7 @@ export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
   const hasStarted = useRef(false);
   const shouldStart =
     features.externalLogin && searchParams.get(START_PARAM) === START_VALUE;
+  const isRetry = searchParams.get(RETRY_PARAM) === "1";
 
   useEffect(() => {
     if (!shouldStart || hasStarted.current) {
@@ -41,9 +44,10 @@ export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
     // Coming back with the browser's Back button must not start it again.
     const current = new URL(window.location.href);
     current.searchParams.delete(START_PARAM);
+    current.searchParams.delete(RETRY_PARAM);
     window.history.replaceState(window.history.state, "", current);
-    void accountService.signIn(returnUrl, locale);
-  }, [shouldStart, returnUrl, locale]);
+    void accountService.signIn(returnUrl, locale, isRetry);
+  }, [shouldStart, isRetry, returnUrl, locale]);
 
   useEffect(() => {
     function handlePageShow(event: PageTransitionEvent) {

@@ -122,6 +122,36 @@ public sealed class FmIdSignInTests
     }
 
     [Fact]
+    public async Task A_sign_in_finished_in_another_browser_starts_again_there_and_returns_where_it_began()
+    {
+        using var host = MessagingTestHost.Create();
+        var started = host.Browser();
+        var query = QueryHelpers.ParseQuery((await MessagingTestHost.StartFmIdAsync(started, ReturnUrl)).Headers.Location!.Query);
+        var arrived = host.Browser();
+        host.FmId.Nonce = query["nonce"];
+
+        var callback = await arrived.GetAsync($"/signin-fmid?code=test-code&state={Uri.EscapeDataString(query["state"]!)}");
+
+        Assert.Equal(HttpStatusCode.Redirect, callback.StatusCode);
+        Assert.Equal($"/sign-in?returnUrl={EscapedReturnUrl}&with=fmid&retry=1", callback.Headers.Location!.ToString());
+        var retry = await MessagingTestHost.PostFormAsync(arrived, "/api/account/fmid/sign-in", ReturnUrl, isRetry: true);
+        Assert.Equal(ReturnUrl, await host.FinishFmIdAsync(arrived, QueryHelpers.ParseQuery(retry.Headers.Location!.Query)));
+        Assert.True((await arrived.GetFromJsonAsync<AccountResponse>("/api/account/me"))!.IsSignedIn);
+    }
+
+    [Fact]
+    public async Task A_retry_that_fails_the_same_way_shows_the_error_instead_of_looping()
+    {
+        using var host = MessagingTestHost.Create();
+        var retry = await MessagingTestHost.PostFormAsync(host.Browser(), "/api/account/fmid/sign-in", ReturnUrl, isRetry: true);
+        var query = QueryHelpers.ParseQuery(retry.Headers.Location!.Query);
+
+        var callback = await host.Browser().GetAsync($"/signin-fmid?code=test-code&state={Uri.EscapeDataString(query["state"]!)}");
+
+        Assert.Equal($"/sign-in?error=invalid-response&returnUrl={EscapedReturnUrl}", callback.Headers.Location!.ToString());
+    }
+
+    [Fact]
     public async Task Starting_requires_the_antiforgery_token()
     {
         using var host = MessagingTestHost.Create();

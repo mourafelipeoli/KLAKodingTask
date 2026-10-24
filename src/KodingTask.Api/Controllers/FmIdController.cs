@@ -37,6 +37,8 @@ public sealed class FmIdController(
         properties.Items[FmIdServiceCollectionExtensions.ReturnUrlItem] = returnUrl;
         if (!string.IsNullOrWhiteSpace(form.UiLocale))
             properties.Items[FmIdServiceCollectionExtensions.UiLocaleItem] = form.UiLocale;
+        if (form.Retry == "1")
+            properties.Items[FmIdServiceCollectionExtensions.RetryItem] = "1";
         return Challenge(properties, FmIdOptions.Scheme);
     }
 

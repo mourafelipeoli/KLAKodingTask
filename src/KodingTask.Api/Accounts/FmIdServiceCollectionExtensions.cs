@@ -12,6 +12,8 @@ public static class FmIdServiceCollectionExtensions
     public const string PromptItem = "prompt";
     public const string SilentPrompt = "none";
 
+    public const string RetryItem = "retry";
+
     private static readonly string[] SilentFailures = ["login_required", "interaction_required", "consent_required", "account_selection_required"];
 
     /// <summary>Sign-in with fmID when the provider and the client are configured; returns the settings read.</summary>
@@ -35,6 +37,7 @@ public static class FmIdServiceCollectionExtensions
             options.ResponseType = OpenIdConnectResponseType.Code;
             options.ResponseMode = OpenIdConnectResponseMode.Query;
             options.UsePkce = true;
+            options.RemoteAuthenticationTimeout = TimeSpan.FromHours(1);
             options.SaveTokens = false;
             options.GetClaimsFromUserInfoEndpoint = false;
             options.MapInboundClaims = false;
@@ -73,6 +76,8 @@ public static class FmIdServiceCollectionExtensions
                     var wasSilent = context.Properties?.Items.TryGetValue(PromptItem, out var prompt) == true && prompt == SilentPrompt;
                     if (wasSilent && error is not null && SilentFailures.Contains(error))
                         context.Response.Redirect(AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties)));
+                    else if (error is null && context.Properties is not null && !context.Properties.Items.ContainsKey(RetryItem))
+                        context.Response.Redirect(AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties), isRetry: true));
                     else
                         context.Response.Redirect(SignInPage(error == "access_denied" ? FmIdErrors.RefusedByProvider : FmIdErrors.InvalidResponse, context.Properties));
                     context.HandleResponse();

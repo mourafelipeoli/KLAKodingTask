@@ -16,6 +16,9 @@ public sealed class AccountLinks(IOptions<PublicSiteOptions> publicSite, IHostEn
     public static string ResetPasswordPath(string userId, string code, string uiLocale) =>
         $"/reset-password?user={Uri.EscapeDataString(userId)}&code={Uri.EscapeDataString(code)}&lang={Uri.EscapeDataString(uiLocale)}";
 
+    public static string SignInPath(string error, string? returnUrl) =>
+        $"/sign-in?error={Uri.EscapeDataString(error)}&returnUrl={Uri.EscapeDataString(ReturnUrls.Sanitize(returnUrl))}";
+
     public static string ConversionPath(string amount, string language, string uiLocale) =>
         $"/?amount={Uri.EscapeDataString(amount)}&language={Uri.EscapeDataString(language)}&lang={Uri.EscapeDataString(uiLocale)}";
 }

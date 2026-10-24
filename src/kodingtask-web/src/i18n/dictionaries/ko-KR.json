@@ -240,5 +240,12 @@
   "Too many wrong codes. Ask for a new one.": "잘못된 코드를 너무 많이 입력했습니다. 새 코드를 요청하세요.",
   "Your session has changed. Reload the page and try again.": "세션이 변경되었습니다. 페이지를 새로 고친 뒤 다시 시도하세요.",
   "Too many requests. Wait a minute and try again.": "요청이 너무 많습니다. 1분 뒤에 다시 시도하세요.",
-  "The server is not reachable right now. Try again in a moment.": "지금은 서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요."
+  "The server is not reachable right now. Try again in a moment.": "지금은 서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.",
+  "Continue with fmID": "fmID로 계속하기",
+  "fmID is the author's own OpenID Connect provider.": "fmID는 제작자가 직접 운영하는 OpenID Connect 공급자입니다.",
+  "or": "또는",
+  "The sign-in with fmID did not complete. Try again.": "fmID 로그인이 완료되지 않았습니다. 다시 시도하세요.",
+  "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID에서 이 로그인을 허용하지 않았습니다. fmID 계정을 확인한 후 다시 시도하세요.",
+  "Confirm your email address at fmID first, then try again.": "먼저 fmID에서 이메일 주소를 확인한 후 다시 시도하세요.",
+  "New accounts are paused right now. Try again later.": "지금은 새 계정 생성이 일시 중지되었습니다. 나중에 다시 시도하세요."
 }

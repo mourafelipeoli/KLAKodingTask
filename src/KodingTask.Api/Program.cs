@@ -33,6 +33,7 @@ builder.Services.Configure<PublicSiteOptions>(builder.Configuration.GetSection(P
 var aiConfigured = builder.Services.AddAiConversion(builder.Configuration);
 var (emailConfigured, whatsAppConfigured) = builder.Services.AddMessaging(builder.Configuration, builder.Environment);
 builder.Services.AddAccounts();
+var fmId = builder.Services.AddFmIdSignIn(builder.Configuration);
 builder.Services.AddScoped<DeliveryService>();
 builder.Services.AddHostedService<RetentionJob>();
 builder.Services.AddSingleton(new FeatureAvailability(
@@ -40,7 +41,7 @@ builder.Services.AddSingleton(new FeatureAvailability(
     WhatsApp: whatsAppConfigured,
     Ai: aiConfigured,
     MachineTranslation: false,
-    ExternalLogin: false));
+    ExternalLogin: fmId.IsConfigured));
 builder.Services.AddInfrastructureReport(builder.Configuration);
 
 builder.Services.AddProblemDetails();
@@ -58,7 +59,7 @@ var app = builder.Build();
 
 app.UseHealthEndpoint();
 app.UseForwardedHeaders();
-app.UseSecurityHeaders();
+app.UseSecurityHeaders(fmId.IsConfigured ? [fmId.AuthorityOrigin!] : []);
 if (!app.Environment.IsDevelopment())
     app.UseHsts();
 

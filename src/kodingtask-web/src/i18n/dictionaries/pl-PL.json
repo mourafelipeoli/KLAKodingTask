@@ -240,5 +240,12 @@
   "Too many wrong codes. Ask for a new one.": "Zbyt wiele błędnych kodów. Poproś o nowy.",
   "Your session has changed. Reload the page and try again.": "Sesja się zmieniła. Odśwież stronę i spróbuj ponownie.",
   "Too many requests. Wait a minute and try again.": "Zbyt wiele żądań. Odczekaj minutę i spróbuj ponownie.",
-  "The server is not reachable right now. Try again in a moment.": "Serwer jest teraz nieosiągalny. Spróbuj ponownie za chwilę."
+  "The server is not reachable right now. Try again in a moment.": "Serwer jest teraz nieosiągalny. Spróbuj ponownie za chwilę.",
+  "Continue with fmID": "Kontynuuj z fmID",
+  "fmID is the author's own OpenID Connect provider.": "fmID to własny dostawca OpenID Connect autora.",
+  "or": "lub",
+  "The sign-in with fmID did not complete. Try again.": "Logowanie przez fmID nie zostało dokończone. Spróbuj ponownie.",
+  "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID nie zezwolił na to logowanie. Sprawdź swoje konto fmID i spróbuj ponownie.",
+  "Confirm your email address at fmID first, then try again.": "Najpierw potwierdź adres e-mail w fmID, a potem spróbuj ponownie.",
+  "New accounts are paused right now. Try again later.": "Zakładanie nowych kont jest teraz wstrzymane. Spróbuj później."
 }

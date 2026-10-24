@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using System.Text;
 using KodingTask.Api.Accounts;
 using KodingTask.Api.Contracts;
@@ -74,7 +75,7 @@ public sealed class AccountController(
         var locale = await profiles.RememberLocaleAsync(user.Id, request.UiLocale, cancellationToken);
         var sent = await SendConfirmationAsync(user, locale, request.ReturnUrl, cancellationToken);
         await signIn.SignInAsync(user, isPersistent: true);
-        return new RegisterResponse(await DescribeAsync(user, cancellationToken), sent.IsSent);
+        return new RegisterResponse(await DescribeAsync(user, cancellationToken, signedInWithFmId: false), sent.IsSent);
     }
 
     [HttpPost("confirm-email")]
@@ -92,7 +93,7 @@ public sealed class AccountController(
         }
 
         await signIn.SignInAsync(user, isPersistent: true);
-        return await DescribeAsync(user, cancellationToken);
+        return await DescribeAsync(user, cancellationToken, signedInWithFmId: false);
     }
 
     [Authorize]
@@ -127,7 +128,7 @@ public sealed class AccountController(
             return Refuse(ApiErrors.InvalidCredentials);
 
         await signIn.SignInAsync(user, isPersistent: true);
-        return await DescribeAsync(user, cancellationToken);
+        return await DescribeAsync(user, cancellationToken, signedInWithFmId: false);
     }
 
     [HttpPost("sign-out")]
@@ -177,7 +178,7 @@ public sealed class AccountController(
 
         await users.ResetAccessFailedCountAsync(user);
         await signIn.SignInAsync(user, isPersistent: true);
-        return await DescribeAsync(user, cancellationToken);
+        return await DescribeAsync(user, cancellationToken, signedInWithFmId: false);
     }
 
     [Authorize]
@@ -216,7 +217,7 @@ public sealed class AccountController(
         return await accountEmails.SendConfirmationAsync(user, locale, link, cancellationToken);
     }
 
-    private async Task<AccountResponse> DescribeAsync(IdentityUser? user, CancellationToken cancellationToken)
+    private async Task<AccountResponse> DescribeAsync(IdentityUser? user, CancellationToken cancellationToken, bool? signedInWithFmId = null)
     {
         if (user is null)
             return AccountResponse.SignedOut;
@@ -229,7 +230,8 @@ public sealed class AccountController(
             user.Email,
             user.EmailConfirmed,
             phone is null ? null : DestinationMask.Phone(phone.PhoneE164),
-            Math.Max(0, limits.DeliveriesPerUserPerDay - used));
+            Math.Max(0, limits.DeliveriesPerUserPerDay - used),
+            signedInWithFmId ?? User.FindFirstValue(ClaimTypes.AuthenticationMethod) == FmIdOptions.Scheme);
     }
 
     private static string? Decode(string? code)

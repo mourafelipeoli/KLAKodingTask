@@ -16,3 +16,9 @@ Local accounts on ASP.NET Core Identity, with the session in a cookie.
   token from `GET /api/account/antiforgery` and sends it in `X-XSRF-TOKEN`; its cookie is
   Strict. With the Lax session cookie and JSON bodies a cross-site request would already
   fail; the token closes the remaining gaps.
+- **External cookie** `__Host-kodingtask-external`: Identity's short-lived cookie between the
+  redirect back from fmID and the local session, renamed and secured like the others.
+- **The authentication method survives the stamp check.** Every so often Identity rebuilds
+  the session from the user record to check the security stamp, and the rebuilt principal
+  forgets how the visitor signed in. `OnRefreshingPrincipal` copies the `amr` claim over;
+  without it a session started at fmID would, after that check, sign out here only.

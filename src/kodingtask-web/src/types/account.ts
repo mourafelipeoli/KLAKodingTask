@@ -5,6 +5,8 @@ export interface Account {
   /** Masked, e.g. "+49*******5678"; the full number never comes back from the server. */
   whatsAppNumber: string | null;
   deliveriesLeftToday: number | null;
+  /** Signing out of such a session also ends the one at fmID. */
+  signedInWithFmId: boolean;
 }
 
 export interface RegisterResult {
@@ -27,4 +29,5 @@ export const SIGNED_OUT: Account = {
   emailConfirmed: false,
   whatsAppNumber: null,
   deliveriesLeftToday: null,
+  signedInWithFmId: false,
 };

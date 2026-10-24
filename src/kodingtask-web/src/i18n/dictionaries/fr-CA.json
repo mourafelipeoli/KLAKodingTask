@@ -13,5 +13,6 @@
   "The email or the password is not right.": "L’adresse courriel ou le mot de passe est incorrect.",
   "Type a valid email address.": "Saisissez une adresse courriel valide.",
   "An account with this email already exists. Sign in or reset the password.": "Un compte existe déjà avec cette adresse courriel. Connectez-vous ou réinitialisez le mot de passe.",
-  "Confirm your email address first.": "Confirmez d’abord votre adresse courriel."
+  "Confirm your email address first.": "Confirmez d’abord votre adresse courriel.",
+  "Confirm your email address at fmID first, then try again.": "Confirmez d’abord votre adresse courriel sur fmID, puis réessayez."
 }

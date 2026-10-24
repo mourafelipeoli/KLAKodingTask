@@ -1,4 +1,6 @@
-﻿using KodingTask.Data;
+﻿using System.Security.Claims;
+using KodingTask.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 
 namespace KodingTask.Api.Accounts;
@@ -6,6 +8,7 @@ namespace KodingTask.Api.Accounts;
 public static class AccountServiceCollectionExtensions
 {
     public const string SessionCookie = "__Host-kodingtask";
+    public const string ExternalCookie = "__Host-kodingtask-external";
     public const string AntiforgeryCookie = "__Host-kodingtask-xsrf";
     public const string AntiforgeryHeader = "X-XSRF-TOKEN";
 
@@ -49,6 +52,29 @@ public static class AccountServiceCollectionExtensions
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 return Task.CompletedTask;
             };
+        });
+
+        // The short-lived cookie between the redirect back from fmID and the local session.
+        services.Configure<CookieAuthenticationOptions>(IdentityConstants.ExternalScheme, options =>
+        {
+            options.Cookie.Name = ExternalCookie;
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
+
+        // The periodic security-stamp check rebuilds the session from the user record and
+        // would forget how the visitor signed in; sign-out with fmID depends on it.
+        services.Configure<SecurityStampValidatorOptions>(options => options.OnRefreshingPrincipal = context =>
+        {
+            var method = context.CurrentPrincipal?.FindFirst(ClaimTypes.AuthenticationMethod);
+            if (method is not null && context.NewPrincipal?.Identity is ClaimsIdentity identity
+                && !identity.HasClaim(claim => claim.Type == ClaimTypes.AuthenticationMethod))
+            {
+                identity.AddClaim(new Claim(ClaimTypes.AuthenticationMethod, method.Value));
+            }
+
+            return Task.CompletedTask;
         });
 
         services.AddAntiforgery(options =>

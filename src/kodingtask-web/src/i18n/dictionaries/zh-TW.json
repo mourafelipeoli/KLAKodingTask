@@ -240,5 +240,12 @@
   "Too many wrong codes. Ask for a new one.": "錯誤的驗證碼過多。請重新要求。",
   "Your session has changed. Reload the page and try again.": "您的工作階段已變更。請重新整理頁面後再試。",
   "Too many requests. Wait a minute and try again.": "請求過多。請稍候一分鐘再試。",
-  "The server is not reachable right now. Try again in a moment.": "目前無法連線至伺服器。請稍後再試。"
+  "The server is not reachable right now. Try again in a moment.": "目前無法連線至伺服器。請稍後再試。",
+  "Continue with fmID": "使用 fmID 繼續",
+  "fmID is the author's own OpenID Connect provider.": "fmID 是作者自己的 OpenID Connect 身分提供者。",
+  "or": "或",
+  "The sign-in with fmID did not complete. Try again.": "使用 fmID 登入未完成。請再試一次。",
+  "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID 未允許此次登入。請檢查您的 fmID 帳戶後再試一次。",
+  "Confirm your email address at fmID first, then try again.": "請先在 fmID 確認您的電子郵件地址，然後再試一次。",
+  "New accounts are paused right now. Try again later.": "目前暫停建立新帳戶。請稍後再試。"
 }

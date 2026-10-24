@@ -15,6 +15,8 @@ KLA Senior Software Engineer coding task (web variant).
 - **Send it to yourself:** after signing in, a result can be emailed to the account's
   confirmed address or sent by WhatsApp to a verified number, within daily caps that live
   outside the code.
+- **Sign in with fmID:** besides email and password, the author's own OpenID Connect
+  provider (code flow with PKCE), linked to the same local account.
 - **Where it runs:** the hosted version has a live
   [infrastructure page](https://klakodingtask.mourafelipe.com/infrastructure) (container,
   traffic, database, certificate, guardrails) that never shows an identifier.
@@ -113,6 +115,7 @@ browser ──HTTPS──► KodingTask.Api (ASP.NET Core 10)
                     ├─ /api/app-info          instance info + optional feature flags
                     ├─ /api/infrastructure    read-only facts for the "Where this runs" page
                     ├─ /api/account …         local accounts (Identity), phone verification
+                    ├─ /signin-fmid …         sign-in with fmID (OpenID Connect, code + PKCE)
                     ├─ /api/deliveries        a result by email (SES) or WhatsApp (Meta)
                     ├─ /health                version and commit, never touches the DB
                     └─ everything else        the React app (static files; Vite in development)
@@ -178,6 +181,11 @@ under the file). That is where to look for the "why" of any class.
   converted again on the server. Daily caps per channel, per account and per client live in
   the parameter store. See
   [decision 6](docs/decisions/0006-accounts-and-deliveries-to-yourself.md).
+
+- **An external identity, a local account.** Sign-in with fmID is a confidential server-side
+  OpenID Connect client: tokens never reach the browser, and the provider's subject is
+  linked to a local account only through a verified address. See
+  [decision 7](docs/decisions/0007-sign-in-with-fmid-linked-to-local-accounts.md).
 
 More decisions, with their alternatives, are recorded in [docs/decisions](docs/decisions).
 

@@ -42,6 +42,30 @@ const MESSAGES: Readonly<Record<string, string>> = {
 
 const FALLBACK = textKey("The message could not be sent. Try again later.");
 
+// Why a sign-in with fmID came back without a session (?error= on the sign-in page).
+const FMID_INCOMPLETE = textKey("The sign-in with fmID did not complete. Try again.");
+
+const FMID_MESSAGES: Readonly<Record<string, string>> = {
+  "refused-by-provider": textKey(
+    "fmID did not allow this sign-in. Check your fmID account and try again.",
+  ),
+  "invalid-response": FMID_INCOMPLETE,
+  "no-access": textKey("Confirm your email address at fmID first, then try again."),
+  "registration-limit": textKey(
+    "Too many accounts were created from this connection today.",
+  ),
+  paused: textKey("New accounts are paused right now. Try again later."),
+  "locked-out": textKey("Too many failed attempts. Try again in 15 minutes."),
+  unavailable: textKey("This feature is not available here."),
+};
+
+export function fmIdErrorKey(code: string | null): string | null {
+  if (!code) {
+    return null;
+  }
+  return FMID_MESSAGES[code] ?? FMID_INCOMPLETE;
+}
+
 export function accountErrorKey(error: unknown): string {
   const code = error instanceof ApiError ? error.code : NETWORK_ERROR;
   return MESSAGES[code] ?? FALLBACK;

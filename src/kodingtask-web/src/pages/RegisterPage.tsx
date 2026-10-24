@@ -5,6 +5,7 @@ import { useAccount } from "../app/useAccount";
 import Notice from "../components/Notice";
 import AccountCard from "../components/account/AccountCard";
 import AccountField from "../components/account/AccountField";
+import FmIdSignIn from "../components/account/FmIdSignIn";
 import SubmitButton from "../components/account/SubmitButton";
 import { useAccountHandOver } from "../hooks/useAccountHandOver";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
@@ -78,6 +79,7 @@ export default function RegisterPage() {
         "Accounts are only used to send conversion results to yourself by email or WhatsApp.",
       )}
     >
+      <FmIdSignIn returnUrl={returnUrl} />
       <form className="account-form" noValidate onSubmit={handleSubmit}>
         <AccountField
           label={t("Email")}

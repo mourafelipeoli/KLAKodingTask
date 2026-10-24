@@ -176,3 +176,26 @@ private operations folder):
   authority for both development and production; this app must allow the provider in its
   `form-action` content security policy. Draft contract: authorization code with PKCE
   (S256), `response_mode=query`, no refresh tokens, 15-minute tokens, RP-initiated logout.
+
+I changed the mode to "edit automatically". So please try again to run what you need.
+
+Are you aware off [the fmID integration handoff file in my private operations folder] ? *(The original gives the file's path.)*
+
+## 7. The fmID handoff
+
+The provider session finished its side and wrote the integration contract to a handoff file
+in my private operations folder: issuer and endpoints, authorization code with PKCE (S256)
+and query response mode only, a confidential client, the scopes, the id_token claims
+(`sub`, `name`, `email`, `email_verified`, `auth_time`), no refresh tokens, encrypted access
+tokens, the error semantics, the redirect and post-logout URIs registered for production and
+development, and where the client secrets are stored. It then told this session when the
+provider went live.
+
+This session built the client to that contract, tested the whole round trip against a fake
+provider inside the test host, and checked that the live provider accepts the authorization
+request the application builds (it answers with a redirect to its own sign-in page). It
+reported back what it observed and what differs from the handoff.
+
+The live end-to-end sign-in was left to me: it needs an fmID account and the development
+client secret, and the assistant neither creates accounts on production services nor
+handles that secret.

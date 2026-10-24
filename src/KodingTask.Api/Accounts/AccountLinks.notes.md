@@ -11,3 +11,6 @@ link opens their own instance.
 
 Every link carries the interface language (`lang`) the visitor used when it was requested, so the
 page it opens speaks the same language as the email.
+
+`SignInPath` is not for emails: it is where a sign-in with fmID returns when it fails, with
+the error code and the sanitised return path.

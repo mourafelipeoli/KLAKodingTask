@@ -118,9 +118,32 @@ async function request<T>(
   return (await response.json()) as T;
 }
 
+// Sign-in and sign-out with fmID leave the site, so they are form posts the browser follows
+// rather than fetch calls; the antiforgery token travels as a form field.
+async function navigateWithPost(
+  path: string,
+  fields: Record<string, string>,
+): Promise<void> {
+  await ensureAntiforgeryToken();
+  const form = document.createElement("form");
+  form.method = "post";
+  form.action = path;
+  const values = { ...fields, __RequestVerificationToken: antiforgeryToken ?? "" };
+  for (const [name, value] of Object.entries(values)) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.append(input);
+  }
+  document.body.append(form);
+  form.submit();
+}
+
 export const httpClient = {
   get: <T>(path: string, signal?: AbortSignal) =>
     request<T>("GET", path, undefined, signal),
   post: <T>(path: string, body: unknown, signal?: AbortSignal) =>
     request<T>("POST", path, body, signal),
+  navigateWithPost,
 };

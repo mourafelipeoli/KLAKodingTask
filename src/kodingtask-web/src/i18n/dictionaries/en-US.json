@@ -240,5 +240,12 @@
   "Too many wrong codes. Ask for a new one.": "Too many wrong codes. Ask for a new one.",
   "Your session has changed. Reload the page and try again.": "Your session has changed. Reload the page and try again.",
   "Too many requests. Wait a minute and try again.": "Too many requests. Wait a minute and try again.",
-  "The server is not reachable right now. Try again in a moment.": "The server is not reachable right now. Try again in a moment."
+  "The server is not reachable right now. Try again in a moment.": "The server is not reachable right now. Try again in a moment.",
+  "Continue with fmID": "Continue with fmID",
+  "fmID is the author's own OpenID Connect provider.": "fmID is the author's own OpenID Connect provider.",
+  "or": "or",
+  "The sign-in with fmID did not complete. Try again.": "The sign-in with fmID did not complete. Try again.",
+  "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID did not allow this sign-in. Check your fmID account and try again.",
+  "Confirm your email address at fmID first, then try again.": "Confirm your email address at fmID first, then try again.",
+  "New accounts are paused right now. Try again later.": "New accounts are paused right now. Try again later."
 }

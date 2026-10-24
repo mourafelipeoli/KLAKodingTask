@@ -24,12 +24,19 @@ export default function AccountMenu() {
   const navigate = useNavigate();
   const signInPath = `${ROUTES.signIn}${location.search}`;
   const handOver = useAccountHandOver(signInPath);
+  const returnUrl = ACCOUNT_PAGES.includes(location.pathname)
+    ? ROUTES.home
+    : `${location.pathname}${location.search}${location.hash}`;
 
   if (!isLoaded) {
     return null;
   }
 
   async function handleSignOut() {
+    if (account.signedInWithFmId) {
+      await accountService.signOutOfFmId(returnUrl);
+      return;
+    }
     await accountService.signOut();
     await apply(SIGNED_OUT);
     if (ACCOUNT_PAGES.includes(location.pathname)) {
@@ -59,10 +66,6 @@ export default function AccountMenu() {
       </div>
     );
   }
-
-  const returnUrl = ACCOUNT_PAGES.includes(location.pathname)
-    ? ROUTES.home
-    : `${location.pathname}${location.search}${location.hash}`;
 
   return (
     <>

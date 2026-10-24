@@ -131,6 +131,40 @@ dotnet user-secrets set "WhatsApp:Mode" "Log"
 Register, open the confirmation link printed in the console, send results; phone codes are
 printed there too.
 
+## Sign-in with fmID (OpenID Connect)
+
+On when all three settings are set. fmID is the author's own OpenID Connect provider; any
+provider that issues `sub`, `email` and `email_verified` in the id_token works the same way.
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `FmId:Authority` | empty | The provider's issuer URL (with its trailing slash). The discovery document is read from it. |
+| `FmId:ClientId` | empty | The client registered at the provider for this instance. |
+| `FmId:ClientSecret` | empty | That client's secret. A secret: user-secrets locally, a secret store when hosted. |
+
+Register the client at the provider with:
+
+- redirect URI `https://<host>/signin-fmid` and post-logout redirect URI
+  `https://<host>/signout-fmid` (matched exactly, port included);
+- authorization code with PKCE (S256), query response mode, client secret at the token
+  endpoint;
+- scopes `openid profile email`.
+
+The provider's origin is added to the `form-action` directive of the content security
+policy automatically. The first sign-in links the provider's subject to the local account
+with the same verified address, or creates one (counted against
+`RegistrationsPerClientPerDay`).
+
+To try it locally against a provider that has a development client for
+`https://localhost:7162`:
+
+```sh
+cd src/KodingTask.Api
+dotnet user-secrets set "FmId:Authority" "https://<provider>/"
+dotnet user-secrets set "FmId:ClientId" "<development client id>"
+dotnet user-secrets set "FmId:ClientSecret" "<development client secret>"
+```
+
 ## Infrastructure page
 
 The page at `/infrastructure` works without any setting. Off AWS it says that the app runs

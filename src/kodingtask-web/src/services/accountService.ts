@@ -18,6 +18,12 @@ export const accountService = {
   signIn: (email: string, password: string) =>
     httpClient.post<Account>("/api/account/sign-in", { email, password }),
   signOut: () => httpClient.post<Account>("/api/account/sign-out", {}),
+  /** Leaves for fmID; the browser comes back to returnUrl signed in. */
+  startFmIdSignIn: (returnUrl: string, uiLocale: string) =>
+    httpClient.navigateWithPost("/api/account/fmid/sign-in", { returnUrl, uiLocale }),
+  /** Ends the session here and at fmID, then comes back to returnUrl. */
+  signOutOfFmId: (returnUrl: string) =>
+    httpClient.navigateWithPost("/api/account/fmid/sign-out", { returnUrl }),
   forgotPassword: (email: string, uiLocale: string) =>
     httpClient.post<undefined>("/api/account/forgot-password", { email, uiLocale }),
   resetPassword: (userId: string, code: string, password: string) =>

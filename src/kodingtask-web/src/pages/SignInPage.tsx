@@ -5,13 +5,14 @@ import { useAccount } from "../app/useAccount";
 import Notice from "../components/Notice";
 import AccountCard from "../components/account/AccountCard";
 import AccountField from "../components/account/AccountField";
+import FmIdSignIn from "../components/account/FmIdSignIn";
 import SubmitButton from "../components/account/SubmitButton";
 import { useAccountHandOver } from "../hooks/useAccountHandOver";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useText } from "../i18n/useText";
 import { ROUTES } from "../routes/routePaths";
 import { accountService } from "../services/accountService";
-import { accountErrorKey, safeReturnUrl } from "../utils/accountErrors";
+import { accountErrorKey, fmIdErrorKey, safeReturnUrl } from "../utils/accountErrors";
 import "./AccountPages.css";
 
 export default function SignInPage() {
@@ -22,6 +23,7 @@ export default function SignInPage() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const returnUrl = safeReturnUrl(searchParams.get("returnUrl"));
+  const fmIdError = fmIdErrorKey(searchParams.get("error"));
   const handOver = useAccountHandOver(`${location.pathname}${location.search}`);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,6 +53,12 @@ export default function SignInPage() {
         "Accounts are only used to send conversion results to yourself by email or WhatsApp.",
       )}
     >
+      {fmIdError && (
+        <Notice tone="danger" role="alert">
+          {t(fmIdError)}
+        </Notice>
+      )}
+      <FmIdSignIn returnUrl={returnUrl} />
       <form className="account-form" noValidate onSubmit={handleSubmit}>
         <AccountField
           label={t("Email")}

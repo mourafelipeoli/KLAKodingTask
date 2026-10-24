@@ -240,5 +240,12 @@
   "Too many wrong codes. Ask for a new one.": "間違ったコードが多すぎます。新しいコードをリクエストしてください。",
   "Your session has changed. Reload the page and try again.": "セッションが変わりました。ページを再読み込みしてもう一度お試しください。",
   "Too many requests. Wait a minute and try again.": "リクエストが多すぎます。1 分待ってからもう一度お試しください。",
-  "The server is not reachable right now. Try again in a moment.": "現在サーバーに接続できません。しばらくしてからもう一度お試しください。"
+  "The server is not reachable right now. Try again in a moment.": "現在サーバーに接続できません。しばらくしてからもう一度お試しください。",
+  "Continue with fmID": "fmID で続ける",
+  "fmID is the author's own OpenID Connect provider.": "fmID は作者自身の OpenID Connect プロバイダーです。",
+  "or": "または",
+  "The sign-in with fmID did not complete. Try again.": "fmID でのログインが完了しませんでした。もう一度お試しください。",
+  "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID がこのログインを許可しませんでした。fmID アカウントを確認して、もう一度お試しください。",
+  "Confirm your email address at fmID first, then try again.": "まず fmID でメールアドレスを確認してから、もう一度お試しください。",
+  "New accounts are paused right now. Try again later.": "現在、新しいアカウントの作成は一時停止しています。しばらくしてからお試しください。"
 }

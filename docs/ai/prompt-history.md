@@ -194,7 +194,12 @@ provider went live.
 This session built the client to that contract, tested the whole round trip against a fake
 provider inside the test host, and checked that the live provider accepts the authorization
 request the application builds (it answers with a redirect to its own sign-in page). It
-reported back what it observed and what differs from the handoff.
+reported back what it observed and what differs from the handoff: the discovery document did
+not list the profile and email claims the tokens carry, the authorization request leaves
+`response_mode` out because query is the default of the code flow, and it sends the
+visitor's interface language as `ui_locales`. The provider session confirmed the default,
+added the missing claims to its discovery document and made its sign-in pages follow
+`ui_locales` for the languages it speaks, and updated the handoff file.
 
 The live end-to-end sign-in was left to me: it needs an fmID account and the development
 client secret, and the assistant neither creates accounts on production services nor

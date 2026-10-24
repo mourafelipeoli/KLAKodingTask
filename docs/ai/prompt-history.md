@@ -345,3 +345,5 @@ A question: thers's no relation between this deploy and the AWS, right? AWS depl
 ## 14. Publishing
 
 Let's write the honest prompt to the final destination, create our public github repo for publishing and put our code there. The browser is connected with Chrome extension, logged in my account.
+
+*[Two screenshots of the dialog that hands over to the deployed version: the blue button's text disappears while the pointer is on it.]* The text inside this blue button disappears while hovering

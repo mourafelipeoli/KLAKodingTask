@@ -503,6 +503,14 @@ select {
   background-color: var(--color-action);
 }
 
+/* The text colour is repeated on hover so a link styled as a button keeps it: the global
+   a:hover rule is more specific than .button--primary and would paint it link blue, the
+   same blue as the hover background. */
+.button--primary:hover:not(:disabled),
+.button--primary:active:not(:disabled) {
+  color: var(--color-action-text);
+}
+
 .button--primary:hover:not(:disabled) {
   background-color: var(--color-action-hover);
 }

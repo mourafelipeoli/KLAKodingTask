@@ -13,8 +13,8 @@ KLA Senior Software Engineer coding task (web variant).
   (Claude on Amazon Bedrock) whose answer is shown next to the rules engine's, with an
   "agrees / differs" badge.
 - **Send it to yourself:** after signing in, a result can be emailed to the account's
-  confirmed address or sent by WhatsApp to a verified number, within daily caps that live
-  outside the code.
+  confirmed address or sent by WhatsApp to the number verified on fmID, within daily caps
+  that live outside the code.
 - **Your last conversions:** signed in, the converter lists your last ten conversions on any
   device; choose one to convert it again.
 - **Sign in with fmID:** the author's own OpenID Connect provider (code flow with PKCE) is
@@ -116,7 +116,7 @@ browser ──HTTPS──► KodingTask.Api (ASP.NET Core 10)
                     ├─ /api/conversions …  ─► KodingTask.Conversion (pure C#, no I/O)
                     ├─ /api/app-info          instance info + optional feature flags
                     ├─ /api/infrastructure    read-only facts for the "Where this runs" page
-                    ├─ /api/account …         the signed-in visitor (Identity), phone verification
+                    ├─ /api/account …         the signed-in visitor (Identity)
                     ├─ /signin-fmid …         sign-in with fmID (OpenID Connect, code + PKCE)
                     ├─ /api/deliveries        a result by email (SES) or WhatsApp (Meta)
                     ├─ /api/account/conversions  the signed-in visitor's last conversions
@@ -180,10 +180,11 @@ under the file). That is where to look for the "why" of any class.
   See [decision 5](docs/decisions/0005-infrastructure-page-from-read-only-facts.md).
 
 - **Messages only reach their own owner.** No recipient field: email goes to the account's
-  confirmed address, WhatsApp to a number verified by a one-time code, and the words are
-  converted again on the server. Daily caps per channel, per account and per client live in
-  the parameter store. See
-  [decision 6](docs/decisions/0006-accounts-and-deliveries-to-yourself.md).
+  confirmed address, WhatsApp to the number the identity provider verified (checked again
+  within ten minutes of every send), and the words are converted again on the server.
+  Daily caps per channel, per account and per client live in the parameter store. See
+  [decision 6](docs/decisions/0006-accounts-and-deliveries-to-yourself.md) and
+  [decision 10](docs/decisions/0010-the-whatsapp-number-comes-from-fmid.md).
 
 - **An external identity, a local account, no passwords.** fmID is the only sign-in: a
   confidential server-side OpenID Connect client whose tokens never reach the browser. The

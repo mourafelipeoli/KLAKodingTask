@@ -19,8 +19,6 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
 
     public DbSet<VerifiedPhone> VerifiedPhones => Set<VerifiedPhone>();
 
-    public DbSet<PhoneChallenge> PhoneChallenges => Set<PhoneChallenge>();
-
     public DbSet<OutboundMessage> OutboundMessages => Set<OutboundMessage>();
 
     public DbSet<ConversionRecord> ConversionRecords => Set<ConversionRecord>();
@@ -66,15 +64,6 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
             entity.HasKey(phone => phone.UserId);
             entity.Property(phone => phone.UserId).HasMaxLength(255);
             entity.Property(phone => phone.PhoneE164).HasMaxLength(20);
-        });
-
-        modelBuilder.Entity<PhoneChallenge>(entity =>
-        {
-            entity.ToTable("PhoneChallenges");
-            entity.HasKey(challenge => challenge.UserId);
-            entity.Property(challenge => challenge.UserId).HasMaxLength(255);
-            entity.Property(challenge => challenge.PhoneE164).HasMaxLength(20);
-            entity.Property(challenge => challenge.CodeHash).HasMaxLength(64);
         });
 
         modelBuilder.Entity<OutboundMessage>(entity =>

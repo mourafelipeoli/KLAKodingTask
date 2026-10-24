@@ -58,7 +58,6 @@ public static class AccountServiceCollectionExtensions
 
         services.AddSingleton<AccountLinks>();
         services.AddScoped<UserProfiles>();
-        services.AddScoped<PhoneVerification>();
         return services;
     }
 }

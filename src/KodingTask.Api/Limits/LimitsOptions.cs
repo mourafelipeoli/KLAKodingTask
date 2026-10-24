@@ -24,6 +24,4 @@ public sealed class LimitsOptions
 
     public int DeliveriesPerUserPerDay { get; set; } = 10;
 
-    public int PhoneCodesPerUserPerDay { get; set; } = 3;
-
 }

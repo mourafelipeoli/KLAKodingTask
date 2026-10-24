@@ -20,6 +20,7 @@ export const OFFLINE_APP_INFO: AppInfo = {
     deliveries: false,
     accounts: false,
   },
+  fmIdAccountUrl: null,
 };
 
 export const AppInfoContext = createContext<AppInfo>(OFFLINE_APP_INFO);

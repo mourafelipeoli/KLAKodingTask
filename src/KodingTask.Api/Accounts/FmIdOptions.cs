@@ -13,6 +13,9 @@ public sealed class FmIdOptions
 
     public string ClientSecret { get; set; } = string.Empty;
 
+    /// <summary>The provider's account page, where people add and confirm their WhatsApp number. Optional.</summary>
+    public string AccountUrl { get; set; } = string.Empty;
+
     public bool IsConfigured =>
         !string.IsNullOrWhiteSpace(Authority)
         && !string.IsNullOrWhiteSpace(ClientId)

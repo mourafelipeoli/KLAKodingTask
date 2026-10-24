@@ -206,36 +206,6 @@ namespace KodingTask.Data.Migrations
                     b.ToTable("OutboundMessages", (string)null);
                 });
 
-            modelBuilder.Entity("KodingTask.Data.Entities.PhoneChallenge", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("CodeHash")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<DateTime>("ExpiresAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("FailedAttempts")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PhoneE164")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<DateTime>("SentAtUtc")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("PhoneChallenges", (string)null);
-                });
-
             modelBuilder.Entity("KodingTask.Data.Entities.UserProfile", b =>
                 {
                     b.Property<string>("UserId")
@@ -243,6 +213,9 @@ namespace KodingTask.Data.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("PhoneCheckedAtUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("PreferredLocale")

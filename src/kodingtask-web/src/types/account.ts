@@ -6,10 +6,6 @@ export interface Account {
   deliveriesLeftToday: number | null;
 }
 
-export interface PhoneCodeResult {
-  maskedNumber: string;
-}
-
 export interface DeliveryResult {
   maskedDestination: string;
   deliveriesLeftToday: number;

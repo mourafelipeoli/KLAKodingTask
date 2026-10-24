@@ -16,10 +16,4 @@ internal sealed class LogWhatsAppSender(ILogger<LogWhatsAppSender> logger) : IWh
         logger.LogInformation("[WhatsApp:Log] Result to {Phone} ({Locale}): {Amount} = {Words}", phoneE164, locale, amountText, words);
         return Task.FromResult($"log-{Guid.NewGuid():N}");
     }
-
-    public Task<string> SendCodeAsync(string phoneE164, string locale, string code, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("[WhatsApp:Log] Code for {Phone} ({Locale}): {Code}", phoneE164, locale, code);
-        return Task.FromResult($"log-{Guid.NewGuid():N}");
-    }
 }

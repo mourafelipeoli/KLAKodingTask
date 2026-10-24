@@ -3,10 +3,8 @@
 Sends template messages through the WhatsApp Cloud API
 (`POST {ApiBaseUrl}/{PhoneNumberId}/messages`, bearer token).
 
-- **Result**: the result template with two body parameters, the amount and the words.
-- **Code**: the authentication template; the code goes both into the body and into the
-  copy-code button (`sub_type` `url`, index 0), which is how Meta's authentication templates
-  take it.
+- **Result**: the result template with two body parameters, the amount and the words. It is
+  the only template: numbers are verified by fmID, which sends its own codes.
 - **Language**: the interface locale mapped by `MetaLanguages`. When Meta answers that the
   template does not exist in that language (error 132001), the message is sent once more in
   the fallback language instead of failing.

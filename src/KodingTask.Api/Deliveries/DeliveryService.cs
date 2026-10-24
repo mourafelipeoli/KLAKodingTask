@@ -22,10 +22,14 @@ public sealed class DeliveryService(
     UsageLimiter limiter,
     UserProfiles profiles,
     MessageLog log,
-    KodingTaskDbContext database)
+    KodingTaskDbContext database,
+    TimeProvider timeProvider)
 {
     public const string EmailChannel = "email";
     public const string WhatsAppChannel = "whatsapp";
+
+    /// <summary>How long a sign-in's word on the WhatsApp number holds before a send asks fmID again.</summary>
+    public static readonly TimeSpan PhoneCheckValidity = TimeSpan.FromMinutes(10);
 
     public async Task<(DeliveryResponse? Response, ErrorResponse? Error)> SendAsync(
         IdentityUser user,
@@ -48,6 +52,9 @@ public sealed class DeliveryService(
         VerifiedPhone? phone = null;
         if (channel == WhatsAppChannel)
         {
+            var profile = await database.UserProfiles.FindAsync([user.Id], cancellationToken);
+            if (profile?.PhoneCheckedAtUtc is not { } checkedAt || timeProvider.GetUtcNow().UtcDateTime - checkedAt > PhoneCheckValidity)
+                return (null, ApiErrors.PhoneCheckNeeded);
             phone = await database.VerifiedPhones.FindAsync([user.Id], cancellationToken);
             if (phone is null)
                 return (null, ApiErrors.PhoneNotVerified);

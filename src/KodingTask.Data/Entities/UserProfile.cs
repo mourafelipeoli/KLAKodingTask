@@ -7,4 +7,6 @@ public class UserProfile
     public required string PreferredLocale { get; set; }
 
     public DateTime CreatedAtUtc { get; set; }
+
+    public DateTime? PhoneCheckedAtUtc { get; set; }
 }

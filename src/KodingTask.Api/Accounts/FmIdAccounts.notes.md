@@ -22,3 +22,11 @@ code, delivery history, per-account caps).
 Creating one takes an fmID account with a confirmed address, which the provider controls. A
 per-address cap here would stop a team behind one office network at its sixth person. The
 kill switch and the delivery caps still stop everything that costs money.
+
+## The WhatsApp number
+
+Every sign-in (the silent one included) also takes the number from the id_token:
+`phone_number` is stored only when `phone_number_verified` is `true`, and the stored number
+is removed otherwise. The check time is kept on the profile; `DeliveryService` asks for a
+new check when it is older than ten minutes, so a number removed or changed on fmID stops
+receiving results within minutes, not at the end of a 14-day session.

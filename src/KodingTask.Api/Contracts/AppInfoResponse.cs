@@ -8,6 +8,7 @@ public sealed record AppInfoResponse(
     string PublicSiteUrl,
     string? RepositoryUrl,
     AuthorResponse? Author,
-    FeatureAvailability Features);
+    FeatureAvailability Features,
+    string? FmIdAccountUrl);
 
 public sealed record AuthorResponse(string Name, string Url, string? TerminalUrl);

@@ -11,15 +11,9 @@ const MESSAGES: Readonly<Record<string, string>> = {
   UserLimitReached: textKey("You have reached your sending limit for today."),
   SendFailed: textKey("The message could not be sent. Try again later."),
   EmailNotConfirmed: textKey("Confirm your email address first."),
-  PhoneNotVerified: textKey("Verify your WhatsApp number first."),
-  InvalidPhone: textKey(
-    "Type the number in international format, for example +49 170 1234567.",
+  PhoneNotVerified: textKey(
+    "Add and confirm your WhatsApp number in your fmID account, then choose WhatsApp again.",
   ),
-  CodeCooldown: textKey("Wait a minute before asking for a new code."),
-  NoPendingCode: textKey("Ask for a code first."),
-  CodeExpired: textKey("The code has expired. Ask for a new one."),
-  WrongCode: textKey("The code is not right."),
-  TooManyAttempts: textKey("Too many wrong codes. Ask for a new one."),
   InvalidAntiforgeryToken: textKey(
     "Your session has changed. Reload the page and try again.",
   ),

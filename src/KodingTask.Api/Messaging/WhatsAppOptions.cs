@@ -12,8 +12,6 @@ public sealed class WhatsAppOptions
 
     public string ResultTemplate { get; set; } = "koding_task_result";
 
-    public string CodeTemplate { get; set; } = "koding_task_code";
-
     public string FallbackLanguage { get; set; } = "en_US";
 
     public int TimeoutSeconds { get; set; } = 15;
@@ -25,6 +23,5 @@ public sealed class WhatsAppOptions
     public bool IsConfigured => IsLogMode || (
         !string.IsNullOrWhiteSpace(PhoneNumberId)
         && !string.IsNullOrWhiteSpace(AccessToken)
-        && !string.IsNullOrWhiteSpace(ResultTemplate)
-        && !string.IsNullOrWhiteSpace(CodeTemplate));
+        && !string.IsNullOrWhiteSpace(ResultTemplate));
 }

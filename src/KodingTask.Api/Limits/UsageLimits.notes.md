@@ -15,9 +15,8 @@ global daily cap for its channel, whatever caused it. On top of that:
 | Cap | Default | Counter |
 |---|---|---|
 | `EmailsPerDay` | 100 | All emails of the instance per UTC day (results). |
-| `WhatsAppPerDay` | 50 | All WhatsApp messages per UTC day: results and phone codes. |
+| `WhatsAppPerDay` | 50 | All WhatsApp messages per UTC day (results). |
 | `DeliveriesPerUserPerDay` | 10 | Results one account may send to itself per UTC day, both channels together. |
-| `PhoneCodesPerUserPerDay` | 3 | One-time WhatsApp codes one account may request per UTC day. |
 
 A parameter missing from the parameter store reads as zero: the feature it guards is off
 until someone who controls the store sets it.

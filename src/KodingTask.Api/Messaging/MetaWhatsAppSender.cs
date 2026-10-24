@@ -14,14 +14,6 @@ public sealed class MetaWhatsAppSender(HttpClient http, IOptions<WhatsAppOptions
             [new { type = "body", parameters = new[] { Text(amountText), Text(words) } }],
             cancellationToken);
 
-    public Task<string> SendCodeAsync(string phoneE164, string locale, string code, CancellationToken cancellationToken) =>
-        SendTemplateAsync(phoneE164, options.Value.CodeTemplate, locale,
-            [
-                new { type = "body", parameters = new[] { Text(code) } },
-                new { type = "button", sub_type = "url", index = "0", parameters = new[] { Text(code) } },
-            ],
-            cancellationToken);
-
     private async Task<string> SendTemplateAsync(string phoneE164, string template, string locale, object[] components, CancellationToken cancellationToken)
     {
         var settings = options.Value;

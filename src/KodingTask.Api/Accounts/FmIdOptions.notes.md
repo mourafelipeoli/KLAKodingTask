@@ -16,3 +16,7 @@ Settings of the sign-in with fmID, the author's OpenID Connect provider (section
 
 Any OpenID Connect provider that issues `sub`, `email` and `email_verified` in the id_token
 works with these settings; only the button text names fmID.
+
+`AccountUrl` (optional) is the provider's account page, where people add and confirm their
+WhatsApp number; `/api/app-info` publishes it as `fmIdAccountUrl` when fmID is configured,
+and the send panel links to it.

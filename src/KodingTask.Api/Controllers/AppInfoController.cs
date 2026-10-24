@@ -1,4 +1,5 @@
-﻿using KodingTask.Api.Contracts;
+﻿using KodingTask.Api.Accounts;
+using KodingTask.Api.Contracts;
 using KodingTask.Api.Features;
 using KodingTask.Api.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace KodingTask.Api.Controllers;
 public sealed class AppInfoController(
     IConfiguration configuration,
     IOptions<PublicSiteOptions> publicSite,
+    IOptions<FmIdOptions> fmId,
     FeatureAvailability features) : ControllerBase
 {
     [HttpGet]
@@ -31,6 +33,7 @@ public sealed class AppInfoController(
             site.Url,
             string.IsNullOrWhiteSpace(site.RepositoryUrl) ? null : site.RepositoryUrl,
             author,
-            features);
+            features,
+            features.ExternalLogin && !string.IsNullOrWhiteSpace(fmId.Value.AccountUrl) ? fmId.Value.AccountUrl : null);
     }
 }

@@ -29,7 +29,7 @@ dotnet user-secrets set "ConnectionStrings:KodingTask" "Server=…;Database=…;
 | `RateLimits:ConversionsPerMinute` | `120` | Per client address. |
 | `RateLimits:AiPerMinute` | `10` | Per client address, for the AI engine. |
 | `RateLimits:InfrastructurePerMinute` | `30` | Per client address, for the infrastructure page. |
-| `RateLimits:AccountPerMinute` | `20` | Per client address, for every account, phone-code and delivery call. |
+| `RateLimits:AccountPerMinute` | `20` | Per client address, for every account, sign-in and delivery call. |
 | `Privacy:ClientHashKey` | empty (random per process) | Secret key of the anonymised client fingerprints used by per-client limits. Store it as a secret. |
 | `App:Version` | from `versions.json` | Override of the version reported by `/health`. |
 | `BUILD_COMMIT` | empty | Commit reported by `/health`; set by the deployment. |
@@ -75,9 +75,8 @@ store cannot be read, every paid feature is closed until it can.
 | `AiCallsPerClientPerDay` | `20` | Per client address, per UTC day. |
 | `AiMonthlyBudgetUsd` | `2` | Estimated AI spend per calendar month (UTC). |
 | `EmailsPerDay` | `100` | Every email of the instance per UTC day (results). |
-| `WhatsAppPerDay` | `50` | Every WhatsApp message per UTC day: results and phone codes. |
+| `WhatsAppPerDay` | `50` | Every WhatsApp message per UTC day (results). |
 | `DeliveriesPerUserPerDay` | `10` | Results one account may send to itself per UTC day, both channels together. |
-| `PhoneCodesPerUserPerDay` | `3` | One-time WhatsApp codes per account per UTC day. |
 
 A cap missing from the parameter store reads as zero, which switches its feature off.
 
@@ -100,22 +99,24 @@ See `deploy/aws/task-role-policy.template.json`.
 
 ## WhatsApp (Meta Cloud API)
 
-On when the phone number id, the access token and both template names are set.
+On when the phone number id, the access token and the result template are set.
 
 | Setting | Default | Purpose |
 |---|---|---|
 | `WhatsApp:PhoneNumberId` | empty | The sending number's id in the WhatsApp Business account. |
 | `WhatsApp:AccessToken` | empty | System-user token with `whatsapp_business_messaging`. A secret: use a secret store. |
 | `WhatsApp:ResultTemplate` | `koding_task_result` | UTILITY template, body `{{1}}` = amount, `{{2}}` = words. |
-| `WhatsApp:CodeTemplate` | `koding_task_code` | AUTHENTICATION template with a copy-code button. |
 | `WhatsApp:FallbackLanguage` | `en_US` | Used when a template is not approved in the visitor's language. |
 | `WhatsApp:ApiBaseUrl` | `https://graph.facebook.com/v22.0` | Graph API version. |
 | `WhatsApp:TimeoutSeconds` | `15` | Per request; no automatic retry (a duplicate message is worse than a failed one). |
-| `WhatsApp:Mode` | `Meta` | `Log` writes messages and codes to the application log instead (Development only). |
+| `WhatsApp:Mode` | `Meta` | `Log` writes messages to the application log instead (Development only). |
 
 Business-initiated WhatsApp messages can only be approved templates, so the application can
-never send free text: it only fills in the amount, the words and the code. Results go only to
-a number the account verified with a one-time code.
+never send free text: it only fills in the amount and the words. Results go only to the
+number the identity provider verified for the account (claims `phone_number` and
+`phone_number_verified`); the number is managed on the provider, never in this application.
+A send needs a check of the number less than ten minutes old: the web client gets one with
+a silent round trip to the provider (`prompt=none`) and sends on the way back.
 
 ### Trying deliveries locally
 
@@ -129,7 +130,7 @@ dotnet user-secrets set "Email:Sender" "dev@example.com"
 dotnet user-secrets set "WhatsApp:Mode" "Log"
 ```
 
-Sign in and send results; phone codes are printed in the console too. Without a provider,
+Sign in and send results. Without a provider,
 the converter works as always and the send buttons continue on the deployed version.
 
 ## Sign-in with fmID (OpenID Connect)
@@ -145,6 +146,7 @@ on the provider's pages.
 | `FmId:Authority` | empty | The provider's issuer URL (with its trailing slash). The discovery document is read from it. |
 | `FmId:ClientId` | empty | The client registered at the provider for this instance. |
 | `FmId:ClientSecret` | empty | That client's secret. A secret: user-secrets locally, a secret store when hosted. |
+| `FmId:AccountUrl` | empty | Optional: the provider's account page, where people add and confirm their WhatsApp number. The send panel links to it. |
 
 Register the client at the provider with:
 
@@ -152,7 +154,7 @@ Register the client at the provider with:
   `https://<host>/signout-fmid` (matched exactly, port included);
 - authorization code with PKCE (S256), query response mode, client secret at the token
   endpoint;
-- scopes `openid profile email`.
+- scopes `openid profile email phone` (`phone` for the WhatsApp number).
 
 The provider's origin is added to the `form-action` directive of the content security
 policy automatically. The first sign-in links the provider's subject to the local account

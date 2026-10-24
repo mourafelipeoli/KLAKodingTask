@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Time.Testing;
 
 namespace KodingTask.Api.Tests;
 
@@ -110,17 +112,10 @@ public sealed class DeliveryTests
     }
 
     [Fact]
-    public async Task Sends_whatsapp_results_only_to_a_verified_number()
+    public async Task Sends_whatsapp_results_to_the_number_verified_on_fmid()
     {
         using var host = MessagingTestHost.Create();
-        var client = await host.SignedInAccountAsync();
-
-        var unverified = await client.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "2", language = "pl-PL" });
-        Assert.Equal("PhoneNotVerified", (await unverified.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
-
-        (await client.PostAsync("/api/account/phone/code", new { phone = "+48 600 100 200" })).EnsureSuccessStatusCode();
-        var (_, _, code) = host.WhatsApp.Codes.Single();
-        (await client.PostAsync("/api/account/phone/verify", new { code })).EnsureSuccessStatusCode();
+        var client = await host.SignedInAccountAsync(whatsApp: "+48600100200");
 
         var sent = await client.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "2", language = "pl-PL", uiLocale = "pl-PL" });
 
@@ -130,6 +125,42 @@ public sealed class DeliveryTests
         Assert.Equal("pl-PL", locale);
         Assert.Equal("US$ 2,00", amount);
         Assert.Equal("dwa dolary", words);
+    }
+
+    [Fact]
+    public async Task Without_a_verified_number_on_fmid_nothing_goes_out_by_whatsapp()
+    {
+        using var host = MessagingTestHost.Create();
+        var client = await host.SignedInAccountAsync();
+
+        var refused = await client.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "2", language = "en-US" });
+
+        Assert.Equal(HttpStatusCode.Forbidden, refused.StatusCode);
+        Assert.Equal("PhoneNotVerified", (await refused.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
+        Assert.Empty(host.WhatsApp.Results);
+    }
+
+    [Fact]
+    public async Task An_old_check_of_the_number_asks_for_a_fresh_one_before_sending()
+    {
+        var clock = new FakeTimeProvider(DateTimeOffset.UtcNow);
+        using var host = MessagingTestHost.Create(services: services =>
+        {
+            services.RemoveAll<TimeProvider>();
+            services.AddSingleton<TimeProvider>(clock);
+        });
+        var client = await host.SignedInAccountAsync(whatsApp: "+4917012345678");
+
+        clock.Advance(TimeSpan.FromMinutes(11));
+        var stale = await client.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "3", language = "en-US" });
+
+        Assert.Equal(HttpStatusCode.Conflict, stale.StatusCode);
+        Assert.Equal("PhoneCheckNeeded", (await stale.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
+        Assert.Empty(host.WhatsApp.Results);
+
+        var refreshed = await host.SignedInAccountAsync(whatsApp: "+4917012345678");
+        var sent = await refreshed.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "3", language = "en-US" });
+        Assert.Equal(HttpStatusCode.OK, sent.StatusCode);
     }
 
     [Fact]

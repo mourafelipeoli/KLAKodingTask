@@ -3,6 +3,4 @@
 public interface IWhatsAppSender
 {
     Task<string> SendResultAsync(string phoneE164, string locale, string amountText, string words, CancellationToken cancellationToken);
-
-    Task<string> SendCodeAsync(string phoneE164, string locale, string code, CancellationToken cancellationToken);
 }

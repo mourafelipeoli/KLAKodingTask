@@ -229,3 +229,12 @@ trade-off out for me to decide.
 Now implement the “last conversions” functionality, using the database functionality we have already implemented
 
 *[Answer to the assistant's question about whose conversions to show: "Mine, when signed in" (the recommended option), over "This browser, anonymous", "Everyone's, public feed" and "Mine + this browser".]*
+
+## 9. The WhatsApp number from fmID
+
+The provider session added a WhatsApp number to fmID accounts and asked whether this
+application should use it instead of its own one-time code. Both sessions put the
+trade-off to me, and this session recommended using fmID's number with a silent refresh
+before each WhatsApp send. My decision, "everything via fmID", reached this session through
+the provider session, which also confirmed the claims (`phone_number`, `phone_number_verified`)
+and registered both clients for the `phone` scope. This session then implemented it.

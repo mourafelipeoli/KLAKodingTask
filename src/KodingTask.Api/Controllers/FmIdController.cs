@@ -40,6 +40,25 @@ public sealed class FmIdController(
         return Challenge(properties, FmIdOptions.Scheme);
     }
 
+    [HttpPost("refresh")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public async Task<IActionResult> Refresh([FromForm] FmIdForm form)
+    {
+        var returnUrl = ReturnUrls.Sanitize(form.ReturnUrl);
+        if (!features.ExternalLogin)
+            return LocalRedirect(AccountLinks.SignInPath(FmIdErrors.Unavailable, returnUrl));
+        if (!await antiforgery.IsRequestValidAsync(HttpContext))
+            return LocalRedirect(AccountLinks.SignInPath(FmIdErrors.InvalidResponse, returnUrl));
+
+        var properties = new AuthenticationProperties { RedirectUri = CompletePath };
+        properties.Items[FmIdServiceCollectionExtensions.ReturnUrlItem] = returnUrl;
+        if (!string.IsNullOrWhiteSpace(form.UiLocale))
+            properties.Items[FmIdServiceCollectionExtensions.UiLocaleItem] = form.UiLocale;
+        if (User.Identity?.IsAuthenticated == true)
+            properties.Items[FmIdServiceCollectionExtensions.PromptItem] = FmIdServiceCollectionExtensions.SilentPrompt;
+        return Challenge(properties, FmIdOptions.Scheme);
+    }
+
     [HttpGet("complete")]
     public async Task<IActionResult> Complete(CancellationToken cancellationToken)
     {
@@ -49,7 +68,7 @@ public sealed class FmIdController(
         if (!external.Succeeded)
             return LocalRedirect(AccountLinks.SignInPath(FmIdErrors.InvalidResponse, returnUrl));
 
-        var result = await accounts.ResolveAsync(external.Principal);
+        var result = await accounts.ResolveAsync(external.Principal, cancellationToken);
         if (result.User is null)
             return LocalRedirect(AccountLinks.SignInPath(result.Error!, returnUrl));
 

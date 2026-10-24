@@ -19,3 +19,11 @@ answer: what goes out under the site's name is the reference. The email carries 
 to the same conversion in the visitor's interface language.
 
 The answer gives the masked destination and how many deliveries are left today.
+
+## WhatsApp: the number fmID verified, checked recently
+
+A WhatsApp result goes only to the number fmID verified (`VerifiedPhone`), and only when fmID
+was asked about it within `PhoneCheckValidity` (ten minutes). Older than that, the answer is
+`PhoneCheckNeeded` (409): the web client then refreshes silently with fmID and sends on the
+way back. No verified number gives `PhoneNotVerified` (403), and the panel links to the fmID
+account page.

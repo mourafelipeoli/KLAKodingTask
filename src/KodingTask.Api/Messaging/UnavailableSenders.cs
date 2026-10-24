@@ -10,7 +10,4 @@ internal sealed class UnavailableWhatsAppSender : IWhatsAppSender
 {
     public Task<string> SendResultAsync(string phoneE164, string locale, string amountText, string words, CancellationToken cancellationToken) =>
         throw new InvalidOperationException("WhatsApp is not configured on this instance.");
-
-    public Task<string> SendCodeAsync(string phoneE164, string locale, string code, CancellationToken cancellationToken) =>
-        throw new InvalidOperationException("WhatsApp is not configured on this instance.");
 }

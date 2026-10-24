@@ -1,7 +1,8 @@
 # 6. Accounts and deliveries that can only reach their own owner
 
 Date: 2026-10-23 · Status: accepted; accounts with passwords superseded by
-[decision 8](0008-fmid-is-the-only-sign-in.md)
+[decision 8](0008-fmid-is-the-only-sign-in.md), the WhatsApp code by
+[decision 10](0010-the-whatsapp-number-comes-from-fmid.md)
 
 ## Context
 
@@ -14,7 +15,7 @@ not be able to raise its allowance.
 
 - **Only to yourself.** A delivery has no recipient field. Email goes to the account's own
   address, after the address is confirmed; WhatsApp goes to a number the account verified
-  with a one-time code. The words are converted again on the server from the amount, so the
+  with a one-time code. *(Superseded by decision 10: the number fmID verified.)* The words are converted again on the server from the amount, so the
   content is never supplied by the client; WhatsApp content is further fixed by Meta's
   template approval.
 - **Local accounts on ASP.NET Core Identity**, in the application's own database, with

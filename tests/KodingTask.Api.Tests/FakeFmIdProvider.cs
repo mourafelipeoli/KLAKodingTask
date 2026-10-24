@@ -45,6 +45,11 @@ internal sealed class FakeFmIdProvider : HttpMessageHandler
 
     public bool EmailVerified { get; set; } = true;
 
+    /// <summary>E.164, as the provider emits it; null when the person has no number there.</summary>
+    public string? PhoneNumber { get; set; }
+
+    public bool PhoneVerified { get; set; }
+
     /// <summary>Copied from the authorize redirect, as the real provider would echo it.</summary>
     public string? Nonce { get; set; }
 
@@ -71,6 +76,18 @@ internal sealed class FakeFmIdProvider : HttpMessageHandler
         LastTokenRequest = QueryHelpers.ParseQuery(body).ToDictionary(pair => pair.Key, pair => pair.Value.ToString());
 
         var now = DateTimeOffset.UtcNow;
+        var claims = new Dictionary<string, object>
+        {
+            ["sub"] = Subject,
+            ["name"] = "Test Visitor",
+            ["email"] = Email,
+            ["email_verified"] = EmailVerified,
+            ["phone_number_verified"] = PhoneVerified,
+            ["auth_time"] = now.ToUnixTimeSeconds(),
+            ["nonce"] = Nonce ?? string.Empty,
+        };
+        if (PhoneNumber is not null)
+            claims["phone_number"] = PhoneNumber;
         var idToken = new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
         {
             Issuer = Issuer,
@@ -78,15 +95,7 @@ internal sealed class FakeFmIdProvider : HttpMessageHandler
             IssuedAt = now.UtcDateTime,
             NotBefore = now.UtcDateTime,
             Expires = now.AddMinutes(15).UtcDateTime,
-            Claims = new Dictionary<string, object>
-            {
-                ["sub"] = Subject,
-                ["name"] = "Test Visitor",
-                ["email"] = Email,
-                ["email_verified"] = EmailVerified,
-                ["auth_time"] = now.ToUnixTimeSeconds(),
-                ["nonce"] = Nonce ?? string.Empty,
-            },
+            Claims = claims,
             SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.RsaSha256),
         });
         var json = JsonSerializer.Serialize(new { access_token = "opaque", token_type = "Bearer", expires_in = 900, id_token = idToken });

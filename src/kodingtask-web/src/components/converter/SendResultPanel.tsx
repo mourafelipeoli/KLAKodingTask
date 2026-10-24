@@ -3,15 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useAccount } from "../../app/useAccount";
 import { useAppInfo } from "../../app/useAppInfo";
 import { useDeployedVersion } from "../../hooks/useDeployedVersion";
+import { textKey } from "../../i18n/textKey";
 import { useText } from "../../i18n/useText";
 import { ROUTES } from "../../routes/routePaths";
+import { accountService } from "../../services/accountService";
 import { deliveryService } from "../../services/deliveryService";
+import { ApiError } from "../../services/httpClient";
 import type { ConversionResult, Engine } from "../../types/conversion";
 import { DeliveryChannel } from "../../types/conversion";
 import { accountErrorKey } from "../../utils/accountErrors";
 import { ConverterSection, converterPath } from "../../utils/converterLink";
 import Notice from "../Notice";
-import WhatsAppVerification from "./WhatsAppVerification";
 
 interface SendResultPanelProps {
   result: ConversionResult;
@@ -23,15 +25,23 @@ interface SendResultPanelProps {
   onUnavailable: (channel: DeliveryChannel) => void;
 }
 
+const PHONE_CHECK_NEEDED = "PhoneCheckNeeded";
+const PHONE_NOT_VERIFIED = "PhoneNotVerified";
+const PHONE_MISSING = textKey(
+  "Add and confirm your WhatsApp number in your fmID account, then choose WhatsApp again.",
+);
+
 type Status =
   | { kind: "idle" }
   | { kind: "sent"; destination: string; left: number }
+  | { kind: "phone-missing" }
   | { kind: "error"; key: string };
 
 // Sends the result to the signed-in visitor. On a copy without a channel the button hands
 // over to the deployed version; on the deployed version a channel that is not switched on
-// yet is disabled. Everything that needs an account (sign in with fmID, verify the number)
-// happens on the way, and the send completes when the visitor comes back.
+// yet is disabled. Everything that needs an account happens on the way and the send
+// completes when the visitor comes back: signing in with fmID, and for WhatsApp a quick
+// silent check with fmID of the number verified there (the only place a number is managed).
 export default function SendResultPanel({
   result,
   engine,
@@ -40,12 +50,11 @@ export default function SendResultPanel({
   onUnavailable,
 }: SendResultPanelProps) {
   const { t, locale } = useText();
-  const { features } = useAppInfo();
+  const { features, fmIdAccountUrl } = useAppInfo();
   const { isDeployedVersion } = useDeployedVersion();
   const { account, isLoaded, apply } = useAccount();
   const navigate = useNavigate();
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const [isVerifying, setIsVerifying] = useState(false);
   const [isPending, startTransition] = useTransition();
   const pendingHandled = useRef(false);
 
@@ -78,12 +87,21 @@ export default function SendResultPanel({
         });
         await apply({ ...account, deliveriesLeftToday: sent.deliveriesLeftToday });
       } catch (error) {
-        setStatus({ kind: "error", key: accountErrorKey(error) });
+        if (error instanceof ApiError && error.code === PHONE_CHECK_NEEDED) {
+          await accountService.refresh(comeBackPath(channel), locale);
+          return;
+        }
+        setStatus(
+          error instanceof ApiError && error.code === PHONE_NOT_VERIFIED
+            ? { kind: "phone-missing" }
+            : { kind: "error", key: accountErrorKey(error) },
+        );
       }
     });
   }
 
   function choose(channel: DeliveryChannel) {
+    const wasPhoneMissing = status.kind === "phone-missing";
     setStatus({ kind: "idle" });
     if (!isAvailable(channel)) {
       if (!isDeployedVersion) {
@@ -97,8 +115,9 @@ export default function SendResultPanel({
       );
       return;
     }
-    if (channel === DeliveryChannel.WhatsApp && !account.whatsAppNumber) {
-      setIsVerifying(true);
+    if (channel === DeliveryChannel.WhatsApp && wasPhoneMissing) {
+      // The number may have just been added on fmID: ask fmID again, then send.
+      void accountService.refresh(comeBackPath(channel), locale);
       return;
     }
     send(channel);
@@ -153,27 +172,15 @@ export default function SendResultPanel({
         {isPending && <span className="spinner" aria-label={t("Sending…")} />}
       </div>
 
-      {account.whatsAppNumber && !isVerifying && features.whatsApp && (
+      {account.whatsAppNumber && features.whatsApp && (
         <p className="send-panel__hint">
           {t("Results go to {{number}}.", { number: account.whatsAppNumber })}{" "}
-          <button
-            type="button"
-            className="send-panel__inline-action"
-            onClick={() => setIsVerifying(true)}
-          >
-            {t("Use another number")}
-          </button>
+          {fmIdAccountUrl && (
+            <a href={fmIdAccountUrl} target="_blank" rel="noopener noreferrer">
+              {t("Change it in your fmID account")}
+            </a>
+          )}
         </p>
-      )}
-
-      {isVerifying && (
-        <WhatsAppVerification
-          onVerified={() => {
-            setIsVerifying(false);
-            send(DeliveryChannel.WhatsApp);
-          }}
-          onCancel={() => setIsVerifying(false)}
-        />
       )}
 
       <div aria-live="polite">
@@ -183,6 +190,16 @@ export default function SendResultPanel({
               destination: status.destination,
               count: status.left,
             })}
+          </Notice>
+        )}
+        {status.kind === "phone-missing" && (
+          <Notice tone="info">
+            {t(PHONE_MISSING)}{" "}
+            {fmIdAccountUrl && (
+              <a href={fmIdAccountUrl} target="_blank" rel="noopener noreferrer">
+                {t("Open your fmID account")}
+              </a>
+            )}
           </Notice>
         )}
         {status.kind === "error" && (

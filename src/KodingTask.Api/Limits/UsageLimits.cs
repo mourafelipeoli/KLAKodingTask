@@ -16,7 +16,6 @@ public sealed record UsageLimits
 
     public int DeliveriesPerUserPerDay { get; init; }
 
-    public int PhoneCodesPerUserPerDay { get; init; }
 
 
 

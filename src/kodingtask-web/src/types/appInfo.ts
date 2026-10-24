@@ -21,4 +21,6 @@ export interface AppInfo {
   repositoryUrl: string | null;
   author: Author | null;
   features: FeatureAvailability;
+  /** fmID's account page, where people add and confirm their WhatsApp number. */
+  fmIdAccountUrl: string | null;
 }

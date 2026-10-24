@@ -9,11 +9,17 @@ public static class FmIdServiceCollectionExtensions
 {
     public const string ReturnUrlItem = "returnUrl";
     public const string UiLocaleItem = "uiLocale";
+    public const string PromptItem = "prompt";
+    public const string SilentPrompt = "none";
+
+    private static readonly string[] SilentFailures = ["login_required", "interaction_required", "consent_required", "account_selection_required"];
 
     /// <summary>Sign-in with fmID when the provider and the client are configured; returns the settings read.</summary>
     public static FmIdOptions AddFmIdSignIn(this IServiceCollection services, IConfiguration configuration)
     {
-        var settings = configuration.GetSection(FmIdOptions.SectionName).Get<FmIdOptions>() ?? new FmIdOptions();
+        var section = configuration.GetSection(FmIdOptions.SectionName);
+        var settings = section.Get<FmIdOptions>() ?? new FmIdOptions();
+        services.Configure<FmIdOptions>(section);
         services.AddScoped<FmIdAccounts>();
         if (!settings.IsConfigured)
             return settings;
@@ -37,6 +43,7 @@ public static class FmIdServiceCollectionExtensions
             options.Scope.Add("openid");
             options.Scope.Add("profile");
             options.Scope.Add("email");
+            options.Scope.Add("phone");
             options.TokenValidationParameters.NameClaimType = "name";
             options.TokenValidationParameters.ValidateIssuer = true;
             options.Events = new OpenIdConnectEvents
@@ -45,6 +52,8 @@ public static class FmIdServiceCollectionExtensions
                 {
                     if (context.Properties.Items.TryGetValue(UiLocaleItem, out var uiLocale) && !string.IsNullOrEmpty(uiLocale))
                         context.ProtocolMessage.UiLocales = uiLocale;
+                    if (context.Properties.Items.TryGetValue(PromptItem, out var prompt) && !string.IsNullOrEmpty(prompt))
+                        context.ProtocolMessage.Prompt = prompt;
                     return Task.CompletedTask;
                 },
                 OnRedirectToIdentityProviderForSignOut = context =>
@@ -60,9 +69,12 @@ public static class FmIdServiceCollectionExtensions
                 },
                 OnRemoteFailure = context =>
                 {
-                    var refused = context.Failure is OpenIdConnectProtocolException failure
-                        && failure.Data["error"] as string == "access_denied";
-                    context.Response.Redirect(SignInPage(refused ? FmIdErrors.RefusedByProvider : FmIdErrors.InvalidResponse, context.Properties));
+                    var error = (context.Failure as OpenIdConnectProtocolException)?.Data["error"] as string;
+                    var wasSilent = context.Properties?.Items.TryGetValue(PromptItem, out var prompt) == true && prompt == SilentPrompt;
+                    if (wasSilent && error is not null && SilentFailures.Contains(error))
+                        context.Response.Redirect(AccountLinks.SignInAndStartPath(ReturnUrlOf(context.Properties)));
+                    else
+                        context.Response.Redirect(SignInPage(error == "access_denied" ? FmIdErrors.RefusedByProvider : FmIdErrors.InvalidResponse, context.Properties));
                     context.HandleResponse();
                     return Task.CompletedTask;
                 },
@@ -72,5 +84,8 @@ public static class FmIdServiceCollectionExtensions
     }
 
     private static string SignInPage(string error, AuthenticationProperties? properties) =>
-        AccountLinks.SignInPath(error, properties?.Items.TryGetValue(ReturnUrlItem, out var returnUrl) == true ? returnUrl : null);
+        AccountLinks.SignInPath(error, ReturnUrlOf(properties));
+
+    private static string? ReturnUrlOf(AuthenticationProperties? properties) =>
+        properties?.Items.TryGetValue(ReturnUrlItem, out var returnUrl) == true ? returnUrl : null;
 }

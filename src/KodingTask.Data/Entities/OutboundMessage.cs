@@ -30,9 +30,6 @@ public enum MessageChannel
 public enum MessageKind
 {
     Result,
-    EmailConfirmation,
-    PasswordReset,
-    PhoneCode,
 }
 
 public enum MessageStatus

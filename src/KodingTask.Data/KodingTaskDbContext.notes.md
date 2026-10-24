@@ -36,9 +36,8 @@ service runs more than one.
 
 The context is an `IdentityDbContext<IdentityUser>`: the standard ASP.NET Core Identity
 tables (`AspNetUsers`, `AspNetUserLogins` and the rest) live in the application's own
-database, next to the application's per-user tables (`UserProfiles`, `VerifiedPhones`,
-`PhoneChallenges`), the delivery history (`OutboundMessages`) and the last conversions
-(`ConversionRecords`). Those are keyed by the
+database, next to the application's per-user tables (`UserProfiles`, `VerifiedPhones`), the
+delivery history (`OutboundMessages`) and the last conversions (`ConversionRecords`). Those are keyed by the
 user id string and never reference Identity columns beyond it, so the user store can be
 replaced (an external identity provider) without migrating them. `base.OnModelCreating`
 must run first: it maps the Identity tables.

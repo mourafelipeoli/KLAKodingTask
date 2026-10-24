@@ -62,12 +62,14 @@ internal sealed class MessagingTestHost : IDisposable
         return client;
     }
 
-    public async Task<AccountClient> SignedInAccountAsync(string email = "visitor@example.com")
+    public async Task<AccountClient> SignedInAccountAsync(string email = "visitor@example.com", string? whatsApp = null)
     {
         var client = await ClientAsync();
         FmId.Subject = $"subject-of-{email}";
         FmId.Email = email;
         FmId.EmailVerified = true;
+        FmId.PhoneNumber = whatsApp;
+        FmId.PhoneVerified = whatsApp is not null;
         Assert.Equal("/", await SignInWithFmIdAsync(client.Http, "/"));
         await client.RefreshAntiforgeryAsync();
         return client;
@@ -139,17 +141,10 @@ internal sealed class RecordingWhatsAppSender : IWhatsAppSender
 {
     public ConcurrentQueue<(string Phone, string Locale, string Amount, string Words)> Results { get; } = new();
 
-    public ConcurrentQueue<(string Phone, string Locale, string Code)> Codes { get; } = new();
 
     public Task<string> SendResultAsync(string phoneE164, string locale, string amountText, string words, CancellationToken cancellationToken)
     {
         Results.Enqueue((phoneE164, locale, amountText, words));
         return Task.FromResult($"wamid.result-{Results.Count}");
-    }
-
-    public Task<string> SendCodeAsync(string phoneE164, string locale, string code, CancellationToken cancellationToken)
-    {
-        Codes.Enqueue((phoneE164, locale, code));
-        return Task.FromResult($"wamid.code-{Codes.Count}");
     }
 }

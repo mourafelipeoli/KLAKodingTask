@@ -30,7 +30,7 @@ public sealed class FmIdSignInTests
         Assert.Equal("code", query["response_type"]);
         Assert.False(query.ContainsKey("response_mode")); // query is the default of the code flow, so it is left out
         Assert.Equal("S256", query["code_challenge_method"]);
-        Assert.Equal("openid profile email", query["scope"]);
+        Assert.Equal("openid profile email phone", query["scope"]);
         Assert.Equal("https://localhost/signin-fmid", query["redirect_uri"]);
         Assert.Equal("de-DE", query["ui_locales"]);
 
@@ -187,5 +187,81 @@ public sealed class FmIdSignInTests
         Assert.False(info!.Features.ExternalLogin);
         Assert.False(info.Features.Accounts);
         Assert.Equal($"/sign-in?error=unavailable&returnUrl={EscapedReturnUrl}", challenge.Headers.Location!.ToString());
+    }
+
+    [Fact]
+    public async Task The_number_verified_on_fmid_becomes_the_whatsapp_number_and_goes_when_it_goes_there()
+    {
+        using var host = MessagingTestHost.Create();
+        host.FmId.PhoneNumber = "+4917012345678";
+        host.FmId.PhoneVerified = true;
+        var browser = host.Browser();
+        await host.SignInWithFmIdAsync(browser, ReturnUrl);
+        Assert.Equal("+49*******5678", (await browser.GetFromJsonAsync<AccountResponse>("/api/account/me"))!.WhatsAppNumber);
+
+        host.FmId.PhoneVerified = false;
+        await host.SignInWithFmIdAsync(browser, ReturnUrl);
+        Assert.Null((await browser.GetFromJsonAsync<AccountResponse>("/api/account/me"))!.WhatsAppNumber);
+
+        host.FmId.PhoneNumber = null;
+        await host.SignInWithFmIdAsync(browser, ReturnUrl);
+        using var scope = host.Factory.Services.CreateScope();
+        var database = scope.ServiceProvider.GetRequiredService<KodingTaskDbContext>();
+        Assert.Empty(await database.VerifiedPhones.ToListAsync());
+        Assert.NotNull((await database.UserProfiles.SingleAsync()).PhoneCheckedAtUtc);
+    }
+
+    [Fact]
+    public async Task Refreshing_asks_fmid_silently_when_signed_in()
+    {
+        using var host = MessagingTestHost.Create();
+        var browser = host.Browser();
+        await host.SignInWithFmIdAsync(browser, ReturnUrl);
+
+        var refresh = await MessagingTestHost.PostFormAsync(browser, "/api/account/fmid/refresh", ReturnUrl);
+
+        var authorize = refresh.Headers.Location!;
+        Assert.StartsWith(FakeFmIdProvider.Issuer + "connect/authorize?", authorize.ToString());
+        Assert.Equal("none", QueryHelpers.ParseQuery(authorize.Query)["prompt"]);
+        Assert.Equal(ReturnUrl, await host.FinishFmIdAsync(browser, QueryHelpers.ParseQuery(authorize.Query)));
+    }
+
+    [Fact]
+    public async Task Refreshing_without_a_session_is_a_normal_sign_in()
+    {
+        using var host = MessagingTestHost.Create();
+
+        var refresh = await MessagingTestHost.PostFormAsync(host.Browser(), "/api/account/fmid/refresh", ReturnUrl);
+
+        Assert.False(QueryHelpers.ParseQuery(refresh.Headers.Location!.Query).ContainsKey("prompt"));
+    }
+
+    [Theory]
+    [InlineData("login_required")]
+    [InlineData("interaction_required")]
+    public async Task A_silent_refresh_fmid_cannot_answer_continues_with_a_normal_sign_in(string error)
+    {
+        using var host = MessagingTestHost.Create();
+        var browser = host.Browser();
+        await host.SignInWithFmIdAsync(browser, ReturnUrl);
+        var refresh = await MessagingTestHost.PostFormAsync(browser, "/api/account/fmid/refresh", ReturnUrl);
+        var state = QueryHelpers.ParseQuery(refresh.Headers.Location!.Query)["state"];
+
+        var callback = await browser.GetAsync($"/signin-fmid?error={error}&state={Uri.EscapeDataString(state!)}");
+
+        Assert.Equal($"/sign-in?returnUrl={EscapedReturnUrl}&with=fmid", callback.Headers.Location!.ToString());
+    }
+
+    [Fact]
+    public async Task The_account_page_of_the_provider_is_published_only_with_fmid()
+    {
+        using var host = MessagingTestHost.Create(settings => settings["FmId:AccountUrl"] = "https://fmid.test/account");
+        using var without = MessagingTestHost.Create(settings => settings["FmId:AccountUrl"] = "https://fmid.test/account", withFmId: false);
+
+        var info = await host.Browser().GetFromJsonAsync<AppInfoResponse>("/api/app-info");
+        var none = await without.Browser().GetFromJsonAsync<AppInfoResponse>("/api/app-info");
+
+        Assert.Equal("https://fmid.test/account", info!.FmIdAccountUrl);
+        Assert.Null(none!.FmIdAccountUrl);
     }
 }

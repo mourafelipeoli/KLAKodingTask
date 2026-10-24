@@ -15,7 +15,8 @@ interface FmIdSignInProps {
   returnUrl: string;
 }
 
-// "Continue with fmID": a form post that leaves for the provider and comes back signed in.
+// "Continue with fmID", the only way to sign in: a form post that leaves for the provider
+// and comes back signed in.
 // A copy without fmID hands the visitor over to the same page on the deployed version,
 // which starts the sign-in by itself.
 export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
@@ -26,10 +27,7 @@ export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
   const handOverQuery = new URLSearchParams(location.search);
   handOverQuery.delete("error");
   handOverQuery.set(START_PARAM, START_VALUE);
-  const handOver = useAccountHandOver(
-    `${location.pathname}?${handOverQuery.toString()}`,
-    features.externalLogin,
-  );
+  const handOver = useAccountHandOver(`${location.pathname}?${handOverQuery.toString()}`);
   const [isLeaving, setIsLeaving] = useState(false);
   const hasStarted = useRef(false);
   const shouldStart =
@@ -44,7 +42,7 @@ export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
     const current = new URL(window.location.href);
     current.searchParams.delete(START_PARAM);
     window.history.replaceState(window.history.state, "", current);
-    void accountService.startFmIdSignIn(returnUrl, locale);
+    void accountService.signIn(returnUrl, locale);
   }, [shouldStart, returnUrl, locale]);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
       return;
     }
     setIsLeaving(true);
-    void accountService.startFmIdSignIn(returnUrl, locale);
+    void accountService.signIn(returnUrl, locale);
   }
 
   const isBusy = isLeaving || shouldStart;
@@ -72,7 +70,7 @@ export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
     <div className="fmid-sign-in">
       <button
         type="button"
-        className="button button--secondary fmid-sign-in__button"
+        className="button button--primary fmid-sign-in__button"
         disabled={isBusy}
         onClick={handleClick}
       >
@@ -84,10 +82,10 @@ export default function FmIdSignIn({ returnUrl }: FmIdSignInProps) {
         {t("Continue with fmID")}
       </button>
       <p className="fmid-sign-in__note">
-        {t("fmID is the author's own OpenID Connect provider.")}
-      </p>
-      <p className="fmid-sign-in__divider">
-        <span>{t("or")}</span>
+        {t("fmID is the author's own OpenID Connect provider.")}{" "}
+        {t(
+          "No fmID account yet? Create one on the next page; you come back here signed in.",
+        )}
       </p>
       {handOver.dialog}
     </div>

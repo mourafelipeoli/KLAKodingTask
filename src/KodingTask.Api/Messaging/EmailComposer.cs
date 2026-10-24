@@ -37,42 +37,6 @@ public sealed class EmailComposer(MessageTexts texts)
         return new ComposedEmail(subject, html, text);
     }
 
-    public ComposedEmail Confirmation(string locale, string link) => AccountEmail(
-        locale,
-        subjectKey: "Confirm your email address",
-        bodyKey: "Confirm your email address to send conversion results to yourself by email or WhatsApp.",
-        buttonKey: "Confirm my email address",
-        closingKey: "If you did not create an account on Koding Task, you can ignore this email.",
-        link);
-
-    public ComposedEmail PasswordReset(string locale, string link) => AccountEmail(
-        locale,
-        subjectKey: "Reset your password",
-        bodyKey: "Someone asked to reset the password of your Koding Task account. If it was you, choose a new password.",
-        buttonKey: "Choose a new password",
-        closingKey: "If you did not ask for this, you can ignore this email. Your password stays the same.",
-        link);
-
-    private ComposedEmail AccountEmail(string locale, string subjectKey, string bodyKey, string buttonKey, string closingKey, string link)
-    {
-        string T(string key) => texts.Translate(locale, key);
-        var html = Page(locale, T(subjectKey), $"""
-            <p style="margin:0 0 24px;color:#5a5a64;font-size:16px;line-height:1.5;">{Encode(T(bodyKey))}</p>
-            {Button(T(buttonKey), link)}
-            <p style="margin:24px 0 0;color:#5a5a64;font-size:14px;line-height:1.5;">{Encode(T("This link is valid for 24 hours."))}</p>
-            """, T(closingKey));
-        var text = string.Join(Environment.NewLine,
-            T(subjectKey),
-            string.Empty,
-            T(bodyKey),
-            string.Empty,
-            $"{T(buttonKey)}: {link}",
-            string.Empty,
-            T("This link is valid for 24 hours."),
-            T(closingKey));
-        return new ComposedEmail(T(subjectKey), html, text);
-    }
-
     private static string Page(string locale, string heading, string content, string footer) => $"""
         <!doctype html>
         <html lang="{Encode(locale)}">

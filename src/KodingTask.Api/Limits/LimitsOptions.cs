@@ -26,7 +26,4 @@ public sealed class LimitsOptions
 
     public int PhoneCodesPerUserPerDay { get; set; } = 3;
 
-    public int AccountEmailsPerUserPerDay { get; set; } = 3;
-
-    public int RegistrationsPerClientPerDay { get; set; } = 5;
 }

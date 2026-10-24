@@ -74,19 +74,17 @@ store cannot be read, every paid feature is closed until it can.
 | `AiCallsPerDay` | `200` | All visitors together, per UTC day. |
 | `AiCallsPerClientPerDay` | `20` | Per client address, per UTC day. |
 | `AiMonthlyBudgetUsd` | `2` | Estimated AI spend per calendar month (UTC). |
-| `EmailsPerDay` | `100` | Every email of the instance per UTC day: results, confirmations, password resets. |
+| `EmailsPerDay` | `100` | Every email of the instance per UTC day (results). |
 | `WhatsAppPerDay` | `50` | Every WhatsApp message per UTC day: results and phone codes. |
 | `DeliveriesPerUserPerDay` | `10` | Results one account may send to itself per UTC day, both channels together. |
 | `PhoneCodesPerUserPerDay` | `3` | One-time WhatsApp codes per account per UTC day. |
-| `AccountEmailsPerUserPerDay` | `3` | Confirmation and password-reset emails per account per UTC day. |
-| `RegistrationsPerClientPerDay` | `5` | New accounts per client address per UTC day. |
 
 A cap missing from the parameter store reads as zero, which switches its feature off.
 
 ## Email (Amazon SES)
 
-On when `Email:Sender` and `Email:Region` are set. It also switches accounts on: an account
-is only useful once its address is confirmed, and that needs email.
+On when `Email:Sender` and `Email:Region` are set. Results only go to signed-in visitors, so
+email is useful once sign-in is configured too.
 
 | Setting | Default | Purpose |
 |---|---|---|
@@ -119,7 +117,10 @@ Business-initiated WhatsApp messages can only be approved templates, so the appl
 never send free text: it only fills in the amount, the words and the code. Results go only to
 a number the account verified with a one-time code.
 
-### Trying accounts locally
+### Trying deliveries locally
+
+Deliveries need a signed-in visitor, and signing in needs an OpenID Connect provider (next
+section). With one configured, the senders can write to the console instead of sending:
 
 ```sh
 cd src/KodingTask.Api
@@ -128,13 +129,16 @@ dotnet user-secrets set "Email:Sender" "dev@example.com"
 dotnet user-secrets set "WhatsApp:Mode" "Log"
 ```
 
-Register, open the confirmation link printed in the console, send results; phone codes are
-printed there too.
+Sign in and send results; phone codes are printed in the console too. Without a provider,
+the converter works as always and the send buttons continue on the deployed version.
 
 ## Sign-in with fmID (OpenID Connect)
 
-On when all three settings are set. fmID is the author's own OpenID Connect provider; any
-provider that issues `sub`, `email` and `email_verified` in the id_token works the same way.
+The only way to sign in; there are no passwords on this side. On when all three settings
+are set; without them there are no accounts. fmID is the author's own OpenID Connect
+provider; any provider that issues `sub`, `email` and `email_verified` in the id_token works
+the same way. Creating an account, confirming the address and resetting the password happen
+on the provider's pages.
 
 | Setting | Default | Purpose |
 |---|---|---|
@@ -152,8 +156,7 @@ Register the client at the provider with:
 
 The provider's origin is added to the `form-action` directive of the content security
 policy automatically. The first sign-in links the provider's subject to the local account
-with the same verified address, or creates one (counted against
-`RegistrationsPerClientPerDay`).
+with the same verified address, or creates one.
 
 To try it locally against a provider that has a development client for
 `https://localhost:7162`:

@@ -3,16 +3,8 @@
   "By email": "Par courriel",
   "Email": "Courriel",
   "Sending by email and WhatsApp is coming soon.": "L’envoi par courriel et WhatsApp arrive bientôt.",
-  "Confirm your email address first. We sent a link to {{email}}.": "Confirmez d’abord votre adresse courriel. Nous avons envoyé un lien à {{email}}.",
   "Emails today": "Courriels aujourd’hui",
-  "Email confirmation": "Confirmation de l’adresse courriel",
-  "Confirming your email address…": "Confirmation de votre adresse courriel…",
-  "Your email address is confirmed.": "Votre adresse courriel est confirmée.",
-  "Type the email of your account and we will send you a link to choose a new password.": "Saisissez l’adresse courriel de votre compte : nous vous enverrons un lien pour choisir un nouveau mot de passe.",
   "Accounts are only used to send conversion results to yourself by email or WhatsApp.": "Les comptes servent uniquement à vous envoyer des résultats de conversion par courriel ou WhatsApp.",
-  "The email or the password is not right.": "L’adresse courriel ou le mot de passe est incorrect.",
-  "Type a valid email address.": "Saisissez une adresse courriel valide.",
-  "An account with this email already exists. Sign in or reset the password.": "Un compte existe déjà avec cette adresse courriel. Connectez-vous ou réinitialisez le mot de passe.",
   "Confirm your email address first.": "Confirmez d’abord votre adresse courriel.",
   "Confirm your email address at fmID first, then try again.": "Confirmez d’abord votre adresse courriel sur fmID, puis réessayez."
 }

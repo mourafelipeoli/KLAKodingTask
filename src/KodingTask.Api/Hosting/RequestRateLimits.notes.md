@@ -14,8 +14,8 @@ load balancer).
   The page asks once per visit; the limit only stops a loop from turning its database
   queries into load.
 - **Accounts and deliveries**: 20 per minute per address (`RateLimits:AccountPerMinute`), on
-  every account, phone-code and delivery call. It slows password guessing and code guessing
-  on top of the lockout, and the daily caps sit behind it.
+  every account, sign-in, phone-code and delivery call. It slows code guessing, and the daily
+  caps sit behind it.
 - **No queueing**: a rejected request gets 429 immediately with `Retry-After` and the same
   JSON error shape as every other refusal (`{ "error": "TooManyRequests", "message": … }`),
   so the client shows a translated message instead of hanging.

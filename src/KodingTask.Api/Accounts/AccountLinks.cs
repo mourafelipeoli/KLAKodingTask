@@ -10,12 +10,6 @@ public sealed class AccountLinks(IOptions<PublicSiteOptions> publicSite, IHostEn
             ? $"{context.Request.Scheme}://{context.Request.Host}"
             : publicSite.Value.Url.TrimEnd('/');
 
-    public static string ConfirmEmailPath(string userId, string code, string returnUrl, string uiLocale) =>
-        $"/confirm-email?user={Uri.EscapeDataString(userId)}&code={Uri.EscapeDataString(code)}&returnUrl={Uri.EscapeDataString(ReturnUrls.Sanitize(returnUrl))}&lang={Uri.EscapeDataString(uiLocale)}";
-
-    public static string ResetPasswordPath(string userId, string code, string uiLocale) =>
-        $"/reset-password?user={Uri.EscapeDataString(userId)}&code={Uri.EscapeDataString(code)}&lang={Uri.EscapeDataString(uiLocale)}";
-
     public static string SignInPath(string error, string? returnUrl) =>
         $"/sign-in?error={Uri.EscapeDataString(error)}&returnUrl={Uri.EscapeDataString(ReturnUrls.Sanitize(returnUrl))}";
 

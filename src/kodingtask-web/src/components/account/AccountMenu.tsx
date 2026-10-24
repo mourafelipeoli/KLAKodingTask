@@ -1,27 +1,19 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAccount } from "../../app/useAccount";
 import { useAccountHandOver } from "../../hooks/useAccountHandOver";
 import { useText } from "../../i18n/useText";
 import { ROUTES } from "../../routes/routePaths";
 import { accountService } from "../../services/accountService";
-import { SIGNED_OUT } from "../../types/account";
 import "./AccountMenu.css";
 
-const ACCOUNT_PAGES: readonly string[] = [
-  ROUTES.signIn,
-  ROUTES.register,
-  ROUTES.confirmEmail,
-  ROUTES.forgotPassword,
-  ROUTES.resetPassword,
-];
+const ACCOUNT_PAGES: readonly string[] = [ROUTES.signIn];
 
 // Signed out: a "Sign in" link that comes back to the current page. Signed in: the
-// address and a sign-out button.
+// address and a sign-out button, which also ends the session at fmID.
 export default function AccountMenu() {
   const { t } = useText();
-  const { account, isLoaded, apply } = useAccount();
+  const { account, isLoaded } = useAccount();
   const location = useLocation();
-  const navigate = useNavigate();
   const signInPath = `${ROUTES.signIn}${location.search}`;
   const handOver = useAccountHandOver(signInPath);
   const returnUrl = ACCOUNT_PAGES.includes(location.pathname)
@@ -32,16 +24,8 @@ export default function AccountMenu() {
     return null;
   }
 
-  async function handleSignOut() {
-    if (account.signedInWithFmId) {
-      await accountService.signOutOfFmId(returnUrl);
-      return;
-    }
-    await accountService.signOut();
-    await apply(SIGNED_OUT);
-    if (ACCOUNT_PAGES.includes(location.pathname)) {
-      void navigate(ROUTES.home);
-    }
+  function handleSignOut() {
+    void accountService.signOut(returnUrl);
   }
 
   if (account.isSignedIn) {

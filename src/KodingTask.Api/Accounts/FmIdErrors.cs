@@ -6,8 +6,5 @@ public static class FmIdErrors
     public const string RefusedByProvider = "refused-by-provider";
     public const string InvalidResponse = "invalid-response";
     public const string NoAccess = "no-access";
-    public const string RegistrationLimit = "registration-limit";
-    public const string Paused = "paused";
-    public const string LockedOut = "locked-out";
     public const string Unavailable = "unavailable";
 }

@@ -11,19 +11,15 @@ export interface AccountHandOver {
   dialog: ReactNode;
 }
 
-// Accounts with a password need email (to confirm the address); fmID needs its own client
-// settings (pass isAvailable). A copy without them keeps every account action usable and
-// hands the visitor over to the same page on the deployed version.
-export function useAccountHandOver(
-  pathAndQuery: string,
-  isAvailable?: boolean,
-): AccountHandOver {
+// Accounts need fmID, the only sign-in. A copy without it keeps every account action usable
+// and hands the visitor over to the same page on the deployed version.
+export function useAccountHandOver(pathAndQuery: string): AccountHandOver {
   const { features } = useAppInfo();
   const { isDeployedVersion, urlFor } = useDeployedVersion();
   const [isOpen, setIsOpen] = useState(false);
 
   return {
-    isRequired: !(isAvailable ?? features.accounts) && !isDeployedVersion,
+    isRequired: !features.accounts && !isDeployedVersion,
     open: () => setIsOpen(true),
     dialog: (
       <DeployedVersionDialog

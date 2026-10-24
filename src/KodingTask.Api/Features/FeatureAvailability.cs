@@ -11,5 +11,5 @@ public sealed record FeatureAvailability(
 
     public bool Deliveries => Email || WhatsApp;
 
-    public bool Accounts => Email;
+    public bool Accounts => ExternalLogin;
 }

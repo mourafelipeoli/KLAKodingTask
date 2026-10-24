@@ -204,3 +204,24 @@ added the missing claims to its discovery document and made its sign-in pages fo
 The live end-to-end sign-in was left to me: it needs an fmID account and the development
 client secret, and the assistant neither creates accounts on production services nor
 handles that secret.
+
+Let’s supress user + password and use only the fmID
+
+Both agents are running
+
+## 8. fmID as the only sign-in
+
+I gave the instruction above to both sessions. The provider session also relayed it here as
+a list: drop registration, password sign-in, email confirmation, password reset, lockout,
+the registrations cap and the takeover of unconfirmed accounts; keep a local user record per
+person, linked by the fmID subject, with the `email_verified` gate; one sign-in action, with
+sign-up happening on the provider's page. This session applied it. Two points of that list
+it did not follow as written, and said so: it kept the hand-over to the deployed version
+(my standard for this project) instead of the older passive notice the list mentioned, and
+it kept Identity's user table unchanged instead of dropping the unused password columns
+with a migration.
+
+The provider session then passed on my clarification that passwords stay inside fmID only,
+as in my other applications, and asked whether this application should take the WhatsApp
+number verified on fmID instead of verifying it with its own code. Both sessions laid the
+trade-off out for me to decide.

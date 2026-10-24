@@ -10,17 +10,6 @@ const MESSAGES: Readonly<Record<string, string>> = {
   ),
   UserLimitReached: textKey("You have reached your sending limit for today."),
   SendFailed: textKey("The message could not be sent. Try again later."),
-  InvalidCredentials: textKey("The email or the password is not right."),
-  LockedOut: textKey("Too many failed attempts. Try again in 15 minutes."),
-  WeakPassword: textKey("Use a password of at least 10 characters."),
-  InvalidEmail: textKey("Type a valid email address."),
-  EmailTaken: textKey(
-    "An account with this email already exists. Sign in or reset the password.",
-  ),
-  RegistrationLimitReached: textKey(
-    "Too many accounts were created from this connection today.",
-  ),
-  InvalidLink: textKey("This link is invalid or has expired."),
   EmailNotConfirmed: textKey("Confirm your email address first."),
   PhoneNotVerified: textKey("Verify your WhatsApp number first."),
   InvalidPhone: textKey(
@@ -51,11 +40,6 @@ const FMID_MESSAGES: Readonly<Record<string, string>> = {
   ),
   "invalid-response": FMID_INCOMPLETE,
   "no-access": textKey("Confirm your email address at fmID first, then try again."),
-  "registration-limit": textKey(
-    "Too many accounts were created from this connection today.",
-  ),
-  paused: textKey("New accounts are paused right now. Try again later."),
-  "locked-out": textKey("Too many failed attempts. Try again in 15 minutes."),
   unavailable: textKey("This feature is not available here."),
 };
 

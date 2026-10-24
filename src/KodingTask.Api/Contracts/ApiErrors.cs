@@ -12,20 +12,6 @@ public static class ApiErrors
 
     public static ErrorResponse SendFailed { get; } = new("SendFailed", "The message could not be sent. Try again later.");
 
-    public static ErrorResponse InvalidCredentials { get; } = new("InvalidCredentials", "The email or the password is not right.");
-
-    public static ErrorResponse LockedOut { get; } = new("LockedOut", "Too many failed attempts. Try again in 15 minutes.");
-
-    public static ErrorResponse WeakPassword { get; } = new("WeakPassword", "Use a password of at least 10 characters.");
-
-    public static ErrorResponse InvalidEmail { get; } = new("InvalidEmail", "Type a valid email address.");
-
-    public static ErrorResponse EmailTaken { get; } = new("EmailTaken", "An account with this email already exists. Sign in or reset the password.");
-
-    public static ErrorResponse RegistrationLimitReached { get; } = new("RegistrationLimitReached", "Too many accounts were created from this connection today.");
-
-    public static ErrorResponse InvalidLink { get; } = new("InvalidLink", "This link is invalid or has expired.");
-
     public static ErrorResponse EmailNotConfirmed { get; } = new("EmailNotConfirmed", "Confirm your email address first.");
 
     public static ErrorResponse PhoneNotVerified { get; } = new("PhoneNotVerified", "Verify your WhatsApp number first.");
@@ -47,11 +33,9 @@ public static class ApiErrors
     public static int StatusOf(ErrorResponse error) => error.Error switch
     {
         "MessagingUnavailable" => StatusCodes.Status503ServiceUnavailable,
-        "Paused" or "DailyLimitReached" or "UserLimitReached" or "RegistrationLimitReached" or "CodeCooldown" or "LockedOut"
-            => StatusCodes.Status429TooManyRequests,
+        "Paused" or "DailyLimitReached" or "UserLimitReached" or "CodeCooldown" => StatusCodes.Status429TooManyRequests,
         "SendFailed" => StatusCodes.Status502BadGateway,
         "EmailNotConfirmed" or "PhoneNotVerified" => StatusCodes.Status403Forbidden,
-        "EmailTaken" => StatusCodes.Status409Conflict,
         _ => StatusCodes.Status400BadRequest,
     };
 }

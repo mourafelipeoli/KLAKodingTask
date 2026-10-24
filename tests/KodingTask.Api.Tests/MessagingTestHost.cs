@@ -1,15 +1,17 @@
 ﻿using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Http.Json;
-using System.Text.RegularExpressions;
 using KodingTask.Api.Contracts;
 using KodingTask.Api.Messaging;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Primitives;
 
 namespace KodingTask.Api.Tests;
 
-internal sealed partial class MessagingTestHost : IDisposable
+internal sealed class MessagingTestHost : IDisposable
 {
     private MessagingTestHost(ApiFactory factory)
     {
@@ -18,11 +20,16 @@ internal sealed partial class MessagingTestHost : IDisposable
 
     public ApiFactory Factory { get; }
 
+    public FakeFmIdProvider FmId { get; } = new();
+
     public RecordingEmailSender Emails { get; } = new();
 
     public RecordingWhatsAppSender WhatsApp { get; } = new();
 
-    public static MessagingTestHost Create(Action<Dictionary<string, string>>? configure = null, Action<IServiceCollection>? services = null)
+    public static MessagingTestHost Create(
+        Action<Dictionary<string, string>>? configure = null,
+        Action<IServiceCollection>? services = null,
+        bool withFmId = true)
     {
         var host = new MessagingTestHost(new ApiFactory());
         var settings = host.Factory.Settings;
@@ -30,6 +37,8 @@ internal sealed partial class MessagingTestHost : IDisposable
         settings["Email:Region"] = "us-east-1";
         settings["WhatsApp:PhoneNumberId"] = "1234567890";
         settings["WhatsApp:AccessToken"] = "test-token";
+        if (withFmId)
+            FakeFmIdProvider.Configure(settings);
         configure?.Invoke(settings);
         host.Factory.ServiceOverrides.Add(collection =>
         {
@@ -37,32 +46,63 @@ internal sealed partial class MessagingTestHost : IDisposable
             collection.AddSingleton<IEmailSender>(host.Emails);
             collection.RemoveAll<IWhatsAppSender>();
             collection.AddSingleton<IWhatsAppSender>(host.WhatsApp);
+            host.FmId.Install(collection);
             services?.Invoke(collection);
         });
         return host;
     }
 
+    public HttpClient Browser() =>
+        Factory.CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost"), AllowAutoRedirect = false });
+
     public async Task<AccountClient> ClientAsync()
     {
-        var client = new AccountClient(Factory.CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost") }));
+        var client = new AccountClient(Browser());
         await client.RefreshAntiforgeryAsync();
         return client;
     }
 
-    public async Task<AccountClient> ConfirmedAccountAsync(string email = "visitor@example.com", string password = "a long enough password")
+    public async Task<AccountClient> SignedInAccountAsync(string email = "visitor@example.com")
     {
         var client = await ClientAsync();
-        (await client.PostAsync("/api/account/register", new { email, password, uiLocale = "en-US" })).EnsureSuccessStatusCode();
-        var (user, code) = LinkParameters(Emails.LastTo(email).Email.Text, "confirm-email");
-        (await client.PostAsync("/api/account/confirm-email", new { userId = user, code })).EnsureSuccessStatusCode();
+        FmId.Subject = $"subject-of-{email}";
+        FmId.Email = email;
+        FmId.EmailVerified = true;
+        Assert.Equal("/", await SignInWithFmIdAsync(client.Http, "/"));
+        await client.RefreshAntiforgeryAsync();
         return client;
     }
 
-    public static (string User, string Code) LinkParameters(string text, string page)
+    public async Task<string> SignInWithFmIdAsync(HttpClient browser, string returnUrl)
     {
-        var match = Regex.Match(text, $@"/{page}\?user=([^&\s]+)&code=([^&\s]+)");
-        Assert.True(match.Success, $"No {page} link in the email.");
-        return (Uri.UnescapeDataString(match.Groups[1].Value), Uri.UnescapeDataString(match.Groups[2].Value));
+        var challenge = await StartFmIdAsync(browser, returnUrl);
+        Assert.StartsWith(FakeFmIdProvider.Issuer, challenge.Headers.Location!.ToString());
+        return await FinishFmIdAsync(browser, QueryHelpers.ParseQuery(challenge.Headers.Location!.Query));
+    }
+
+    public static Task<HttpResponseMessage> StartFmIdAsync(HttpClient browser, string returnUrl, string? token = null) =>
+        PostFormAsync(browser, "/api/account/fmid/sign-in", returnUrl, token);
+
+    public static async Task<HttpResponseMessage> PostFormAsync(HttpClient browser, string path, string returnUrl, string? token = null)
+    {
+        token ??= (await browser.GetFromJsonAsync<AntiforgeryResponse>("/api/account/antiforgery"))!.Token;
+        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["__RequestVerificationToken"] = token,
+            ["returnUrl"] = returnUrl,
+            ["uiLocale"] = "de-DE",
+        });
+        return await browser.PostAsync(path, form);
+    }
+
+    public async Task<string> FinishFmIdAsync(HttpClient browser, Dictionary<string, StringValues> authorize)
+    {
+        FmId.Nonce = authorize["nonce"];
+        var callback = await browser.GetAsync($"/signin-fmid?code=test-code&state={Uri.EscapeDataString(authorize["state"]!)}");
+        Assert.Equal(HttpStatusCode.Redirect, callback.StatusCode);
+        var complete = await browser.GetAsync(callback.Headers.Location);
+        Assert.Equal(HttpStatusCode.Redirect, complete.StatusCode);
+        return complete.Headers.Location!.ToString();
     }
 
     public void Dispose() => Factory.Dispose();
@@ -79,17 +119,7 @@ internal sealed class AccountClient(HttpClient http)
         Http.DefaultRequestHeaders.Add("X-XSRF-TOKEN", token!.Token);
     }
 
-    public async Task<HttpResponseMessage> PostAsync(string path, object body)
-    {
-        var response = await Http.PostAsJsonAsync(path, body);
-        if (path.Contains("sign-", StringComparison.Ordinal) || path.Contains("register", StringComparison.Ordinal)
-            || path.Contains("confirm-email", StringComparison.Ordinal) || path.Contains("reset-password", StringComparison.Ordinal))
-        {
-            await RefreshAntiforgeryAsync();
-        }
-
-        return response;
-    }
+    public Task<HttpResponseMessage> PostAsync(string path, object body) => Http.PostAsJsonAsync(path, body);
 }
 
 internal sealed class RecordingEmailSender : IEmailSender

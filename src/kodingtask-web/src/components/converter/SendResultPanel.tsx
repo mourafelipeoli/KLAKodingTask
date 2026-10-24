@@ -5,7 +5,6 @@ import { useAppInfo } from "../../app/useAppInfo";
 import { useDeployedVersion } from "../../hooks/useDeployedVersion";
 import { useText } from "../../i18n/useText";
 import { ROUTES } from "../../routes/routePaths";
-import { accountService } from "../../services/accountService";
 import { deliveryService } from "../../services/deliveryService";
 import type { ConversionResult, Engine } from "../../types/conversion";
 import { DeliveryChannel } from "../../types/conversion";
@@ -27,12 +26,11 @@ interface SendResultPanelProps {
 type Status =
   | { kind: "idle" }
   | { kind: "sent"; destination: string; left: number }
-  | { kind: "confirmation-sent" }
   | { kind: "error"; key: string };
 
 // Sends the result to the signed-in visitor. On a copy without a channel the button hands
 // over to the deployed version; on the deployed version a channel that is not switched on
-// yet is disabled. Everything that needs an account (sign in, confirm, verify the number)
+// yet is disabled. Everything that needs an account (sign in with fmID, verify the number)
 // happens on the way, and the send completes when the visitor comes back.
 export default function SendResultPanel({
   result,
@@ -99,27 +97,11 @@ export default function SendResultPanel({
       );
       return;
     }
-    if (!account.emailConfirmed) {
-      return;
-    }
     if (channel === DeliveryChannel.WhatsApp && !account.whatsAppNumber) {
       setIsVerifying(true);
       return;
     }
     send(channel);
-  }
-
-  function resendConfirmation() {
-    startTransition(async () => {
-      try {
-        await apply(
-          await accountService.resendConfirmation(locale, comeBackPath(undefined)),
-        );
-        setStatus({ kind: "confirmation-sent" });
-      } catch (error) {
-        setStatus({ kind: "error", key: accountErrorKey(error) });
-      }
-    });
   }
 
   // A channel chosen before arriving (on a local copy, or before signing in) completes here
@@ -150,21 +132,6 @@ export default function SendResultPanel({
           {t("Receive the words by email or WhatsApp after signing in.")}
         </p>
       </div>
-
-      {account.isSignedIn && !account.emailConfirmed && (
-        <Notice tone="info">
-          {t("Confirm your email address first. We sent a link to {{email}}.", {
-            email: account.email ?? "",
-          })}{" "}
-          <button
-            type="button"
-            className="send-panel__inline-action"
-            onClick={resendConfirmation}
-          >
-            {t("Send the link again")}
-          </button>
-        </Notice>
-      )}
 
       <div className="send-panel__channels">
         <button
@@ -217,9 +184,6 @@ export default function SendResultPanel({
               count: status.left,
             })}
           </Notice>
-        )}
-        {status.kind === "confirmation-sent" && (
-          <Notice tone="success">{t("The confirmation link is on its way.")}</Notice>
         )}
         {status.kind === "error" && (
           <Notice tone="danger" role="alert">

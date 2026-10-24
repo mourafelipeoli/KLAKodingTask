@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using KodingTask.Api.Accounts;
+﻿using KodingTask.Api.Accounts;
 using KodingTask.Api.Contracts;
 using KodingTask.Api.Features;
 using KodingTask.Api.Hosting;
@@ -20,7 +19,6 @@ public sealed class FmIdController(
     IAntiforgery antiforgery,
     FmIdAccounts accounts,
     UserProfiles profiles,
-    ClientFingerprint fingerprint,
     FeatureAvailability features) : ControllerBase
 {
     private const string CompletePath = "/api/account/fmid/complete";
@@ -51,7 +49,7 @@ public sealed class FmIdController(
         if (!external.Succeeded)
             return LocalRedirect(AccountLinks.SignInPath(FmIdErrors.InvalidResponse, returnUrl));
 
-        var result = await accounts.ResolveAsync(external.Principal, fingerprint.Of(HttpContext), cancellationToken);
+        var result = await accounts.ResolveAsync(external.Principal);
         if (result.User is null)
             return LocalRedirect(AccountLinks.SignInPath(result.Error!, returnUrl));
 
@@ -68,9 +66,9 @@ public sealed class FmIdController(
         if (!await antiforgery.IsRequestValidAsync(HttpContext))
             return LocalRedirect(returnUrl);
 
-        var signedInWithFmId = User.FindFirstValue(ClaimTypes.AuthenticationMethod) == FmIdOptions.Scheme;
+        var wasSignedIn = User.Identity?.IsAuthenticated == true;
         await signIn.SignOutAsync();
-        if (!signedInWithFmId || !features.ExternalLogin)
+        if (!wasSignedIn || !features.ExternalLogin)
             return LocalRedirect(returnUrl);
         return SignOut(new AuthenticationProperties { RedirectUri = returnUrl }, FmIdOptions.Scheme);
     }

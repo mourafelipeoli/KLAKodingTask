@@ -4,8 +4,8 @@ Settings of the sign-in with fmID, the author's OpenID Connect provider (section
 
 - **All three or nothing.** `Authority`, `ClientId` and `ClientSecret` must all be set;
   otherwise the scheme is not registered at all and `FeatureAvailability.ExternalLogin` stays
-  false, so a fresh clone starts without any provider and hands the button over to the
-  deployed version.
+  false. fmID being the only sign-in, a fresh clone then has no accounts: the converter works
+  as always, and everything that needs an account hands over to the deployed version.
 - **The secret is configuration, never code**: user-secrets in development, a secret store
   when hosted. The provider stores only its hash; a leaked secret is rotated there.
 - **Fixed paths.** `/signin-fmid` and `/signout-fmid` are the redirect and post-logout URIs

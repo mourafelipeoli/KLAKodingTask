@@ -1,6 +1,7 @@
 # 7. Sign-in with fmID, linked to local accounts
 
-Date: 2026-10-24 · Status: accepted
+Date: 2026-10-24 · Status: accepted; the coexistence with passwords superseded by
+[decision 8](0008-fmid-is-the-only-sign-in.md)
 
 ## Context
 

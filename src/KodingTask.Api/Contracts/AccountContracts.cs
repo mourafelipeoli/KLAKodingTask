@@ -5,27 +5,11 @@ public sealed record AntiforgeryResponse(string Token);
 public sealed record AccountResponse(
     bool IsSignedIn,
     string? Email,
-    bool EmailConfirmed,
     string? WhatsAppNumber,
-    int? DeliveriesLeftToday,
-    bool SignedInWithFmId)
+    int? DeliveriesLeftToday)
 {
-    public static AccountResponse SignedOut { get; } = new(false, null, false, null, null, false);
+    public static AccountResponse SignedOut { get; } = new(false, null, null, null);
 }
-
-public sealed record RegisterRequest(string? Email, string? Password, string? UiLocale, string? ReturnUrl);
-
-public sealed record RegisterResponse(AccountResponse Account, bool ConfirmationSent);
-
-public sealed record SignInRequest(string? Email, string? Password);
-
-public sealed record ConfirmEmailRequest(string? UserId, string? Code);
-
-public sealed record ResendConfirmationRequest(string? UiLocale, string? ReturnUrl);
-
-public sealed record ForgotPasswordRequest(string? Email, string? UiLocale);
-
-public sealed record ResetPasswordRequest(string? UserId, string? Code, string? Password);
 
 public sealed record PhoneCodeRequest(string? Phone, string? UiLocale);
 

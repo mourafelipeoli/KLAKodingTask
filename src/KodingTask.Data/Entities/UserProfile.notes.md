@@ -12,5 +12,5 @@ fact in tables keyed by the user id (`UserProfile`, `VerifiedPhone`, `PhoneChall
 `OutboundMessage`) means the user store can change without touching them.
 
 `PreferredLocale` is updated whenever the visitor acts in a given interface language
-(registration, a delivery, a password reset request), so the next email speaks the language
+(signing in, a delivery, a phone code), so the next message speaks the language
 they last used.

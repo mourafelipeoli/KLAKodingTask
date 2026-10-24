@@ -1,6 +1,7 @@
 # 6. Accounts and deliveries that can only reach their own owner
 
-Date: 2026-10-23 · Status: accepted
+Date: 2026-10-23 · Status: accepted; accounts with passwords superseded by
+[decision 8](0008-fmid-is-the-only-sign-in.md)
 
 ## Context
 
@@ -17,7 +18,8 @@ not be able to raise its allowance.
   content is never supplied by the client; WhatsApp content is further fixed by Meta's
   template approval.
 - **Local accounts on ASP.NET Core Identity**, in the application's own database, with
-  password lockout, email confirmation and password reset. Application-specific data
+  password lockout, email confirmation and password reset. *(Superseded by decision 8:
+  accounts are now created by signing in with fmID and have no password.)* Application-specific data
   (preferred language, verified number, pending code, delivery history) lives in separate
   tables keyed by the user id, so the user store can later federate with an external
   OpenID Connect provider without migrating it.

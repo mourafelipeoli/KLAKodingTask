@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using KodingTask.Data;
+﻿using KodingTask.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 
@@ -16,23 +15,9 @@ public static class AccountServiceCollectionExtensions
     {
         services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
         services.AddAuthorization();
-        services.AddIdentityCore<IdentityUser>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-                options.Password.RequiredLength = 10;
-                options.Password.RequiredUniqueChars = 4;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Lockout.AllowedForNewUsers = true;
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-                options.SignIn.RequireConfirmedEmail = false;
-            })
+        services.AddIdentityCore<IdentityUser>(options => options.User.RequireUniqueEmail = true)
             .AddEntityFrameworkStores<KodingTaskDbContext>()
-            .AddSignInManager()
-            .AddDefaultTokenProviders();
+            .AddSignInManager();
 
         services.ConfigureApplicationCookie(options =>
         {
@@ -63,20 +48,6 @@ public static class AccountServiceCollectionExtensions
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
 
-        // The periodic security-stamp check rebuilds the session from the user record and
-        // would forget how the visitor signed in; sign-out with fmID depends on it.
-        services.Configure<SecurityStampValidatorOptions>(options => options.OnRefreshingPrincipal = context =>
-        {
-            var method = context.CurrentPrincipal?.FindFirst(ClaimTypes.AuthenticationMethod);
-            if (method is not null && context.NewPrincipal?.Identity is ClaimsIdentity identity
-                && !identity.HasClaim(claim => claim.Type == ClaimTypes.AuthenticationMethod))
-            {
-                identity.AddClaim(new Claim(ClaimTypes.AuthenticationMethod, method.Value));
-            }
-
-            return Task.CompletedTask;
-        });
-
         services.AddAntiforgery(options =>
         {
             options.HeaderName = AntiforgeryHeader;
@@ -87,7 +58,6 @@ public static class AccountServiceCollectionExtensions
 
         services.AddSingleton<AccountLinks>();
         services.AddScoped<UserProfiles>();
-        services.AddScoped<AccountEmails>();
         services.AddScoped<PhoneVerification>();
         return services;
     }

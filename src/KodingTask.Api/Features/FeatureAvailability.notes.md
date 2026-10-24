@@ -22,9 +22,7 @@ so the flags reflect what was actually wired into the container, never a guess.
 
 The deterministic converter is not listed: it is always available.
 
-`Accounts` follows `Email`: an account with a password is only useful once its address is
-confirmed, and confirming needs email. Without email, registering and signing in with a
-password are handed over to the deployed version like every other optional feature.
-`ExternalLogin` is independent: fmID vouches for the address itself, so it works with or
-without email.
+`Accounts` follows `ExternalLogin`: fmID is the only way to sign in, so without it there are
+no accounts, and every action that needs one is handed over to the deployed version like
+every other optional feature.
 

@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KodingTask.Api.Tests;
 
@@ -10,7 +12,7 @@ public sealed class DeliveryTests
     public async Task Emails_the_result_converted_again_on_the_server_to_the_confirmed_address()
     {
         using var host = MessagingTestHost.Create();
-        var client = await host.ConfirmedAccountAsync("reader@example.com");
+        var client = await host.SignedInAccountAsync("reader@example.com");
 
         var response = await client.PostAsync("/api/deliveries",
             new { channel = "email", amount = "45 100", language = "fr-BE", uiLocale = "en-US" });
@@ -29,17 +31,22 @@ public sealed class DeliveryTests
     }
 
     [Fact]
-    public async Task Sends_nothing_before_the_address_is_confirmed()
+    public async Task Sends_nothing_to_an_address_that_is_not_confirmed()
     {
         using var host = MessagingTestHost.Create();
-        var client = await host.ClientAsync();
-        (await client.PostAsync("/api/account/register", new { email = "early@example.com", password = "a long enough password" })).EnsureSuccessStatusCode();
-        var emailsBefore = host.Emails.Sent.Count;
+        var client = await host.SignedInAccountAsync("early@example.com");
+        using (var scope = host.Factory.Services.CreateScope())
+        {
+            var users = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var user = await users.FindByEmailAsync("early@example.com");
+            user!.EmailConfirmed = false;
+            await users.UpdateAsync(user);
+        }
 
         var response = await client.PostAsync("/api/deliveries", new { channel = "email", amount = "1", language = "en-US" });
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
-        Assert.Equal(emailsBefore, host.Emails.Sent.Count);
+        Assert.Empty(host.Emails.Sent);
     }
 
     [Fact]
@@ -57,7 +64,7 @@ public sealed class DeliveryTests
     public async Task Refuses_invalid_amounts_with_the_conversion_error()
     {
         using var host = MessagingTestHost.Create();
-        var client = await host.ConfirmedAccountAsync();
+        var client = await host.SignedInAccountAsync();
 
         var response = await client.PostAsync("/api/deliveries", new { channel = "email", amount = "12.50", language = "en-US" });
 
@@ -68,7 +75,7 @@ public sealed class DeliveryTests
     public async Task Stops_at_the_daily_cap_of_the_account()
     {
         using var host = MessagingTestHost.Create(settings => settings["Limits:DeliveriesPerUserPerDay"] = "1");
-        var client = await host.ConfirmedAccountAsync();
+        var client = await host.SignedInAccountAsync();
         (await client.PostAsync("/api/deliveries", new { channel = "email", amount = "1", language = "en-US" })).EnsureSuccessStatusCode();
 
         var refused = await client.PostAsync("/api/deliveries", new { channel = "email", amount = "2", language = "en-US" });
@@ -81,25 +88,24 @@ public sealed class DeliveryTests
     public async Task Stops_at_the_instance_wide_email_cap()
     {
         using var host = MessagingTestHost.Create(settings => settings["Limits:EmailsPerDay"] = "1");
-        var client = await host.ClientAsync();
-        (await client.PostAsync("/api/account/register", new { email = "capped@example.com", password = "a long enough password" })).EnsureSuccessStatusCode();
-        var (user, code) = MessagingTestHost.LinkParameters(host.Emails.LastTo("capped@example.com").Email.Text, "confirm-email");
-        (await client.PostAsync("/api/account/confirm-email", new { userId = user, code })).EnsureSuccessStatusCode();
+        var first = await host.SignedInAccountAsync("first@example.com");
+        (await first.PostAsync("/api/deliveries", new { channel = "email", amount = "1", language = "en-US" })).EnsureSuccessStatusCode();
+        var second = await host.SignedInAccountAsync("second@example.com");
 
-        var refused = await client.PostAsync("/api/deliveries", new { channel = "email", amount = "1", language = "en-US" });
+        var refused = await second.PostAsync("/api/deliveries", new { channel = "email", amount = "1", language = "en-US" });
 
         Assert.Equal("DailyLimitReached", (await refused.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
     }
 
     [Fact]
-    public async Task The_kill_switch_pauses_registrations_and_their_emails()
+    public async Task The_kill_switch_pauses_every_delivery()
     {
         using var paused = MessagingTestHost.Create(settings => settings["Limits:KillSwitch"] = "true");
-        var client = await paused.ClientAsync();
+        var client = await paused.SignedInAccountAsync();
 
-        var registered = await client.PostAsync("/api/account/register", new { email = "p@example.com", password = "a long enough password" });
+        var refused = await client.PostAsync("/api/deliveries", new { channel = "email", amount = "1", language = "en-US" });
 
-        Assert.Equal("Paused", (await registered.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
+        Assert.Equal("Paused", (await refused.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
         Assert.Empty(paused.Emails.Sent);
     }
 
@@ -107,7 +113,7 @@ public sealed class DeliveryTests
     public async Task Sends_whatsapp_results_only_to_a_verified_number()
     {
         using var host = MessagingTestHost.Create();
-        var client = await host.ConfirmedAccountAsync();
+        var client = await host.SignedInAccountAsync();
 
         var unverified = await client.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "2", language = "pl-PL" });
         Assert.Equal("PhoneNotVerified", (await unverified.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
@@ -130,7 +136,7 @@ public sealed class DeliveryTests
     public async Task Refuses_unknown_channels()
     {
         using var host = MessagingTestHost.Create();
-        var client = await host.ConfirmedAccountAsync();
+        var client = await host.SignedInAccountAsync();
 
         var response = await client.PostAsync("/api/deliveries", new { channel = "sms", amount = "1", language = "en-US" });
 

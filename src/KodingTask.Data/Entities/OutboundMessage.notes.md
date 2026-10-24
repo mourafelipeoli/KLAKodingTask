@@ -1,7 +1,7 @@
 # OutboundMessage
 
 One row per email or WhatsApp message the application tried to send, whatever it was: a
-conversion result, an email confirmation, a password reset or a phone code.
+conversion result or a phone code.
 
 - **Masked destination only** (`f*****@example.com`, `+49*******5678`): the history shows
   that a message went out and to roughly whom, without becoming a list of addresses.

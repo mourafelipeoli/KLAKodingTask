@@ -1,16 +1,14 @@
 # AccountLinks
 
-The links the server puts in emails: confirm the email, reset the password, open a
-conversion. They point at pages of the web client, which call the API.
+The links the server builds: the conversion link in result emails, and the sign-in page a
+failed fmID sign-in returns to.
 
-**The base address never comes from the request outside development.** Building it from the
-`Host` header would let anyone ask for a password reset with a forged host and have the
-victim receive a reset link to an attacker's site (host-header poisoning). Hosted, links use
-`PublicSite:Url`; in development they use the local address, so a developer's confirmation
-link opens their own instance.
+**The base address of emailed links never comes from the request outside development.**
+Building it from the `Host` header would let a forged host put a link to someone else's
+site into an email sent to a real address (host-header poisoning). Hosted, links use
+`PublicSite:Url`; in development they use the local address, so a developer's link opens
+their own instance.
 
-Every link carries the interface language (`lang`) the visitor used when it was requested, so the
-page it opens speaks the same language as the email.
-
-`SignInPath` is not for emails: it is where a sign-in with fmID returns when it fails, with
-the error code and the sanitised return path.
+The conversion link carries the interface language (`lang`) the visitor used, so the page it
+opens speaks the same language as the email. `SignInPath` is a path on this site with the
+error code and the sanitised return path.

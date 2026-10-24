@@ -35,9 +35,10 @@ public sealed class MessagingUnitTests
     {
         var texts = new MessageTexts();
 
-        Assert.Equal("Confirmez votre adresse courriel", texts.Translate("fr-CA", "Confirm your email address"));
-        Assert.Equal("Confirmez votre adresse e-mail", texts.Translate("fr-CH", "Confirm your email address"));
-        Assert.Equal("Confirm your email address", texts.Translate("sv-SE", "Confirm your email address"));
+        const string Key = "You received this email because you asked Koding Task to send you this result.";
+        Assert.Equal("Vous recevez ce courriel parce que vous avez demandé à Koding Task de vous envoyer ce résultat.", texts.Translate("fr-CA", Key));
+        Assert.Equal("Vous recevez cet e-mail parce que vous avez demandé à Koding Task de vous envoyer ce résultat.", texts.Translate("fr-CH", Key));
+        Assert.Equal(Key, texts.Translate("sv-SE", Key));
     }
 
     [Fact]

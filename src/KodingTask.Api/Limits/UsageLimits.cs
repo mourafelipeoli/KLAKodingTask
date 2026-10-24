@@ -18,9 +18,7 @@ public sealed record UsageLimits
 
     public int PhoneCodesPerUserPerDay { get; init; }
 
-    public int AccountEmailsPerUserPerDay { get; init; }
 
-    public int RegistrationsPerClientPerDay { get; init; }
 
     public static UsageLimits Closed { get; } = new() { KillSwitch = true };
 }

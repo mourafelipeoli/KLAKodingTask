@@ -12,3 +12,7 @@ filters, both prefer that). Confirming addresses and resetting passwords are fmI
   loaded from the site when the email is opened.
 - **Everything dynamic is HTML-encoded**, including the words and the links, so an amount
   or a translation can never inject markup.
+- **No amount in the subject.** The subject is a plain "Your Koding Task result"; the amount
+  and the words are the heading and the body. A dollar figure in the subject, next to a
+  sum spelled out in words and a button link, is what payment scams look like, and Gmail
+  filed the first real email as spam for it even though SPF and DKIM passed.

@@ -238,3 +238,13 @@ trade-off to me, and this session recommended using fmID's number with a silent 
 before each WhatsApp send. My decision, "everything via fmID", reached this session through
 the provider session, which also confirmed the claims (`phone_number`, `phone_number_verified`)
 and registered both clients for the `phone` scope. This session then implemented it.
+
+I tried to send convertion (US$ 45,100.00 in words) to my e-mail [my work address] (you can check it using my GMail plugin). It went to SPAM folder (I let the message opened on the EDGE browser). *(The original names the address.)*
+
+You can check via [my personal Gmail address], the messages arrive there.
+
+*[Pasted the full source of the message: SES headers, SPF and DKIM results, the spam verdict of my mail host, and the body.]*
+
+*[Screenshot of Gmail's "Show original" summary: SPF and DKIM pass for my domain.]*
+
+The tabs are opened in my EDGE browser.

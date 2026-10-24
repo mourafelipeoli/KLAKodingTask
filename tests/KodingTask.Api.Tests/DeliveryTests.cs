@@ -26,7 +26,9 @@ public sealed class DeliveryTests
 
         var (to, email) = host.Emails.LastTo("reader@example.com");
         Assert.Equal("reader@example.com", to);
-        Assert.Equal("US$ 45,100.00 in words", email.Subject);
+        Assert.Equal("Your Koding Task result", email.Subject);
+        Assert.DoesNotContain("$", email.Subject);
+        Assert.StartsWith("US$ 45,100.00 in words", email.Text);
         Assert.Contains("quarante-cinq mille cent dollars", email.Text);
         Assert.Contains("Français (Belgique)", email.Text);
         Assert.Contains("/?amount=45%20100%2C00&language=fr-BE&lang=en-US", email.Text);

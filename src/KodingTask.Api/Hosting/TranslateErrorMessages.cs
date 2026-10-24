@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace KodingTask.Api.Hosting;
 
 /// <summary>Every refusal keeps its code and gets its message in the visitor's language.</summary>
-public sealed class TranslateErrorMessages(ServerTexts texts) : IAsyncResultFilter
+public sealed class TranslateErrorMessages(ServerTexts texts) : IAsyncAlwaysRunResultFilter
 {
     public Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {

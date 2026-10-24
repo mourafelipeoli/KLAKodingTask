@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using KodingTask.Api.Contracts;
+using KodingTask.Api.Hosting;
 using KodingTask.Api.Translations;
 using KodingTask.Data;
 using KodingTask.Data.Entities;
@@ -222,6 +223,36 @@ public sealed class TranslationTests
         using var body = JsonDocument.Parse(await refused.Content.ReadAsStringAsync());
         Assert.Equal("InvalidCharacter", body.RootElement.GetProperty("error").GetString());
         return body.RootElement.GetProperty("message").GetString();
+    }
+
+    [Fact]
+    public async Task A_refusal_from_an_authorization_filter_follows_the_language_too()
+    {
+        const string German = "Der Anfrage fehlt ein gültiges Antiforgery-Token. Laden Sie die Seite neu und versuchen Sie es noch einmal.";
+        using var host = Create(new FakeTranslator());
+        await SeedAsync(host);
+        var message = ValidateAntiforgeryHeaderAttribute.Invalid.Message;
+        using (var scope = host.Factory.Services.CreateScope())
+        {
+            var database = scope.ServiceProvider.GetRequiredService<KodingTaskDbContext>();
+            var term = new Term { Text = message, TextHash = TermText.Hash(message), Origin = TermOrigin.Server, IsActive = true };
+            term.Translations.Add(new Translation { Locale = "de-DE", Text = German, Source = TranslationSource.Manual, Reviewed = true });
+            database.Terms.Add(term);
+            await database.SaveChangesAsync();
+        }
+
+        var index = host.Factory.Services.GetRequiredService<TranslationIndex>();
+        index.Invalidate();
+        await index.GetAsync("de-DE", CancellationToken.None);
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/i18n/terms") { Content = JsonContent.Create(new { texts = new[] { "A sentence" } }) };
+        request.Headers.Add("Cookie", "kodingtask-lang=de-DE");
+        var refused = await host.Browser().SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.BadRequest, refused.StatusCode);
+        using var body = JsonDocument.Parse(await refused.Content.ReadAsStringAsync());
+        Assert.Equal("InvalidAntiforgeryToken", body.RootElement.GetProperty("error").GetString());
+        Assert.Equal(German, body.RootElement.GetProperty("message").GetString());
     }
 
     [Fact]

@@ -10,4 +10,5 @@ a member to `InterfaceLanguage` does in production.
 The other tests cover the import (idempotent, hand edits kept), the caps and the kill
 switch, the dictionary's ETag and the regional merge, the language resolution order, term
 registration with its limits and antiforgery, a server text becoming a term, an error
-message following the cookie's language, and the review API's access rules.
+message following the cookie's language (also when an authorization filter writes it, as the
+antiforgery check does), and the review API's access rules.

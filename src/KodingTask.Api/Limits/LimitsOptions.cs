@@ -20,11 +20,13 @@ public sealed class LimitsOptions
 
     public int EmailsPerDay { get; set; } = 100;
 
-    public int WhatsAppPerDay { get; set; } = 50;
+    public int WhatsAppPerDay { get; set; } = 10;
+
+    public int WhatsAppPerMonth { get; set; } = 70;
 
     public int DeliveriesPerUserPerDay { get; set; } = 10;
 
-    public int TranslationCharactersPerDay { get; set; } = 50_000;
+    public int TranslationCharactersPerDay { get; set; } = 15_000;
 
     public int TermRegistrationsPerDay { get; set; } = 200;
 

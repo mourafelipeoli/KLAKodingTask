@@ -13,7 +13,7 @@ KLA Senior Software Engineer coding task (web variant).
   (Claude on Amazon Bedrock) whose answer is shown next to the rules engine's, with an
   "agrees / differs" badge.
 - **Send it to yourself:** after signing in, a result can be emailed to the account's
-  confirmed address or sent by WhatsApp to the number verified on fmID, within daily caps
+  confirmed address or sent by WhatsApp to the number verified on fmID, within daily and monthly caps
   that live outside the code.
 - **Your last conversions:** signed in, the converter lists your last ten conversions on any
   device; choose one to convert it again.
@@ -186,7 +186,8 @@ under the file). That is where to look for the "why" of any class.
 - **Messages only reach their own owner.** No recipient field: email goes to the account's
   confirmed address, WhatsApp to the number the identity provider verified (checked again
   within ten minutes of every send), and the words are converted again on the server.
-  Daily caps per channel, per account and per client live in the parameter store. See
+  Daily caps per channel, per account and per client, and a monthly WhatsApp cap, live in the
+  parameter store. See
   [decision 6](docs/decisions/0006-accounts-and-deliveries-to-yourself.md) and
   [decision 10](docs/decisions/0010-the-whatsapp-number-comes-from-fmid.md).
 

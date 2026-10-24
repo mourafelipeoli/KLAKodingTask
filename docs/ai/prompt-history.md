@@ -307,3 +307,25 @@ Remembering I did this without AI, if you have suggestions of improvements, with
 I hit the session limit; I have credit again. *(Typed in Portuguese.)*
 
 Continue from where you stopped. *(Typed in Portuguese.)*
+
+You can run, changed the mode to edit automatically.
+
+Just update the json and I copy paste on the web console
+
+Please send me again the Read-Host and the aws cli script
+
+Both done, migration and secret
+
+## 12. The consolidated prompt and a budget
+
+Now update the honest prompt. The section that shows the inspirations must be only at the beginning. The goal here is to build a prompt human-writeable-like enough to build this whole solution, without my past references. After that, we will be proceding to our last parts, github repo creating and the e-mail answer.
+
+Oh, the app is rolling out
+
+Remember to build the honest prompt based on my original one and the steps we did after it. No need to specify what is at the beginning and what happened during the process.
+
+*[Screenshot of an email from Meta: the category of the result template was changed from UTILITY to MARKETING.]* Got this message. No need to change this, if the change makes the model to be unavailable... First, it must work.
+
+We have a 15 dollars budget/month for this project here.
+
+*[Answers to the assistant's three questions: the budget covers "Only pay-per-use services" (not the AWS hosting); the DeepL key is on the "Free (key ends in :fx)" plan; and for WhatsApp, "Add a monthly cap" (the recommended option) rather than relying on the Meta app's development mode.]*

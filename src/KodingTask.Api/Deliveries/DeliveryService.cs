@@ -69,6 +69,8 @@ public sealed class DeliveryService(
         var channelLimit = channel == EmailChannel ? limits.EmailsPerDay : limits.WhatsAppPerDay;
         if (!await limiter.TryConsumeAsync(channelCounter, channelLimit, cancellationToken))
             return (null, ApiErrors.DailyLimitReached);
+        if (channel == WhatsAppChannel && !await limiter.TryConsumeThisMonthAsync(Counters.WhatsAppMessagesThisMonth, limits.WhatsAppPerMonth, cancellationToken))
+            return (null, ApiErrors.MonthlyLimitReached);
 
         var locale = await profiles.RememberLocaleAsync(user.Id, request.UiLocale, cancellationToken);
         var amountText = AmountText.Format(conversion.Amount, locale);

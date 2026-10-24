@@ -18,3 +18,7 @@ A limit of zero or less never grants anything (that is how a closed limit is exp
 `TryConsumeAsync(counter, limit, amount)` takes several units at once (the characters of a
 DeepL request) with the same single statement (`Count + @amount <= @limit`); a request
 larger than the whole limit is refused without touching the counter.
+
+`TryConsumeThisMonthAsync` counts per UTC calendar month with the same statement, on a row
+whose day is the first of the month. `RetentionJob` keeps counters for 40 days, longer than any
+month, so a monthly row is only removed once its month is over.

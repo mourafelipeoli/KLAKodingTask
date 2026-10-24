@@ -10,3 +10,6 @@ email address or a phone number.
 
 Translation counts characters sent to DeepL (`translation:characters`, one unit per
 character) and new terms (`terms:registered`, plus one counter per client).
+
+`whatsapp:sent:month` is the only monthly counter: its row is dated the first day of the
+month (see `UsageLimiter.TryConsumeThisMonthAsync`).

@@ -192,6 +192,7 @@
   "This feature is not available here.": "此功能在此处不可用。",
   "Sending is paused right now. Try again later.": "发送功能目前已暂停。请稍后再试。",
   "Today's sending limit has been reached. Try again tomorrow.": "今日的发送上限已达到。请明天再试。",
+  "This month's WhatsApp limit has been reached. Send it by email instead.": "本月的 WhatsApp 发送上限已达到。请改用电子邮件发送结果。",
   "You have reached your sending limit for today.": "您今天的发送次数已达上限。",
   "The message could not be sent. Try again later.": "消息未能发送。请稍后再试。",
   "Confirm your email address first.": "请先确认您的电子邮件地址。",

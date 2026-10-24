@@ -42,6 +42,22 @@ public sealed class UsageLimiterTests : IDisposable
     }
 
     [Fact]
+    public async Task A_monthly_counter_spans_the_days_of_a_month_and_resets_on_the_first()
+    {
+        var limiter = new UsageLimiter(_database.CreateContext(), _clock);
+        Assert.True(await limiter.TryConsumeThisMonthAsync("monthly", 2, CancellationToken.None));
+
+        _clock.Advance(TimeSpan.FromDays(3));
+        Assert.True(await limiter.TryConsumeThisMonthAsync("monthly", 2, CancellationToken.None));
+        Assert.False(await limiter.TryConsumeThisMonthAsync("monthly", 2, CancellationToken.None));
+        Assert.True(await limiter.TryConsumeAsync("monthly", 2, CancellationToken.None));
+
+        _clock.Advance(TimeSpan.FromDays(6));
+        Assert.Equal(11, _clock.GetUtcNow().Month);
+        Assert.True(await limiter.TryConsumeThisMonthAsync("monthly", 2, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task Two_contexts_racing_for_the_last_unit_do_not_both_win()
     {
         var first = new UsageLimiter(_database.CreateContext(), _clock);

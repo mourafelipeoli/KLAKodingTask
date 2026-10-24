@@ -76,13 +76,18 @@ store cannot be read, every paid feature is closed until it can.
 | `AiCallsPerClientPerDay` | `20` | Per client address, per UTC day. |
 | `AiMonthlyBudgetUsd` | `2` | Estimated AI spend per calendar month (UTC). |
 | `EmailsPerDay` | `100` | Every email of the instance per UTC day (results). |
-| `WhatsAppPerDay` | `50` | Every WhatsApp message per UTC day (results). |
+| `WhatsAppPerDay` | `10` | Every WhatsApp message per UTC day (results). |
+| `WhatsAppPerMonth` | `70` | Every WhatsApp message per UTC calendar month. |
 | `DeliveriesPerUserPerDay` | `10` | Results one account may send to itself per UTC day, both channels together. |
-| `TranslationCharactersPerDay` | `50000` | Characters sent to DeepL per UTC day. A whole new language takes about 7,200. |
+| `TranslationCharactersPerDay` | `15000` | Characters sent to DeepL per UTC day. A whole new language takes about 7,200; a month stays under the Free API plan's 500,000. |
 | `TermRegistrationsPerDay` | `200` | New texts pages may report per UTC day, all visitors together. |
 | `TermRegistrationsPerClientPerDay` | `20` | New texts one client address may report per UTC day. |
 
 A cap missing from the parameter store reads as zero, which switches its feature off.
+
+The defaults fit a budget of 15 USD a month for everything paid per use: at most 3 USD of
+AI, about 0.31 USD of email and about 9.80 USD of WhatsApp at the marketing rate, with DeepL
+on its Free plan.
 
 ## Email (Amazon SES)
 

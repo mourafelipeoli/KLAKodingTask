@@ -14,6 +14,8 @@ public sealed record UsageLimits
 
     public int WhatsAppPerDay { get; init; }
 
+    public int WhatsAppPerMonth { get; init; }
+
     public int DeliveriesPerUserPerDay { get; init; }
 
     public int TranslationCharactersPerDay { get; init; }

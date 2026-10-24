@@ -192,6 +192,7 @@
   "This feature is not available here.": "この機能はここでは利用できません。",
   "Sending is paused right now. Try again later.": "送信は現在一時停止中です。後でもう一度お試しください。",
   "Today's sending limit has been reached. Try again tomorrow.": "本日の送信上限に達しました。明日もう一度お試しください。",
+  "This month's WhatsApp limit has been reached. Send it by email instead.": "今月の WhatsApp の送信上限に達しました。代わりにメールで結果を送信してください。",
   "You have reached your sending limit for today.": "本日のご自身の送信上限に達しました。",
   "The message could not be sent. Try again later.": "メッセージを送信できませんでした。後でもう一度お試しください。",
   "Confirm your email address first.": "まずメールアドレスを確認してください。",

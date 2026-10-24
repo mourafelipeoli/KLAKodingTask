@@ -8,6 +8,9 @@ const MESSAGES: Readonly<Record<string, string>> = {
   DailyLimitReached: textKey(
     "Today's sending limit has been reached. Try again tomorrow.",
   ),
+  MonthlyLimitReached: textKey(
+    "This month's WhatsApp limit has been reached. Send it by email instead.",
+  ),
   UserLimitReached: textKey("You have reached your sending limit for today."),
   SendFailed: textKey("The message could not be sent. Try again later."),
   EmailNotConfirmed: textKey("Confirm your email address first."),

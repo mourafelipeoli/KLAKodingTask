@@ -12,7 +12,8 @@ Order of checks, cheapest and most specific first:
    typed, so a client can never make the site send arbitrary text;
 4. for WhatsApp, the account has a verified number;
 5. the kill switch, `DeliveriesPerUserPerDay`, then the channel's instance-wide cap
-   (`EmailsPerDay` or `WhatsAppPerDay`).
+   (`EmailsPerDay` or `WhatsAppPerDay`), then for WhatsApp the monthly cap
+   (`WhatsAppPerMonth`, refused as `MonthlyLimitReached`, whose message points to email).
 
 The words are always the rules engine's, also when the visitor was looking at the AI
 answer: what goes out under the site's name is the reference. The email carries a link back

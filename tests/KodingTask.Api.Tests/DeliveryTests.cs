@@ -102,6 +102,21 @@ public sealed class DeliveryTests
     }
 
     [Fact]
+    public async Task Stops_whatsapp_at_the_monthly_cap_and_email_still_goes_out()
+    {
+        using var host = MessagingTestHost.Create(settings => settings["Limits:WhatsAppPerMonth"] = "1");
+        var client = await host.SignedInAccountAsync(whatsApp: "+4917012345678");
+        (await client.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "1", language = "en-US" })).EnsureSuccessStatusCode();
+
+        var refused = await client.PostAsync("/api/deliveries", new { channel = "whatsapp", amount = "2", language = "en-US" });
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, refused.StatusCode);
+        Assert.Equal("MonthlyLimitReached", (await refused.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("error").GetString());
+        Assert.Single(host.WhatsApp.Results);
+        (await client.PostAsync("/api/deliveries", new { channel = "email", amount = "2", language = "en-US" })).EnsureSuccessStatusCode();
+    }
+
+    [Fact]
     public async Task The_kill_switch_pauses_every_delivery()
     {
         using var paused = MessagingTestHost.Create(settings => settings["Limits:KillSwitch"] = "true");

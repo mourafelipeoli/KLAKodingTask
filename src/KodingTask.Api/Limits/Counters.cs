@@ -6,6 +6,8 @@ public static class Counters
 
     public const string WhatsAppMessages = "whatsapp:sent";
 
+    public const string WhatsAppMessagesThisMonth = "whatsapp:sent:month";
+
     public const string TranslationCharacters = "translation:characters";
 
     public const string TermRegistrations = "terms:registered";

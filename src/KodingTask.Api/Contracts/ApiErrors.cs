@@ -8,6 +8,8 @@ public static class ApiErrors
 
     public static ErrorResponse DailyLimitReached { get; } = new("DailyLimitReached", "Today's sending limit has been reached. Try again tomorrow.");
 
+    public static ErrorResponse MonthlyLimitReached { get; } = new("MonthlyLimitReached", "This month's WhatsApp limit has been reached. Send it by email instead.");
+
     public static ErrorResponse UserLimitReached { get; } = new("UserLimitReached", "You have reached your sending limit for today.");
 
     public static ErrorResponse SendFailed { get; } = new("SendFailed", "The message could not be sent. Try again later.");
@@ -37,7 +39,7 @@ public static class ApiErrors
         "MessagingUnavailable" or "MachineTranslationUnavailable" => StatusCodes.Status503ServiceUnavailable,
         "TermLimitReached" => StatusCodes.Status429TooManyRequests,
         "UnknownLocale" or "UnknownTerm" => StatusCodes.Status404NotFound,
-        "Paused" or "DailyLimitReached" or "UserLimitReached" => StatusCodes.Status429TooManyRequests,
+        "Paused" or "DailyLimitReached" or "MonthlyLimitReached" or "UserLimitReached" => StatusCodes.Status429TooManyRequests,
         "SendFailed" => StatusCodes.Status502BadGateway,
         "EmailNotConfirmed" or "PhoneNotVerified" => StatusCodes.Status403Forbidden,
         "PhoneCheckNeeded" => StatusCodes.Status409Conflict,

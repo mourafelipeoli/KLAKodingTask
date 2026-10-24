@@ -9,19 +9,27 @@ public sealed class UsageLimiter(KodingTaskDbContext database, TimeProvider time
     public Task<bool> TryConsumeAsync(string counter, int limit, CancellationToken cancellationToken) =>
         TryConsumeAsync(counter, limit, 1, cancellationToken);
 
-    public async Task<bool> TryConsumeAsync(string counter, int limit, int amount, CancellationToken cancellationToken)
+    public Task<bool> TryConsumeAsync(string counter, int limit, int amount, CancellationToken cancellationToken) =>
+        TryConsumeAsync(Today(), counter, limit, amount, cancellationToken);
+
+    public Task<bool> TryConsumeThisMonthAsync(string counter, int limit, CancellationToken cancellationToken)
+    {
+        var today = Today();
+        return TryConsumeAsync(new DateOnly(today.Year, today.Month, 1), counter, limit, 1, cancellationToken);
+    }
+
+    private async Task<bool> TryConsumeAsync(DateOnly day, string counter, int limit, int amount, CancellationToken cancellationToken)
     {
         if (limit <= 0 || amount <= 0 || amount > limit)
             return false;
 
-        var today = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
-        if (await IncrementBelowLimitAsync(today, counter, limit, amount, cancellationToken))
+        if (await IncrementBelowLimitAsync(day, counter, limit, amount, cancellationToken))
             return true;
 
-        if (await database.DailyUsage.AnyAsync(usage => usage.Day == today && usage.Counter == counter, cancellationToken))
+        if (await database.DailyUsage.AnyAsync(usage => usage.Day == day && usage.Counter == counter, cancellationToken))
             return false;
 
-        database.DailyUsage.Add(new DailyUsage { Day = today, Counter = counter, Count = amount });
+        database.DailyUsage.Add(new DailyUsage { Day = day, Counter = counter, Count = amount });
         try
         {
             await database.SaveChangesAsync(cancellationToken);
@@ -30,13 +38,15 @@ public sealed class UsageLimiter(KodingTaskDbContext database, TimeProvider time
         catch (DbUpdateException)
         {
             database.ChangeTracker.Clear();
-            return await IncrementBelowLimitAsync(today, counter, limit, amount, cancellationToken);
+            return await IncrementBelowLimitAsync(day, counter, limit, amount, cancellationToken);
         }
     }
 
+    private DateOnly Today() => DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
+
     public async Task<int> CountAsync(string counter, CancellationToken cancellationToken)
     {
-        var today = DateOnly.FromDateTime(timeProvider.GetUtcNow().UtcDateTime);
+        var today = Today();
         return await database.DailyUsage
             .Where(usage => usage.Day == today && usage.Counter == counter)
             .Select(usage => usage.Count)

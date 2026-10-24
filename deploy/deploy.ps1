@@ -78,7 +78,8 @@ $image = "${registry}/${Repository}:$version-$commit"
 Write-Host $image
 
 Write-Step 'Building the image'
-docker build -f src/KodingTask.Api/Dockerfile -t $image .
+# --pull: start from the newest .NET 10 patch (security fixes), never a stale cached base image.
+docker build --pull -f src/KodingTask.Api/Dockerfile -t $image .
 
 Write-Step 'Pushing the image'
 $loginArguments = @('ecr', 'get-login-password', '--region', $Region)

@@ -329,3 +329,11 @@ Remember to build the honest prompt based on my original one and the steps we di
 We have a 15 dollars budget/month for this project here.
 
 *[Answers to the assistant's three questions: the budget covers "Only pay-per-use services" (not the AWS hosting); the DeepL key is on the "Free (key ends in :fx)" plan; and for WhatsApp, "Add a monthly cap" (the recommended option) rather than relying on the Meta app's development mode.]*
+
+## 13. Checking the task's rules
+
+Does our project respects the rules of the Coding_Task_Senior_Software_Engineer.pdf (Downloads folder)?
+
+What about the version of the .NET SDK?
+
+Yes, you should, let's implement your suggestions.

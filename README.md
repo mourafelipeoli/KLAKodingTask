@@ -35,9 +35,10 @@ KLA Senior Software Engineer coding task (web variant).
 
 ## Run it
 
-Prerequisites: the [.NET 10 SDK](https://dotnet.microsoft.com/download) and
-[Node.js 22 LTS](https://nodejs.org) or newer. Nothing else: no database server, no cloud
-account, no API key.
+Prerequisites: any [.NET 10 SDK](https://dotnet.microsoft.com/download) (10.0.100 or
+newer; the latest 10.0 release is recommended for its security fixes, 10.0.402 in October
+2026) and [Node.js 22 LTS](https://nodejs.org) or newer. Nothing else: no database server,
+no cloud account, no API key.
 
 ```sh
 git clone <this repository>

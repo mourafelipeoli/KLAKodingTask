@@ -218,5 +218,12 @@
   "The sign-in with fmID did not complete. Try again.": "fmID 로그인이 완료되지 않았습니다. 다시 시도하세요.",
   "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID에서 이 로그인을 허용하지 않았습니다. fmID 계정을 확인한 후 다시 시도하세요.",
   "Confirm your email address at fmID first, then try again.": "먼저 fmID에서 이메일 주소를 확인한 후 다시 시도하세요.",
-  "No fmID account yet? Create one on the next page; you come back here signed in.": "아직 fmID 계정이 없나요? 다음 페이지에서 만들 수 있으며, 로그인하면 이 페이지로 돌아옵니다."
+  "No fmID account yet? Create one on the next page; you come back here signed in.": "아직 fmID 계정이 없나요? 다음 페이지에서 만들 수 있으며, 로그인하면 이 페이지로 돌아옵니다.",
+  "Your last conversions": "최근 변환",
+  "Sign in to keep your last conversions here, on any device.": "로그인하면 어느 기기에서든 여기에서 최근 변환을 볼 수 있습니다.",
+  "Your conversions will appear here.": "변환한 내용이 여기에 표시됩니다.",
+  "Choose one to convert it again.": "하나를 선택하면 다시 변환합니다.",
+  "Clear the list": "목록 지우기",
+  "The list could not be loaded right now.": "지금은 목록을 불러올 수 없습니다.",
+  "The list could not be cleared. Try again.": "목록을 지우지 못했습니다. 다시 시도하세요."
 }

@@ -225,3 +225,7 @@ The provider session then passed on my clarification that passwords stay inside 
 as in my other applications, and asked whether this application should take the WhatsApp
 number verified on fmID instead of verifying it with its own code. Both sessions laid the
 trade-off out for me to decide.
+
+Now implement the “last conversions” functionality, using the database functionality we have already implemented
+
+*[Answer to the assistant's question about whose conversions to show: "Mine, when signed in" (the recommended option), over "This browser, anonymous", "Everyone's, public feed" and "Mine + this browser".]*

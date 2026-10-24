@@ -218,5 +218,12 @@
   "The sign-in with fmID did not complete. Try again.": "El inicio de sesión con fmID no se completó. Inténtalo de nuevo.",
   "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID no ha permitido este inicio de sesión. Revisa tu cuenta de fmID e inténtalo de nuevo.",
   "Confirm your email address at fmID first, then try again.": "Primero confirma tu correo electrónico en fmID y vuelve a intentarlo.",
-  "No fmID account yet? Create one on the next page; you come back here signed in.": "¿Aún no tienes cuenta de fmID? Créala en la página siguiente; volverás aquí con la sesión iniciada."
+  "No fmID account yet? Create one on the next page; you come back here signed in.": "¿Aún no tienes cuenta de fmID? Créala en la página siguiente; volverás aquí con la sesión iniciada.",
+  "Your last conversions": "Tus últimas conversiones",
+  "Sign in to keep your last conversions here, on any device.": "Inicia sesión para guardar aquí tus últimas conversiones, en cualquier dispositivo.",
+  "Your conversions will appear here.": "Tus conversiones aparecerán aquí.",
+  "Choose one to convert it again.": "Elige una para convertirla de nuevo.",
+  "Clear the list": "Borrar la lista",
+  "The list could not be loaded right now.": "No se ha podido cargar la lista ahora mismo.",
+  "The list could not be cleared. Try again.": "No se ha podido borrar la lista. Inténtalo de nuevo."
 }

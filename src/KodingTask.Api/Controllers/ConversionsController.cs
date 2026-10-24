@@ -1,6 +1,8 @@
 ﻿using KodingTask.Api.Contracts;
+using KodingTask.Api.History;
 using KodingTask.Api.Hosting;
 using KodingTask.Conversion;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -9,7 +11,10 @@ namespace KodingTask.Api.Controllers;
 [ApiController]
 [Route("api/conversions")]
 [Produces("application/json")]
-public sealed class ConversionsController(CurrencyConverter converter) : ControllerBase
+public sealed class ConversionsController(
+    CurrencyConverter converter,
+    UserManager<IdentityUser> users,
+    ConversionHistory history) : ControllerBase
 {
     public const string DefaultLanguage = "en-US";
 
@@ -27,8 +32,13 @@ public sealed class ConversionsController(CurrencyConverter converter) : Control
     [EnableRateLimiting(RequestRateLimits.Conversion)]
     [ProducesResponseType<ConversionResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
-    public ActionResult<ConversionResponse> Convert([FromBody] ConversionRequest request) =>
-        ConvertOne(request.Amount, request.Language);
+    public async Task<ActionResult<ConversionResponse>> Convert([FromBody] ConversionRequest request, CancellationToken cancellationToken)
+    {
+        var response = ConvertOne(request.Amount, request.Language);
+        if (response.Value is { } conversion && users.GetUserId(User) is { } userId)
+            await history.RecordAsync(userId, conversion, cancellationToken);
+        return response;
+    }
 
     [HttpPost("all-languages")]
     [EnableRateLimiting(RequestRateLimits.Conversion)]

@@ -218,5 +218,12 @@
   "The sign-in with fmID did not complete. Try again.": "fmID でのログインが完了しませんでした。もう一度お試しください。",
   "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID がこのログインを許可しませんでした。fmID アカウントを確認して、もう一度お試しください。",
   "Confirm your email address at fmID first, then try again.": "まず fmID でメールアドレスを確認してから、もう一度お試しください。",
-  "No fmID account yet? Create one on the next page; you come back here signed in.": "fmID アカウントをお持ちでない方は、次のページで作成できます。ログイン後、このページに戻ります。"
+  "No fmID account yet? Create one on the next page; you come back here signed in.": "fmID アカウントをお持ちでない方は、次のページで作成できます。ログイン後、このページに戻ります。",
+  "Your last conversions": "最近の変換",
+  "Sign in to keep your last conversions here, on any device.": "ログインすると、どのデバイスでもここで最近の変換を確認できます。",
+  "Your conversions will appear here.": "変換するとここに表示されます。",
+  "Choose one to convert it again.": "選ぶと、もう一度変換します。",
+  "Clear the list": "リストを消去",
+  "The list could not be loaded right now.": "現在リストを読み込めません。",
+  "The list could not be cleared. Try again.": "リストを消去できませんでした。もう一度お試しください。"
 }

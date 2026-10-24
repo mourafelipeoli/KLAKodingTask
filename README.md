@@ -15,6 +15,8 @@ KLA Senior Software Engineer coding task (web variant).
 - **Send it to yourself:** after signing in, a result can be emailed to the account's
   confirmed address or sent by WhatsApp to a verified number, within daily caps that live
   outside the code.
+- **Your last conversions:** signed in, the converter lists your last ten conversions on any
+  device; choose one to convert it again.
 - **Sign in with fmID:** the author's own OpenID Connect provider (code flow with PKCE) is
   the only sign-in; this site stores no passwords.
 - **Where it runs:** the hosted version has a live
@@ -117,6 +119,7 @@ browser ──HTTPS──► KodingTask.Api (ASP.NET Core 10)
                     ├─ /api/account …         the signed-in visitor (Identity), phone verification
                     ├─ /signin-fmid …         sign-in with fmID (OpenID Connect, code + PKCE)
                     ├─ /api/deliveries        a result by email (SES) or WhatsApp (Meta)
+                    ├─ /api/account/conversions  the signed-in visitor's last conversions
                     ├─ /health                version and commit, never touches the DB
                     └─ everything else        the React app (static files; Vite in development)
                          │
@@ -188,6 +191,11 @@ under the file). That is where to look for the "why" of any class.
   sign-up, address confirmation and password resets are the provider's. See
   [decision 7](docs/decisions/0007-sign-in-with-fmid-linked-to-local-accounts.md) and
   [decision 8](docs/decisions/0008-fmid-is-the-only-sign-in.md).
+
+- **Last conversions belong to the account.** Only a signed-in visitor's conversions are
+  kept, recorded by the conversion endpoint itself from its own result, ten per person at
+  most and never older than 90 days. See
+  [decision 9](docs/decisions/0009-last-conversions-belong-to-the-account.md).
 
 More decisions, with their alternatives, are recorded in [docs/decisions](docs/decisions).
 

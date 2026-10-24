@@ -23,6 +23,8 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
 
     public DbSet<OutboundMessage> OutboundMessages => Set<OutboundMessage>();
 
+    public DbSet<ConversionRecord> ConversionRecords => Set<ConversionRecord>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<Enum>().HaveConversion<string>().HaveMaxLength(64);
@@ -84,6 +86,18 @@ public class KodingTaskDbContext(DbContextOptions<KodingTaskDbContext> options)
             entity.Property(message => message.Error).HasMaxLength(300);
             entity.HasIndex(message => message.CreatedAtUtc);
             entity.HasIndex(message => message.UserId);
+        });
+
+        modelBuilder.Entity<ConversionRecord>(entity =>
+        {
+            entity.ToTable("ConversionRecords");
+            entity.Property(record => record.UserId).HasMaxLength(255);
+            entity.Property(record => record.Amount).HasMaxLength(32);
+            entity.Property(record => record.LanguageCode).HasMaxLength(16);
+            entity.Property(record => record.Words).HasMaxLength(1000);
+            entity.HasIndex(record => new { record.UserId, record.Amount, record.LanguageCode }).IsUnique();
+            entity.HasIndex(record => new { record.UserId, record.ConvertedAtUtc });
+            entity.HasIndex(record => record.ConvertedAtUtc);
         });
     }
 }

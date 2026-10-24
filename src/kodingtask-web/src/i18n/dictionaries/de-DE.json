@@ -218,5 +218,12 @@
   "The sign-in with fmID did not complete. Try again.": "Die Anmeldung mit fmID wurde nicht abgeschlossen. Versuchen Sie es erneut.",
   "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID hat diese Anmeldung nicht zugelassen. Prüfen Sie Ihr fmID-Konto und versuchen Sie es erneut.",
   "Confirm your email address at fmID first, then try again.": "Bestätigen Sie zuerst Ihre E-Mail-Adresse bei fmID und versuchen Sie es dann erneut.",
-  "No fmID account yet? Create one on the next page; you come back here signed in.": "Noch kein fmID-Konto? Erstellen Sie eines auf der nächsten Seite; danach kommen Sie angemeldet hierher zurück."
+  "No fmID account yet? Create one on the next page; you come back here signed in.": "Noch kein fmID-Konto? Erstellen Sie eines auf der nächsten Seite; danach kommen Sie angemeldet hierher zurück.",
+  "Your last conversions": "Ihre letzten Umwandlungen",
+  "Sign in to keep your last conversions here, on any device.": "Melden Sie sich an, um Ihre letzten Umwandlungen hier zu behalten, auf jedem Gerät.",
+  "Your conversions will appear here.": "Ihre Umwandlungen erscheinen hier.",
+  "Choose one to convert it again.": "Wählen Sie eine aus, um sie erneut umzuwandeln.",
+  "Clear the list": "Liste leeren",
+  "The list could not be loaded right now.": "Die Liste konnte gerade nicht geladen werden.",
+  "The list could not be cleared. Try again.": "Die Liste konnte nicht geleert werden. Versuchen Sie es erneut."
 }

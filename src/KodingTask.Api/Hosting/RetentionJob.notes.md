@@ -7,6 +7,7 @@ start):
 |---|---|
 | `OutboundMessages` | 90 days |
 | `AiCalls` | 90 days (the monthly AI budget only needs the current month) |
+| `ConversionRecords` | 90 days (and never more than ten per person) |
 | `DailyUsage` | 40 days (caps only read today's row) |
 | `PhoneChallenges` | one day after expiry |
 

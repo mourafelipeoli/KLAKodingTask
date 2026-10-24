@@ -4,6 +4,7 @@ using KodingTask.Api.Ai;
 using KodingTask.Api.Contracts;
 using KodingTask.Api.Deliveries;
 using KodingTask.Api.Features;
+using KodingTask.Api.History;
 using KodingTask.Api.Hosting;
 using KodingTask.Api.Infrastructure;
 using KodingTask.Api.Limits;
@@ -35,6 +36,7 @@ var (emailConfigured, whatsAppConfigured) = builder.Services.AddMessaging(builde
 builder.Services.AddAccounts();
 var fmId = builder.Services.AddFmIdSignIn(builder.Configuration);
 builder.Services.AddScoped<DeliveryService>();
+builder.Services.AddScoped<ConversionHistory>();
 builder.Services.AddHostedService<RetentionJob>();
 builder.Services.AddSingleton(new FeatureAvailability(
     Email: emailConfigured,

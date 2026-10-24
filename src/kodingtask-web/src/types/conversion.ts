@@ -8,6 +8,18 @@ export interface ConversionResult {
   engine: string;
 }
 
+/** One of the signed-in visitor's last conversions, as the server keeps it. */
+export interface ConversionHistoryEntry {
+  /** The amount as the server normalised it, e.g. "45 100,00"; the converter accepts it. */
+  amount: string;
+  dollars: number;
+  cents: number;
+  language: string;
+  words: string;
+  /** ISO 8601 with offset. */
+  convertedAt: string;
+}
+
 export interface OutputLanguage {
   code: string;
   englishName: string;

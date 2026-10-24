@@ -4,6 +4,7 @@ import { DeliveryChannel, Engine } from "../types/conversion";
 export const ConverterSection = {
   Result: "result",
   Send: "send",
+  Recent: "recent",
 } as const;
 
 export type ConverterSection = (typeof ConverterSection)[keyof typeof ConverterSection];

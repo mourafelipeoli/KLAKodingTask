@@ -43,6 +43,7 @@ public sealed class RetentionJob(IServiceScopeFactory scopes, TimeProvider timeP
 
         return await database.OutboundMessages.Where(message => message.CreatedAtUtc < cutoff).ExecuteDeleteAsync(cancellationToken)
             + await database.AiCalls.Where(call => call.CreatedAtUtc < cutoff).ExecuteDeleteAsync(cancellationToken)
+            + await database.ConversionRecords.Where(record => record.ConvertedAtUtc < cutoff).ExecuteDeleteAsync(cancellationToken)
             + await database.DailyUsage.Where(usage => usage.Day < counterCutoff).ExecuteDeleteAsync(cancellationToken)
             + await database.PhoneChallenges.Where(challenge => challenge.ExpiresAtUtc < now.AddDays(-1)).ExecuteDeleteAsync(cancellationToken);
     }

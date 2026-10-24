@@ -88,6 +88,55 @@ namespace KodingTask.Data.Migrations
                     b.ToTable("AiCalls", (string)null);
                 });
 
+            modelBuilder.Entity("KodingTask.Data.Entities.ConversionRecord", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Amount")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<int>("Cents")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ConvertedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Dollars")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LanguageCode")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Words")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConvertedAtUtc");
+
+                    b.HasIndex("UserId", "ConvertedAtUtc");
+
+                    b.HasIndex("UserId", "Amount", "LanguageCode")
+                        .IsUnique();
+
+                    b.ToTable("ConversionRecords", (string)null);
+                });
+
             modelBuilder.Entity("KodingTask.Data.Entities.DailyUsage", b =>
                 {
                     b.Property<DateOnly>("Day")

@@ -218,5 +218,12 @@
   "The sign-in with fmID did not complete. Try again.": "The sign-in with fmID did not complete. Try again.",
   "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID did not allow this sign-in. Check your fmID account and try again.",
   "Confirm your email address at fmID first, then try again.": "Confirm your email address at fmID first, then try again.",
-  "No fmID account yet? Create one on the next page; you come back here signed in.": "No fmID account yet? Create one on the next page; you come back here signed in."
+  "No fmID account yet? Create one on the next page; you come back here signed in.": "No fmID account yet? Create one on the next page; you come back here signed in.",
+  "Your last conversions": "Your last conversions",
+  "Sign in to keep your last conversions here, on any device.": "Sign in to keep your last conversions here, on any device.",
+  "Your conversions will appear here.": "Your conversions will appear here.",
+  "Choose one to convert it again.": "Choose one to convert it again.",
+  "Clear the list": "Clear the list",
+  "The list could not be loaded right now.": "The list could not be loaded right now.",
+  "The list could not be cleared. Try again.": "The list could not be cleared. Try again."
 }

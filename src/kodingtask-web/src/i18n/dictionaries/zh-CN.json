@@ -218,5 +218,12 @@
   "The sign-in with fmID did not complete. Try again.": "使用 fmID 登录未完成。请重试。",
   "fmID did not allow this sign-in. Check your fmID account and try again.": "fmID 未允许此次登录。请检查您的 fmID 账户后重试。",
   "Confirm your email address at fmID first, then try again.": "请先在 fmID 确认您的电子邮件地址，然后重试。",
-  "No fmID account yet? Create one on the next page; you come back here signed in.": "还没有 fmID 账户？可在下一页创建；登录后会回到这里。"
+  "No fmID account yet? Create one on the next page; you come back here signed in.": "还没有 fmID 账户？可在下一页创建；登录后会回到这里。",
+  "Your last conversions": "您最近的转换",
+  "Sign in to keep your last conversions here, on any device.": "登录后，可在任何设备上查看您最近的转换。",
+  "Your conversions will appear here.": "您的转换会显示在这里。",
+  "Choose one to convert it again.": "选择一项即可再次转换。",
+  "Clear the list": "清空列表",
+  "The list could not be loaded right now.": "暂时无法加载列表。",
+  "The list could not be cleared. Try again.": "无法清空列表。请重试。"
 }

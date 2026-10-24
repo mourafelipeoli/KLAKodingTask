@@ -5,6 +5,7 @@ import AiAnswerPanel from "../components/converter/AiAnswerPanel";
 import ConverterForm from "../components/converter/ConverterForm";
 import HowItWorks from "../components/converter/HowItWorks";
 import LanguageComparison from "../components/converter/LanguageComparison";
+import RecentConversions from "../components/converter/RecentConversions";
 import ResultCard from "../components/converter/ResultCard";
 import SendResultPanel from "../components/converter/SendResultPanel";
 import StatsStrip from "../components/converter/StatsStrip";
@@ -16,6 +17,7 @@ import { conversionService } from "../services/conversionService";
 import { ApiError, NETWORK_ERROR, isAbortError } from "../services/httpClient";
 import type {
   AiAnswer,
+  ConversionHistoryEntry,
   ConversionResult,
   DeliveryChannel,
   OutputLanguage,
@@ -76,6 +78,8 @@ export default function ConvertPage() {
   const [pendingChannel, setPendingChannel] = useState(
     () => readLinkTarget(searchParams, window.location.hash).channel,
   );
+  // Counts successful conversions, so the list of last conversions shows the newest one.
+  const [historyRevision, setHistoryRevision] = useState(0);
   const [isConverting, startConversion] = useTransition();
   const [isAsking, startAsking] = useTransition();
   const [isComparing, startComparison] = useTransition();
@@ -174,6 +178,7 @@ export default function ConvertPage() {
             controller.signal,
           );
           setResult(converted);
+          setHistoryRevision((revision) => revision + 1);
           setErrorKey(null);
           setAiAnswer(null);
           setAiError(null);
@@ -218,6 +223,18 @@ export default function ConvertPage() {
     setIsComparisonOpen(next);
     if (next && result) {
       compare(result.amount);
+    }
+  }
+
+  // A conversion picked from the list: converted again, then shown like any other result.
+  function handleOpenRecent(entry: ConversionHistoryEntry) {
+    setAmount(entry.amount);
+    linkTarget.current = { section: ConverterSection.Result, channel: null };
+    if (entry.language === outputLanguage) {
+      convert(entry.amount, entry.language);
+    } else {
+      requestedAmount.current = entry.amount;
+      setChosenLanguage(entry.language);
     }
   }
 
@@ -312,6 +329,12 @@ export default function ConvertPage() {
             onUnavailable={setDeliveryOffer}
           />
         )}
+
+        <RecentConversions
+          revision={historyRevision}
+          nameOf={nameOf}
+          onOpen={handleOpenRecent}
+        />
       </div>
 
       <StatsStrip
